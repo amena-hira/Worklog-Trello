@@ -1,0 +1,12 @@
+<div class="hero h-screen bg-center bg-cover" [style.background-image]="'url(' + background + ')'">
+  <div class="hero-overlay"></div>
+  <div class="hero-content md:w-md ">
+    <div class="md:w-full max-w-md">
+      <div class="card bg-base-100 w-full shadow-2xl">
+        <div class="card-body">
+          <ng-content></ng-content>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

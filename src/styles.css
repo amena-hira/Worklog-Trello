@@ -1,1 +1,26 @@
-/* You can add global styles to this file, and also import other style files */
+@import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&display=swap');
+@import "tailwindcss";
+@plugin "daisyui";
+
+
+.dancing-logo {
+  font-family: "Dancing Script", cursive;
+}
+
+.drawer-open .is-drawer-open {
+  width: 16rem;
+}
+
+:not(.drawer-open) .is-drawer-close {
+  width: 4rem;
+}
+
+.drawer-side::-webkit-scrollbar {
+  width: 4px;
+}
+
+.drawer-side {
+  scrollbar-width: thin;
+}
+
+

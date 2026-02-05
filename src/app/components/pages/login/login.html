@@ -1,0 +1,13 @@
+<app-auth-card>
+  <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="fieldset">
+    <label class="label">Email</label>
+    <input type="email" class="input w-full" placeholder="Email" formControlName="email"/>
+    <label class="label">Password</label>
+    <input type="password" class="input w-full" placeholder="Password" formControlName="password"/>
+    <div><a class="link link-hover">Forgot password?</a></div>
+    <button class="btn btn-neutral mt-4">Login</button>
+  </form>
+  <p class="pt-4 text-center text-gray-700">
+    Can't log in? • <a routerLink="/register" class="link link-hover text-blue-500">Create an account</a>
+  </p>
+</app-auth-card>

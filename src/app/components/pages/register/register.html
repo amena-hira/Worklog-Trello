@@ -1,0 +1,30 @@
+<app-auth-card>
+  <form [formGroup]="signupForm" (ngSubmit)="onSubmit()" class="fieldset">
+    <label class="label">Last Name</label>
+    <input type="text" class="input w-full" placeholder="Last Name" formControlName="last_name"/>
+    <label class="label">First Name</label>
+    <input type="text" class="input w-full" placeholder="First Name" formControlName="first_name"/>
+    <label class="label">Email</label>
+    <input type="email" class="input w-full" placeholder="Email" formControlName="email"/>
+    <label class="label">Password</label>
+    <input type="password" class="input w-full" placeholder="Password" formControlName="password"/>
+    <label class="label">Gender</label>
+    <div class="flex items-center">
+      @for (gender of genders; track gender.value; let isFirst = $first) {
+        <input
+          type="radio"
+          formControlName="gender"
+          [value]="gender.value"
+          [class.ml-4]="!isFirst"
+          class="inline-block radio radio-xs radio-neutral"
+        />
+        <label for="gender" class="inline-block ml-1">{{ gender.viewValue }}</label>
+      }
+    </div>
+    <button class="btn btn-neutral mt-4 tracking-wider">Sign up</button>
+  </form>
+  <p class="pt-4 text-center text-gray-700">
+    Already have an WorkLog account?
+    <a routerLink="/login" class="link link-hover text-blue-500">Log in</a>
+  </p>
+</app-auth-card>
