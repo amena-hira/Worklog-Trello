@@ -12,6 +12,7 @@ import { Register } from './components/pages/register/register';
 import { AuthCard } from './components/shared/auth-card/auth-card';
 import { ReactiveFormsModule } from '@angular/forms';
 import { Main } from './components/layout/main/main';
+import { DrawerSidebar } from './components/shared/drawer-sidebar/drawer-sidebar';
 
 @NgModule({
   declarations: [
@@ -21,7 +22,8 @@ import { Main } from './components/layout/main/main';
     Login,
     Register,
     AuthCard,
-    Main
+    Main,
+    DrawerSidebar
   ],
   imports: [
     MatSlideToggleModule,
