@@ -7,14 +7,6 @@
   font-family: "Dancing Script", cursive;
 }
 
-.drawer-open .is-drawer-open {
-  width: 16rem;
-}
-
-:not(.drawer-open) .is-drawer-close {
-  width: 4rem;
-}
-
 .drawer-side::-webkit-scrollbar {
   width: 4px;
 }

@@ -1,0 +1,59 @@
+<div class="navbar bg-base-100 shadow-sm">
+  <div class="flex-1 flex items-center gap-2">
+    <label
+      for="my-drawer"
+      aria-label="open sidebar"
+      class="cursor-pointer btn-ghost btn-circle btn"
+    >
+      <i class="fa-solid fa-bars inline-block"></i>
+    </label>
+    <label
+      class="input flex-none flex items-center gap-2 w-[clamp(10rem,22vw,14rem)]"
+    >
+      <i class="fa-solid fa-magnifying-glass h-[1em] opacity-50"></i>
+      <input type="search" class="grow min-w-0" placeholder="Search" />
+
+      <kbd class="kbd kbd-sm hidden sm:inline-flex">⌘</kbd>
+      <kbd class="kbd kbd-sm hidden sm:inline-flex">K</kbd>
+    </label>
+  </div>
+  <div class="flex gap-4 items-center">
+    <div tabindex="0" role="button" class="cursor-pointer">
+      <div class="indicator relative">
+        <i class="fa-regular fa-bell text-lg"></i>
+        <span class="absolute -top-1 -right-1 inline-flex h-3 w-3">
+          <span
+            class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"
+          ></span>
+          <span
+            class="relative inline-flex rounded-full h-3 w-3 bg-red-600 border-2 border-white"
+          ></span>
+        </span>
+      </div>
+    </div>
+
+    <div class="dropdown dropdown-end">
+      <div tabindex="0" role="button" class="btn btn-ghost btn-circle avatar">
+        <div class="w-10 rounded-full">
+          <img
+            alt="Tailwind CSS Navbar component"
+            src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
+          />
+        </div>
+      </div>
+      <ul
+        tabindex="-1"
+        class="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow"
+      >
+        <li>
+          <a class="justify-between">
+            Profile
+            <span class="badge">New</span>
+          </a>
+        </li>
+        <li><a>Settings</a></li>
+        <li><a>Logout</a></li>
+      </ul>
+    </div>
+  </div>
+</div>
