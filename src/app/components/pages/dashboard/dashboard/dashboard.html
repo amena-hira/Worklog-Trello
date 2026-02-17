@@ -1,1 +1,115 @@
-<p>dashboard works!</p>
+<div class="p-4">
+  <!-- Card for tasks -->
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 justify-items-center gap-4">
+    @for (card of cards; track card.title) {
+      <div class="card w-full bg-base-100 card-md shadow-sm">
+        <div class="card-body">
+          <h2 class="card-title text-xl">{{ card.title }}</h2>
+          <div class="flex justify-between items-end card-actions pt-8">
+            <div>
+              <span class="text-lg font-semibold text-gray-800">{{ card.total }}</span>
+              <p class="text-sm text-gray-600">Task count</p>
+            </div>
+            <div>
+              <span class="text-xl {{ card.color }}">
+                <i class="{{ card.icon }}"></i>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+
+  <!-- Task & Project Status -->
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 [.drawer-toggle:checked~.drawer-content_&]:grid-cols-2 gap-4 pt-6 items-start">
+    <!-- Priority Task Table -->
+    <div class="card w-full shadow-sm">
+      <div class="card-body">
+        <h2 class="card-title">Priority Task</h2>
+      </div>
+      <div>
+        <div class="overflow-x-auto">
+          <table class="table w-full table-zebra">
+            <!-- head -->
+            <thead>
+              <tr>
+                <th>Task Name</th>
+                <th>Due Date</th>
+                <th>Priority</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (task of priority_Tasks; track $index) {
+                <!-- row -->
+                <tr>
+                  <td>{{ task.name }}</td>
+                  <td>{{ task.dueDate }}</td>
+                  <td><span class="badge badge-ghost badge-sm">{{ task.priority }}</span></td>
+                  <td><span class="badge badge-{{ task.statusColor }} badge-sm">{{ task.status }}</span></td>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <!-- Project Status Card -->
+    <div class="shadow-sm rounded-lg">
+      <div class="card-body">
+        <h2 class="card-title">Project Status</h2>
+      </div>
+      <div class="px-4">
+        @for (project of projectStatus; track $index) {
+
+          <div class="flex gap-4 shadow-sm py-3 px-4 mb-4 border border-gray-200 rounded-lg">
+            <div>
+              <p class="flex items-center justify-center w-10 h-10 {{ project.background }} rounded-full">
+                <i class="{{ project.icon }} {{ project.textColor }} text-2xl"></i>
+              </p>
+            </div>
+            <div class="flex-1">
+              <div class="flex justify-between">
+                <div>
+                  <p>{{ project.name }}</p>
+                  <p class="text-sm text-gray-600">{{ project.progress }}% complete</p>
+                </div>
+                <div class="text-right">
+                  <p class="badge {{ project.textColor }} {{ project.background }}  bg-opacity-20">{{ project.status }}</p>
+                  <div class="text-sm text-gray-600">
+                    <i class="fa-regular fa-clock text-gray-500 mr-1"></i>
+                    <span>{{ project.dueDate }}</span>
+                  </div>
+                </div>
+              </div>
+              <progress class="progress {{ project.textColor }} w-full" value="{{ project.progress }}" max="100"></progress>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+    <!-- Task Activity -->
+     <div>
+      <div class="card w-full shadow-sm">
+        <div class="card-body">
+          <h2 class="card-title mb-4">Task Activity</h2>
+          <div class="flex flex-col gap-4">
+            @for (activity of taskActivity; track $index) {
+              <div class="flex items-start gap-4">
+                <div class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center">
+                  <i class="fa-solid fa-user text-gray-500"></i>
+                </div>
+                <div>
+                  <p><span class="font-semibold">{{ activity.user }}</span> {{ activity.status }} Task <span class="font-semibold">{{ activity.task }}</span></p>
+                  <p class="text-sm text-gray-600">{{ activity.time }}</p>
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+     </div>
+  </div>
+
+  
+</div>
