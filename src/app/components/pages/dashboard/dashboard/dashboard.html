@@ -1,47 +1,56 @@
 <div class="p-4">
-  <div>
-    <h2 class="text-2xl">Welcome back, John! <span>&#128075;</span></h2>
-    <p>Here's your productive overview.</p>
-  </div>
-
-  <!-- Card for tasks -->
-  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 justify-items-center gap-4">
-    @for (card of cards; track card.title) {
-      <div class="card w-full bg-base-100 card-md shadow-sm">
-        <div class="card-body">
-          <h2 class="card-title text-xl">{{ card.title }}</h2>
-          <div class="flex justify-between items-end card-actions pt-8">
-            <div>
-              <span class="text-lg font-semibold text-gray-800">{{ card.total }}</span>
-              <p class="text-sm text-gray-600">Task count</p>
-            </div>
-            <div>
-              <span class="text-xl {{ card.color }}">
-                <i class="{{ card.icon }}"></i>
-              </span>
-            </div>
-          </div>
+  <div class="flex">
+    <!-- main content -->
+    <div class="pr-4">
+      <!-- Welcome Card -->
+      <div class="flex justify-between items-center mb-6 mt-2">
+        <div>
+          <h2 class="tex-md md:text-xl font-bold">Welcome back, John! <span>&#128075;</span></h2>
+          <p class="tracking-wide">Here's your productivity overview.</p>
+        </div>
+        <div class="hidden md:block rounded-lg shadow-sm bg-base-100 p-2 lg:p-3">
+          <i class="fa-regular fa-calendar lg:pr-6"></i>
+          <span>{{ today | date: 'longDate' }}</span>
         </div>
       </div>
-    }
-  </div>
 
-  <!-- Task & Project Status -->
-  <div
-    class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 [.drawer-toggle:checked~.drawer-content_&]:grid-cols-2 gap-4 pt-6 items-start"
-  >
-    <!-- Priority Task Table -->
-    <app-prioroty-table></app-prioroty-table>
-    <!-- Project Status Card -->
-    <app-project-status></app-project-status>
-    <!-- Task Activity -->
-    <app-task-activity></app-task-activity>
-    <!-- Task calender -->
-    <app-calender></app-calender>
+      <!-- Card for tasks -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 justify-items-center gap-4">
+        @for (card of cards; track card.title) {
+          <div class="bg-base-100 shadow-sm py-3 px-4 rounded-xl w-full">
+            <h4 class="text-md text-gray-700">{{card.title}}</h4>
+            <div class="flex items-center justify-between mt-3">
+              <h2 class="text-xl font-semibold">{{ card.total }}</h2>
+              <div>
+                <span class="text-xl {{ card.color }}">
+                  <i class="{{ card.icon }}"></i>
+                </span>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
 
-    <!-- Chart Project Completion -->
-    <div>
-      
+      <div
+        class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 [.drawer-toggle:checked~.drawer-content_&]:grid-cols-2 gap-4 pt-6 items-start"
+      >
+        <!-- Priority Task Table -->
+        <app-prioroty-table></app-prioroty-table>
+        <!-- Project Status Card -->
+        <app-project-status></app-project-status>
+
+        <!-- Task calender -->
+        <app-calender></app-calender>
+        <!-- Chart Project Completion -->
+        <div></div>
+      </div>
+    </div>
+    <!-- Team & Task -->
+    <div class="flex flex-col gap-4 min-w-64">
+      <!-- Team Members -->
+      <app-task-activity></app-task-activity>
+      <!-- Task Activity -->
+      <app-task-activity></app-task-activity>
     </div>
   </div>
 </div>

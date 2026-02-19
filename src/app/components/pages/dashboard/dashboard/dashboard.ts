@@ -7,21 +7,22 @@ import { Component, OnInit } from '@angular/core';
   styleUrl: './dashboard.css',
 })
 export class Dashboard {
+  today = new Date()
   cards = [
     {
-      title: 'Completed Tasks',
+      title: 'Completed',
       total: '123',
       icon: 'fa-regular fa-square-check',
       color: 'text-blue-400',
     },
     {
-      title: 'Incompleted Tasks',
+      title: 'Incompleted',
       total: '21',
       icon: 'fa-regular fa-circle-xmark',
       color: 'text-rose-700',
     },
     {
-      title: 'Overdue Tasks',
+      title: 'Overdue',
       total: '04',
       icon: 'fa-solid fa-triangle-exclamation',
       color: 'text-amber-500',
