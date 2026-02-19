@@ -2,6 +2,7 @@ import { NgModule, provideBrowserGlobalErrorListeners } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import {MatTabsModule} from '@angular/material/tabs';
 
 import { AppRoutingModule } from './app-routing-module';
 import { App } from './app';
@@ -16,7 +17,6 @@ import { DrawerSidebar } from './components/shared/drawer-sidebar/drawer-sidebar
 import { PriorotyTable } from './components/pages/dashboard/prioroty-table/prioroty-table';
 import { TaskActivity } from './components/pages/dashboard/task-activity/task-activity';
 import { Calender } from './components/pages/dashboard/calender/calender';
-import { TaskCompletion } from './components/pages/dashboard/task-completion/task-completion';
 import { ProjectStatus } from './components/pages/dashboard/project-status/project-status';
 
 @NgModule({
@@ -32,11 +32,11 @@ import { ProjectStatus } from './components/pages/dashboard/project-status/proje
     PriorotyTable,
     TaskActivity,
     Calender,
-    TaskCompletion,
     ProjectStatus
   ],
   imports: [
     MatSlideToggleModule,
+    MatTabsModule,
     ReactiveFormsModule,
     BrowserModule,
     AppRoutingModule

@@ -1,4 +1,9 @@
 <div class="p-4">
+  <div>
+    <h2 class="text-2xl">Welcome back, John! <span>&#128075;</span></h2>
+    <p>Here's your productive overview.</p>
+  </div>
+
   <!-- Card for tasks -->
   <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 justify-items-center gap-4">
     @for (card of cards; track card.title) {
@@ -22,7 +27,9 @@
   </div>
 
   <!-- Task & Project Status -->
-  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 [.drawer-toggle:checked~.drawer-content_&]:grid-cols-2 gap-4 pt-6 items-start">
+  <div
+    class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 [.drawer-toggle:checked~.drawer-content_&]:grid-cols-2 gap-4 pt-6 items-start"
+  >
     <!-- Priority Task Table -->
     <app-prioroty-table></app-prioroty-table>
     <!-- Project Status Card -->
@@ -31,5 +38,10 @@
     <app-task-activity></app-task-activity>
     <!-- Task calender -->
     <app-calender></app-calender>
+
+    <!-- Chart Project Completion -->
+    <div>
+      
+    </div>
   </div>
 </div>

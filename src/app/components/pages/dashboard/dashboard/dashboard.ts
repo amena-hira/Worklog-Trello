@@ -29,4 +29,5 @@ export class Dashboard {
     { title: 'Total Tasks', total: '148', icon: 'fa-solid fa-list-check', color: 'text-teal-500' },
   ];
 
+
 }
