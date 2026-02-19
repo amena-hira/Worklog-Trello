@@ -1,0 +1,35 @@
+<div class="card w-full shadow-sm bg-base-100">
+      <div class="card-body">
+        <h2 class="card-title">Priority Task</h2>
+      </div>
+      <div class="px-4 pb-4">
+        <div class="overflow-x-auto">
+          <table class="table w-full table-zebra">
+            <!-- head -->
+            <thead>
+              <tr>
+                <th>Task Name</th>
+                <th>Due Date</th>
+                <th>Priority</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (task of priority_Tasks; track $index) {
+                <!-- row -->
+                <tr>
+                  <td>{{ task.name }}</td>
+                  <td>{{ task.dueDate }}</td>
+                  <td>
+                    <span class="badge badge-ghost badge-sm">{{ task.priority }}</span>
+                  </td>
+                  <td>
+                    <span class="badge {{task.statusColor}} badge-sm whitespace-nowrap">{{ task.status }}</span>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>

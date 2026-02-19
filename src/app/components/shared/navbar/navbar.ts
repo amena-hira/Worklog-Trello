@@ -7,5 +7,14 @@ import { Component } from '@angular/core';
   styleUrl: './navbar.css',
 })
 export class Navbar {
-
+  constructor() {
+    if (window.innerWidth >= 1024) {
+      setTimeout(() => {
+        const element = document.getElementById('my-drawer') as HTMLInputElement;
+        if (element) {
+          element.checked = true;
+        }
+      });
+    }
+  }
 }

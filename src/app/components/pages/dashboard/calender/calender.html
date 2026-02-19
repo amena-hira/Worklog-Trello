@@ -1,0 +1,32 @@
+<div class="card w-full shadow-sm bg-base-100">
+      <div class="card-body">
+        <div class="flex justify-between items-center mb-4">
+          <h2 class="card-title">Task Calendar - {{ currentDate | date:'MMMM yyyy' }}</h2>
+
+          <div class="flex gap-2">
+            <button class="btn btn-sm btn-ghost" (click)="changeMonth(-1)"><i class="fa-solid fa-chevron-left"></i></button>
+            <button class="btn btn-sm btn-ghost" (click)="changeMonth(1)"><i class="fa-solid fa-chevron-right"></i></button>
+          </div>
+        </div>
+        
+        <div class="grid grid-cols-7 gap-px bg-base-200 border border-base-200 rounded-lg overflow-hidden">
+          @for (day of weekDays; track day) {
+            <div class="bg-base-100 p-2 text-center font-semibold text-sm text-gray-500">{{ day }}</div>
+          }
+          @for (day of calendarDays; track $index) {
+            <div class="bg-base-100 min-h-10 p-2 flex flex-col gap-1" [class.hover:bg-base-200]="day" [class.transition-colors]="day">
+              @if (day) {
+                <span class="text-sm font-medium ml-auto" [ngClass]="{'bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center': day.isToday}">
+                  {{ day.date | date:'d' }}
+                </span>
+                @for (task of day.tasks; track task.name) {
+                  <div class="text-[10px] p-1 rounded bg-blue-100 text-blue-700 truncate w-full" [title]="task.name">
+                    {{ task.name }}
+                  </div>
+                }
+              }
+            </div>
+          }
+        </div>
+      </div>
+    </div>

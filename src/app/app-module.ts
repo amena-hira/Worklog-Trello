@@ -13,6 +13,11 @@ import { AuthCard } from './components/shared/auth-card/auth-card';
 import { ReactiveFormsModule } from '@angular/forms';
 import { Main } from './components/layout/main/main';
 import { DrawerSidebar } from './components/shared/drawer-sidebar/drawer-sidebar';
+import { PriorotyTable } from './components/pages/dashboard/prioroty-table/prioroty-table';
+import { TaskActivity } from './components/pages/dashboard/task-activity/task-activity';
+import { Calender } from './components/pages/dashboard/calender/calender';
+import { TaskCompletion } from './components/pages/dashboard/task-completion/task-completion';
+import { ProjectStatus } from './components/pages/dashboard/project-status/project-status';
 
 @NgModule({
   declarations: [
@@ -23,7 +28,12 @@ import { DrawerSidebar } from './components/shared/drawer-sidebar/drawer-sidebar
     Register,
     AuthCard,
     Main,
-    DrawerSidebar
+    DrawerSidebar,
+    PriorotyTable,
+    TaskActivity,
+    Calender,
+    TaskCompletion,
+    ProjectStatus
   ],
   imports: [
     MatSlideToggleModule,
