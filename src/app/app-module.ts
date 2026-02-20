@@ -19,6 +19,7 @@ import { TaskActivity } from './components/pages/dashboard/task-activity/task-ac
 import { Calender } from './components/pages/dashboard/calender/calender';
 import { ProjectStatus } from './components/pages/dashboard/project-status/project-status';
 import { UpcomingDeadline } from './components/pages/dashboard/upcoming-deadline/upcoming-deadline';
+import { ActivityProgress } from './components/pages/dashboard/activity-progress/activity-progress';
 
 @NgModule({
   declarations: [
@@ -34,7 +35,8 @@ import { UpcomingDeadline } from './components/pages/dashboard/upcoming-deadline
     TaskActivity,
     Calender,
     ProjectStatus,
-    UpcomingDeadline
+    UpcomingDeadline,
+    ActivityProgress
   ],
   imports: [
     MatSlideToggleModule,
