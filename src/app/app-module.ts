@@ -18,6 +18,7 @@ import { PriorotyTable } from './components/pages/dashboard/prioroty-table/prior
 import { TaskActivity } from './components/pages/dashboard/task-activity/task-activity';
 import { Calender } from './components/pages/dashboard/calender/calender';
 import { ProjectStatus } from './components/pages/dashboard/project-status/project-status';
+import { UpcomingDeadline } from './components/pages/dashboard/upcoming-deadline/upcoming-deadline';
 
 @NgModule({
   declarations: [
@@ -32,7 +33,8 @@ import { ProjectStatus } from './components/pages/dashboard/project-status/proje
     PriorotyTable,
     TaskActivity,
     Calender,
-    ProjectStatus
+    ProjectStatus,
+    UpcomingDeadline
   ],
   imports: [
     MatSlideToggleModule,

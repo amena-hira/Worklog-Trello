@@ -1,0 +1,21 @@
+<div class="card bg-base-100 rounded-2xl shadow-sm p-4">
+  <div>
+    <h2 class="card-title">Upcoming Deadlines</h2>
+  </div>
+  <ul class="list">
+    @for (task of priority_Tasks; track task.name) {
+      <div class="border-b border-gray-100 my-2"></div>
+      <li class="flex justify-between items-center">
+        <div class="flex items-center gap-2">
+          <div aria-label="status" class="status status-lg {{ task.bgColor}}"></div>
+          <h2>{{ task.name }}</h2>
+        </div>
+        <div class="flex items-center">
+          <div aria-label="status" class="status {{ task.dueColor}} mr-1"></div>
+          <h2 class="{{ task.textColor }} text-sm">Due {{ task.dueDate }}</h2>
+        </div>
+      </li>
+    }
+    <div class="border-b border-gray-100 my-2"></div>
+  </ul>
+</div>
