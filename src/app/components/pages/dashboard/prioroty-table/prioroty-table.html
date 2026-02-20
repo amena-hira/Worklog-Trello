@@ -1,35 +1,36 @@
-<div class="card w-full shadow-sm bg-base-100">
-      <div class="card-body">
-        <h2 class="card-title">Priority Task</h2>
-      </div>
-      <div class="px-4 pb-4">
-        <div class="overflow-x-auto">
-          <table class="table w-full table-zebra">
-            <!-- head -->
-            <thead>
-              <tr>
-                <th>Task Name</th>
-                <th>Due Date</th>
-                <th>Priority</th>
-                <th>Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              @for (task of priority_Tasks; track $index) {
-                <!-- row -->
-                <tr>
-                  <td>{{ task.name }}</td>
-                  <td>{{ task.dueDate }}</td>
-                  <td>
-                    <span class="badge badge-ghost badge-sm">{{ task.priority }}</span>
-                  </td>
-                  <td>
-                    <span class="badge {{task.statusColor}} badge-sm whitespace-nowrap">{{ task.status }}</span>
-                  </td>
-                </tr>
-              }
-            </tbody>
-          </table>
+<div class="card bg-base-100 rounded-2xl shadow-sm p-4">
+  <div>
+    <h2 class="card-title">Today's Task</h2>
+  </div>
+  <ul class="list">
+    @for(task of priority_Tasks; track task.name){
+
+      <div class="border-b border-gray-100 my-2"></div>
+      <li class="flex justify-between items-center">
+        <div class="flex gap-2">
+          <div>
+            <input type="checkbox" class="checkbox checkbox-xs rounded-sm" />
+          </div>
+          <div>
+            <h2 class="font-semibold">{{task.name}}</h2>
+            <h4 class="badge badge-sm {{task.bgColor}} {{task.textColor}} whitespace-nowrap">{{task.project}}</h4>
+          </div>
         </div>
-      </div>
-    </div>
+  
+        <div class="flex gap-1">
+          <h2 class="badge badge-sm {{task.bgColor}} {{task.textColor}} whitespace-nowrap">{{task.priority}}</h2>
+          <div>
+            <i class="fa-regular fa-clock {{task.textColor}} font-light text-xs"></i>
+            <span class="{{task.textColor}} font-light text-sm">{{task.dueDate}}</span>
+          </div>
+        </div>
+      </li>
+    }
+  </ul>
+  <div class="mx-auto mt-4">
+    <button class="btn bg-sky-950 text-white px-6 rounded-xl">
+    <i class="fa-solid fa-plus"></i>
+    Add New Task
+  </button>
+  </div>
+</div>

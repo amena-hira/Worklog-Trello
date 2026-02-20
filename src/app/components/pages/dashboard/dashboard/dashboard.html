@@ -1,7 +1,7 @@
 <div class="p-4">
   <div class="flex">
     <!-- main content -->
-    <div class="pr-4">
+    <div class="pr-4 flex-1">
       <!-- Welcome Card -->
       <div class="flex justify-between items-center mb-6 mt-2">
         <div>
@@ -32,21 +32,21 @@
       </div>
 
       <div
-        class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 [.drawer-toggle:checked~.drawer-content_&]:grid-cols-2 gap-4 pt-6 items-start"
+        class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-6 items-start"
       >
-        <!-- Priority Task Table -->
+        <!-- Today's Task Table -->
         <app-prioroty-table></app-prioroty-table>
         <!-- Project Status Card -->
-        <app-project-status></app-project-status>
+        <!-- <app-project-status></app-project-status> -->
 
         <!-- Task calender -->
-        <app-calender></app-calender>
+        <!-- <app-calender></app-calender> -->
         <!-- Chart Project Completion -->
         <div></div>
       </div>
     </div>
     <!-- Team & Task -->
-    <div class="flex flex-col gap-4 min-w-64">
+    <div class="flex flex-col gap-4">
       <!-- Team Members -->
       <app-task-activity></app-task-activity>
       <!-- Task Activity -->
