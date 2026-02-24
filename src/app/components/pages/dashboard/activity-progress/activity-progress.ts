@@ -1,4 +1,4 @@
-import { Component, AfterViewInit, OnDestroy } from '@angular/core';
+import { Component, AfterViewInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
 import { Chart, registerables } from 'chart.js';
 
 Chart.register(...registerables);
@@ -10,11 +10,12 @@ Chart.register(...registerables);
   styleUrl: './activity-progress.css',
 })
 export class ActivityProgress implements AfterViewInit, OnDestroy {
+  @ViewChild('taskChart') private chartRef!: ElementRef<HTMLCanvasElement>;
   private chart?: Chart;
 
   ngAfterViewInit() {
-    const canvas = document.getElementById('taskChart') as HTMLCanvasElement | null;
-    if (!canvas) return;
+    if (!this.chartRef) return;
+    const canvas = this.chartRef.nativeElement;
 
     this.chart?.destroy();
 

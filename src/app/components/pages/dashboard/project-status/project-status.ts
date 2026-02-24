@@ -36,6 +36,6 @@ export class ProjectStatus {
       totalDue: 8,
       textColor: 'text-yellow-500',
     },
-    
+
   ];
 }

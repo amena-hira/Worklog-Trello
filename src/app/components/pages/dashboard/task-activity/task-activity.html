@@ -1,25 +1,44 @@
-<div class="bg-base-100 rounded-lg">
-  <div class="card w-full shadow-sm">
-    <div class="card-body">
-      <h2 class="card-title mb-4">Task Activity</h2>
-      <div class="border-b border-gray-100 my-2"></div>
-      <div class="flex flex-col gap-4">
-        @for (activity of taskActivity; track $index) {
-          <div class="flex items-start gap-4">
-            <div class="w-10 h-10 rounded bg-gray-200 flex items-center justify-center">
-              <i class="fa-solid fa-user text-gray-500"></i>
+<!-- Team Members Card -->
+<div class="bg-base-100 rounded-xl p-5 shadow-sm h-full">
+  <div class="w-full">
+    <!-- Header -->
+    <h3 class="font-semibold text-base">Recent Activity</h3>
+    <div class="border-b border-gray-100 mt-2"></div>
+
+    <!-- List -->
+    <div class="mt-3 space-y-4">
+      <!-- Item -->
+      @for (activity of activities; track $index) {
+        <div class="flex items-start justify-between">
+          <div class="flex items-start gap-3">
+            <div class="avatar indicator relative">
+              <div class="w-10 rounded-full">
+                <img src="{{ activity.image }}" />
+              </div>
+
+              <!-- responsive online dot -->
+              <span class="absolute bottom-0 right-0 translate-x-[10%] translate-y-[10%]">
+                @if (activity.isActive) {
+                  <span
+                    class="block rounded-full bg-green-600 border-2 border-white w-[30%] aspect-square min-w-3 max-w-4"
+                  ></span>
+                } @else {
+                  <span
+                    class="block rounded-full bg-yellow-400 border-2 border-white w-[30%] aspect-square min-w-3 max-w-4"
+                  ></span>
+                }
+              </span>
             </div>
             <div>
-              <p>
-                <span class="font-semibold">{{ activity.user }}</span>
-                {{ activity.status }} Task
-                <span class="font-semibold">{{ activity.task }}</span>
-              </p>
-              <p class="text-sm text-gray-600">{{ activity.time }}</p>
+              <p class="text-sm font-semibold leading-tight">{{ activity.name }}</p>
+              <p class="text-xs text-base-content/60">Completed "<span class="font-bold">{{ activity.task }}</span>"</p>
+              <p class="text-xs text-base-content/65">{{ activity.time }} ago</p>
             </div>
+
           </div>
-        }
-      </div>
+
+        </div>
+      }
     </div>
   </div>
 </div>
