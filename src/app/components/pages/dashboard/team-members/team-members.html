@@ -1,0 +1,102 @@
+<!-- <div class="card bg-base-100 rounded-lg shadow-sm p-4">
+  <h2 class="card-title text-base font-semibold">Team Members</h2>
+  <div class="border-b border-gray-100 my-2"></div>
+  <div class="flex flex-col gap-4">
+    @for (member of members; track $index) {
+      <div class="flex items-center justify-between gap-4">
+        <div class="flex items-start gap-2">
+          <div class="avatar avatar-online">
+            <div class="w-8 rounded-full">
+              <img src="https://img.daisyui.com/images/profile/demo/gordon@192.webp" />
+            </div>
+          </div>
+          <div>
+            <p class="font-semibold">{{ member.name }}</p>
+            <p class="text-xs text-gray-600">{{ member.role }}</p>
+          </div>
+        </div>
+        <div>
+          <span class="status bg-green-600 text-green-900"></span>
+        </div>
+      </div>
+    }
+    <button>
+      <i class=""></i>
+    </button>
+  </div>
+</div> -->
+<!-- Team Members Card (Tailwind + daisyUI) -->
+<div class="bg-base-100 rounded-xl p-5 shadow-sm">
+  <div class="w-full max-w-xs">
+    <!-- Header -->
+    <div class="flex items-center justify-between">
+      <h3 class="font-semibold text-sm">Team Members</h3>
+      <a class="text-xs text-primary hover:underline cursor-pointer">View All</a>
+    </div>
+
+    <!-- List -->
+    <div class="mt-4 space-y-4">
+      <!-- Item -->
+      @for (member of members; track $index) {
+        <div class="flex items-start justify-between">
+          <div class="flex items-center gap-3">
+            <div class="avatar indicator relative">
+              <div class="w-10 rounded-full">
+                <img src="{{ member.image }}" />
+              </div>
+
+              <!-- responsive online dot -->
+              <span class="absolute bottom-0 right-0 translate-x-[10%] translate-y-[10%]">
+                @if (member.isActive) {
+                  <span
+                  class="block rounded-full bg-green-600 border-2 border-white w-[30%] aspect-square min-w-3 max-w-4"
+                ></span>
+                }
+                @else {
+                  <span
+                  class="block rounded-full bg-yellow-400 border-2 border-white w-[30%] aspect-square min-w-3 max-w-4"
+                ></span>
+                }
+
+              </span>
+            </div>
+            <div>
+              <p class="text-sm font-semibold leading-tight">{{ member.name}}</p>
+              <p class="text-xs text-base-content/60">{{ member.role }}</p>
+            </div>
+          </div>
+
+          <div>
+            @if (member.isActive) {
+              <span class="status bg-green-600"></span>
+            }
+            @else {
+              <span class="status bg-yellow-500"></span>
+            }
+          </div>
+        </div>
+      }
+    </div>
+
+    <!-- Button -->
+    <button class="btn btn-outline btn-sm w-full mt-5 rounded-xl gap-2">
+      <!-- user-plus icon -->
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        class="h-4 w-4"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+        <circle cx="9" cy="7" r="4" />
+        <path d="M19 8v6" />
+        <path d="M22 11h-6" />
+      </svg>
+      Invite Member
+    </button>
+  </div>
+</div>

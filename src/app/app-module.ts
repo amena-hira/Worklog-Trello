@@ -20,6 +20,7 @@ import { Calender } from './components/pages/dashboard/calender/calender';
 import { ProjectStatus } from './components/pages/dashboard/project-status/project-status';
 import { UpcomingDeadline } from './components/pages/dashboard/upcoming-deadline/upcoming-deadline';
 import { ActivityProgress } from './components/pages/dashboard/activity-progress/activity-progress';
+import { TeamMembers } from './components/pages/dashboard/team-members/team-members';
 
 @NgModule({
   declarations: [
@@ -36,7 +37,8 @@ import { ActivityProgress } from './components/pages/dashboard/activity-progress
     Calender,
     ProjectStatus,
     UpcomingDeadline,
-    ActivityProgress
+    ActivityProgress,
+    TeamMembers
   ],
   imports: [
     MatSlideToggleModule,

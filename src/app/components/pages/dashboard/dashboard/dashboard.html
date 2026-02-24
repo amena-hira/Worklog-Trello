@@ -1,7 +1,7 @@
-<div class="p-4">
-  <div class="grid row-auto md:grid-cols-5">
+<div class="p-4 ">
+  <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-12 gap-4">
     <!-- main content -->
-    <div class="pr-4 md:col-span-4">
+    <div class="md:col-span-2 lg:col-span-9 space-y-6">
       <!-- Welcome Card -->
       <div class="flex justify-between items-center mb-6 mt-2">
         <div>
@@ -18,7 +18,7 @@
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 justify-items-center gap-4">
         @for (card of cards; track card.title) {
           <div class="bg-base-100 shadow-sm py-3 px-4 rounded-xl w-full">
-            <h4 class="text-md text-gray-700">{{card.title}}</h4>
+            <h4 class="text-md text-gray-700">{{ card.title }}</h4>
             <div class="flex items-center justify-between mt-3">
               <h2 class="text-xl font-semibold">{{ card.total }}</h2>
               <div>
@@ -31,32 +31,45 @@
         }
       </div>
 
-      <div
-        class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-6 items-start"
-      >
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 items-start">
         <!-- Today's Task Table -->
         <div class="flex flex-col gap-3">
           <app-prioroty-table></app-prioroty-table>
-          <app-upcoming-deadline></app-upcoming-deadline>
+          <!-- Deadline: Visible on Small & Large, Hidden on Medium (moved to bottom) -->
+          <div class="block md:hidden lg:block">
+            <app-upcoming-deadline></app-upcoming-deadline>
+          </div>
         </div>
-        <div class="flex flex-col gap-3">
-          <!-- Project Status Card -->
+        <!-- Right Column: Visible on Small & Large, Hidden on Medium (moved to bottom) -->
+        <div class="flex flex-col gap-3 md:hidden lg:flex">
           <app-project-status></app-project-status>
           <app-activity-progress></app-activity-progress>
+          <app-calender></app-calender>
         </div>
-
-        <!-- Task calender -->
-        <!-- <app-calender></app-calender> -->
-        <!-- Chart Project Completion -->
-        <div></div>
       </div>
     </div>
     <!-- Team & Task -->
-    <div class="flex flex-col gap-4">
+    <div class="md:col-span-1 lg:col-span-3 flex flex-col gap-4">
       <!-- Team Members -->
-      <app-task-activity></app-task-activity>
+      <app-team-members></app-team-members>
       <!-- Task Activity -->
       <app-task-activity></app-task-activity>
     </div>
   </div>
+  <!-- Medium Device Only Widgets (Bottom) -->
+  <!-- These appear below the main content and sidebar only on Medium screens -->
+  <div class="hidden md:grid lg:hidden grid-cols-2 gap-3 pt-3">
+    <app-upcoming-deadline class="h-full"></app-upcoming-deadline>
+    <app-activity-progress class="h-full"></app-activity-progress>
+    <app-project-status class="h-full"></app-project-status>
+    <app-calender class="h-full"></app-calender>
+  </div>
+
 </div>
+<footer class="footer sm:footer-horizontal footer-center bg-base-300 text-base-content p-4">
+<aside>
+  <p>Copyright © {{currentYear}} - All right reserved by Descodeuses, Paris</p>
+</aside>
+</footer>
+
+

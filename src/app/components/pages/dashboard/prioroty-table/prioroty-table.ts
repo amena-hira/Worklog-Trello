@@ -56,5 +56,21 @@ export class PriorotyTable {
       bgColor: 'bg-emerald-100',
       textColor: 'text-emerald-700',
     },
+    {
+      name: 'Implement Login',
+      project: 'CLient',
+      priority: 'Medium',
+      dueDate: '12:00 PM',
+      bgColor: 'bg-sky-100',
+      textColor: 'text-sky-700',
+    },
+    {
+      name: 'Write Unit Tests',
+      project: 'Personal',
+      priority: 'Low',
+      dueDate: '4:30 PM',
+      bgColor: 'bg-emerald-100',
+      textColor: 'text-emerald-700',
+    },
   ];
 }
