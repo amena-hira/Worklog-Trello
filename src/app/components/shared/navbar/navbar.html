@@ -7,9 +7,7 @@
     >
       <i class="fa-solid fa-bars inline-block"></i>
     </label>
-    <label
-      class="input flex-none flex items-center gap-2 w-[clamp(10rem,22vw,14rem)]"
-    >
+    <label class="input flex-none flex items-center gap-2 w-[clamp(10rem,22vw,14rem)]">
       <i class="fa-solid fa-magnifying-glass h-[1em] opacity-50"></i>
       <input type="search" class="grow min-w-0" placeholder="Search" />
 
@@ -18,17 +16,27 @@
     </label>
   </div>
   <div class="flex gap-4 items-center">
-    <div tabindex="0" role="button" class="cursor-pointer">
-      <div class="indicator relative">
-        <i class="fa-regular fa-bell text-lg"></i>
-        <span class="absolute -top-1 -right-1 inline-flex h-3 w-3">
-          <span
-            class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"
-          ></span>
-          <span
-            class="relative inline-flex rounded-full h-3 w-3 bg-red-600 border-2 border-white"
-          ></span>
-        </span>
+    <div class="dropdown dropdown-end">
+      <div tabindex="0" role="button" class="cursor-pointer">
+        <div class="indicator relative">
+          <i class="fa-regular fa-bell text-lg"></i>
+          <span class="absolute -top-1 -right-1 inline-flex h-3 w-3">
+            <span
+              class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"
+            ></span>
+            <span
+              class="relative inline-flex rounded-full h-3 w-3 bg-red-600 border-2 border-white"
+            ></span>
+          </span>
+        </div>
+      </div>
+      <div
+        tabindex="0"
+        class="card card-sm dropdown-content bg-base-100 rounded-box z-1 w-64 shadow-sm"
+      >
+        <div tabindex="0" class="card-body">
+          <p>Here is a description!</p>
+        </div>
       </div>
     </div>
 

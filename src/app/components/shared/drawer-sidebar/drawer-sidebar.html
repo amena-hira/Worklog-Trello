@@ -1,7 +1,8 @@
-
 <div class="flex min-h-screen flex-col bg-base-100 is-drawer-close:w-16 is-drawer-open:w-48">
   <div class="shrink-0">
-    <div class="logo flex justify-between items-center is-drawer-close:p-4 is-drawer-open:py-2 is-drawer-open:px-4 is-drawer-close:justify-center">
+    <div
+      class="logo flex justify-between items-center is-drawer-close:p-4 is-drawer-open:py-2 is-drawer-open:px-4 is-drawer-close:justify-center"
+    >
       <div class="flex items-center gap-4">
         <img class="size-7 is-drawer-open:size-12" src="images/logo_1.png" alt="Logo - Worklog" />
         <span class="dancing-logo text-3xl is-drawer-close:hidden">Worklog</span>
@@ -12,70 +13,99 @@
     <div class="">
       <ul class="menu w-full">
         <li>
-          <button class="flex items-center justify-start is-drawer-close:justify-center p-3 is-drawer-close:tooltip is-drawer-close:tooltip-right" data-tip="Home">
+          <button
+            class="flex items-center justify-start is-drawer-close:justify-center p-3 is-drawer-close:tooltip is-drawer-close:tooltip-right"
+            data-tip="Home"
+          >
             <i class="fa-regular fa-house text-lg"></i>
-            <span class="is-drawer-close:hidden ml-3">Home</span>
+            <span class="is-drawer-close:hidden ml-3">Dashboard</span>
           </button>
         </li>
         <li>
-          <button class="flex items-center justify-start is-drawer-close:justify-center p-3 is-drawer-close:tooltip is-drawer-close:tooltip-right" data-tip="My Tasks">
+          <button
+            class="flex items-center justify-start is-drawer-close:justify-center p-3 is-drawer-close:tooltip is-drawer-close:tooltip-right"
+            data-tip="My Tasks"
+          >
             <i class="fa-regular fa-circle-check text-lg"></i>
-            <span class="is-drawer-close:hidden ml-3">My Tasks</span>
+            <span class="is-drawer-close:hidden ml-3">Tasks</span>
           </button>
         </li>
         <li>
-          <button class="flex items-center justify-start is-drawer-close:justify-center p-3 is-drawer-close:tooltip is-drawer-close:tooltip-right" data-tip="Inbox">
+          <button
+            class="flex items-center justify-start is-drawer-close:justify-center p-3 is-drawer-close:tooltip is-drawer-close:tooltip-right"
+            data-tip="Inbox"
+          >
+            <i class="fa-brands fa-trello text-lg"></i>
+            <span class="is-drawer-close:hidden ml-3">Projects</span>
+          </button>
+        </li>
+        <li>
+          <button
+            class="flex items-center justify-start is-drawer-close:justify-center p-3 is-drawer-close:tooltip is-drawer-close:tooltip-right"
+            data-tip="Inbox"
+          >
+            <i class="fa-regular fa-calendar text-lg"></i>
+            <span class="is-drawer-close:hidden ml-3">Calender</span>
+          </button>
+        </li>
+        <li>
+          <button
+            class="flex items-center justify-start is-drawer-close:justify-center p-3 is-drawer-close:tooltip is-drawer-close:tooltip-right"
+            data-tip="Inbox"
+          >
             <i class="fa-regular fa-message text-lg"></i>
             <span class="is-drawer-close:hidden ml-3">Inbox</span>
           </button>
         </li>
       </ul>
-      <div class="py-4">
-        <p class="pl-6 text-md text-neutral-500 is-drawer-close:hidden">Reporting</p>
-        <ul class="menu w-full">
-          <li>
-            <button class="flex items-center justify-start is-drawer-close:justify-center p-3 is-drawer-close:tooltip is-drawer-close:tooltip-right" data-tip="Portfolio">
-              <i class="fa-solid fa-chart-simple text-lg"></i>
-              <span class="is-drawer-close:hidden ml-3">Portfolio</span>
-            </button>
-          </li>
-          <li>
-            <button class="flex items-center justify-start is-drawer-close:justify-center p-3 is-drawer-close:tooltip is-drawer-close:tooltip-right" data-tip="Goals">
-              <i class="fa-solid fa-bullseye text-lg"></i>
-              <span class="is-drawer-close:hidden ml-3">Goals</span>
-            </button>
-          </li>
-        </ul>
-      </div>
-      <div class="">
+      <div class="border-b border-gray-100 mt-2 mx-2"></div>
+      <div class="pt-4">
         <p class="pl-6 text-md text-neutral-500 is-drawer-close:hidden">Favorites</p>
         <ul class="menu w-full">
           <li>
-            <button class="flex items-center justify-start is-drawer-close:justify-center p-3 is-drawer-close:tooltip is-drawer-close:tooltip-right" data-tip="Website Launch">
-            <i class="fa-solid fa-square text-blue-400"></i>
-            <span class="is-drawer-close:hidden ml-3">Website Launch</span>
-          </button>
+            <button
+              class="flex items-center justify-start is-drawer-close:justify-center p-3 is-drawer-close:tooltip is-drawer-close:tooltip-right"
+              data-tip="Website Launch"
+            >
+              <i class="fa-solid fa-square text-blue-400"></i>
+              <span class="is-drawer-close:hidden ml-3">Website Launch</span>
+            </button>
           </li>
           <li>
-            <button class="flex items-center justify-start is-drawer-close:justify-center p-3 is-drawer-close:tooltip is-drawer-close:tooltip-right" data-tip="Marketing Video">
-            <i class="fa-solid fa-square text-amber-500"></i>
-            <span class="is-drawer-close:hidden ml-3">Marketing Video</span>
-          </button>
+            <button
+              class="flex items-center justify-start is-drawer-close:justify-center p-3 is-drawer-close:tooltip is-drawer-close:tooltip-right"
+              data-tip="Marketing Video"
+            >
+              <i class="fa-solid fa-square text-amber-500"></i>
+              <span class="is-drawer-close:hidden ml-3">Marketing Video</span>
+            </button>
           </li>
           <li>
-            <button class="flex items-center justify-start is-drawer-close:justify-center p-3 is-drawer-close:tooltip is-drawer-close:tooltip-right" data-tip="Tea Time">
-            <i class="fa-solid fa-square text-teal-800"></i>
-            <span class="is-drawer-close:hidden ml-3">Tea Time</span>
-          </button>
+            <button
+              class="flex items-center justify-start is-drawer-close:justify-center p-3 is-drawer-close:tooltip is-drawer-close:tooltip-right"
+              data-tip="Tea Time"
+            >
+              <i class="fa-solid fa-square text-teal-800"></i>
+              <span class="is-drawer-close:hidden ml-3">Tea Time</span>
+            </button>
           </li>
           <li>
-            <button class="flex items-center justify-start is-drawer-close:justify-center p-3 is-drawer-close:tooltip is-drawer-close:tooltip-right" data-tip="New Work">
-            <i class="fa-solid fa-square text-rose-700"></i>
-            <span class="is-drawer-close:hidden ml-3">New Work</span>
-          </button>
+            <button
+              class="flex items-center justify-start is-drawer-close:justify-center p-3 is-drawer-close:tooltip is-drawer-close:tooltip-right"
+              data-tip="New Work"
+            >
+              <i class="fa-solid fa-square text-rose-700"></i>
+              <span class="is-drawer-close:hidden ml-3">New Work</span>
+            </button>
           </li>
         </ul>
       </div>
     </div>
+  </div>
+  <div class="shrink-0 px-4 is-drawer-close:w-full is-drawer-close:flex is-drawer-close:justify-center">
+    <p class="flex items-center ml-1  gap-2  py-3 rounded-lg w-full is-drawer-close:w-auto is-drawer-close:px-3 is-drawer-close:tooltip is-drawer-close:tooltip-right" data-tip="Help">
+      <i class="fa-regular fa-circle-question block text-md"></i>
+      <span class="is-drawer-close:hidden block text-sm">Help</span>
+    </p>
   </div>
 </div>
