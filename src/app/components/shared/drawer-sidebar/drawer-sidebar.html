@@ -14,6 +14,7 @@
       <ul class="menu w-full">
         <li>
           <button
+          routerLink="/"
             class="flex items-center justify-start is-drawer-close:justify-center p-3 is-drawer-close:tooltip is-drawer-close:tooltip-right"
             data-tip="Home"
           >
@@ -23,6 +24,7 @@
         </li>
         <li>
           <button
+            routerLink="/tasks"
             class="flex items-center justify-start is-drawer-close:justify-center p-3 is-drawer-close:tooltip is-drawer-close:tooltip-right"
             data-tip="My Tasks"
           >
@@ -58,7 +60,7 @@
           </button>
         </li>
       </ul>
-      <div class="border-b border-gray-100 mt-2 mx-2"></div>
+      <div class="border-b border-gray-100 mt-2 mx-2 is-drawer-close:hidden"></div>
       <div class="pt-4">
         <p class="pl-6 text-md text-neutral-500 is-drawer-close:hidden">Favorites</p>
         <ul class="menu w-full">

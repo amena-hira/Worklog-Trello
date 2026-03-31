@@ -23,7 +23,7 @@ export class Login implements OnInit {
   onSubmit(){
     if(this.loginForm.valid){
       console.log(this.loginForm.value);
-      this.route.navigate(['/']);
+      // this.route.navigate(['/']);
     }
   }
 }

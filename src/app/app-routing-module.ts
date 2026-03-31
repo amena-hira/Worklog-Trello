@@ -4,6 +4,7 @@ import { Login } from './components/pages/login/login';
 import { Register } from './components/pages/register/register';
 import { Main } from './components/layout/main/main';
 import { Dashboard } from './components/pages/dashboard/dashboard/dashboard';
+import { Tasks } from './components/pages/tasks/tasks/tasks';
 
 const routes: Routes = [
   {
@@ -18,7 +19,8 @@ const routes: Routes = [
     path: '',
     component: Main,
     children: [
-      { path: '', component: Dashboard }
+      { path: '', component: Dashboard },
+      { path: 'tasks', component: Tasks}
     ]
   }
 ];
