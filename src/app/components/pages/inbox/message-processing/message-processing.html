@@ -1,0 +1,28 @@
+<div class="max-w-3xl mx-auto px-4">
+  <div class="card bg-base-100 shadow-xl w-full">
+    <form>
+      <div class="card-body p-4 gap-0">
+        <div
+          #messageInput
+          contenteditable="true"
+          class="textarea textarea-ghost w-full resize-none text-base focus:outline-none mb-0 min-h-10 max-h-40 overflow-y-auto empty:before:content-[attr(data-placeholder)] empty:before:text-gray-400 align-top text-left"
+          data-placeholder="How can I help you?"
+        ></div>
+        <div class="flex justify-end items-center gap-2">
+          <select
+            class="select select-ghost select-sm w-auto min-w-25 focus:outline-none outline-none"
+          >
+            <option value="keyword">System</option>
+            <option value="openai">AI</option>
+          </select>
+          <button
+            type="submit"
+            class="btn btn-sm btn-circle"
+          >
+            <i class="fa-solid fa-arrow-up"></i>
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

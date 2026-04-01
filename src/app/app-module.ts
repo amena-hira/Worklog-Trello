@@ -24,6 +24,8 @@ import { TeamMembers } from './components/pages/dashboard/team-members/team-memb
 import { Tasks } from './components/pages/tasks/tasks/tasks';
 import { Task } from './components/pages/tasks/task/task';
 import { AddTask } from './components/pages/tasks/add-task/add-task';
+import { Inbox } from './components/pages/inbox/inbox/inbox';
+import { MessageProcessing } from './components/pages/inbox/message-processing/message-processing';
 
 @NgModule({
   declarations: [
@@ -44,7 +46,9 @@ import { AddTask } from './components/pages/tasks/add-task/add-task';
     TeamMembers,
     Tasks,
     Task,
-    AddTask
+    AddTask,
+    Inbox,
+    MessageProcessing
   ],
   imports: [
     MatSlideToggleModule,

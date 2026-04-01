@@ -1,0 +1,54 @@
+<div class="h-[calc(100dvh-4rem)] bg-base-100 flex flex-col overflow-hidden">
+  <!-- Chat header -->
+  <div class="shrink-0 bg-base-200">
+    <div class="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="avatar">
+          <div class="w-10 rounded-full">
+            <img src="images/logo.png" alt="Chat" />
+          </div>
+        </div>
+        <div>
+          <h1 class="font-semibold text-base md:text-lg">Chat Assistant</h1>
+          <p class="text-xs md:text-sm text-base-content/60">Online</p>
+        </div>
+      </div>
+
+      <button class="btn btn-sm btn-ghost">
+        <i class="fa-solid fa-ellipsis-vertical"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- Only this section scrolls -->
+  <div class="flex-1 overflow-y-auto min-h-0" #messageContainer>
+    <div class="max-w-3xl mx-auto p-4">
+      @for (item of allConversations; track item) {
+        <div
+          class="chat {{ item.username.toLowerCase() !== 'user' ? 'chat-start' : 'chat-end' }} py-2"
+        >
+          <div class="chat-image avatar">
+            <div class="w-5 md:w-10 rounded-full">
+              <img
+                alt="Tailwind CSS chat bubble component"
+                src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
+              />
+            </div>
+          </div>
+          <div class="chat-header text-xs md:text-sm">{{ item.username }}</div>
+          <div
+            class="chat-bubble {{ item.username.toLowerCase() !== 'user' ? 'bg-gray-50!' : 'bg-sky-500 text-white!' }} text-xs md:text-sm"
+          >
+            {{ item.message }}
+          </div>
+        </div>
+      }
+      <div class="h-2"></div>
+    </div>
+  </div>
+
+  <!-- Fixed bottom area -->
+  <div class="shrink-0 bg-base-100 pb-4 pt-2">
+    <app-message-processing></app-message-processing>
+  </div>
+</div>
