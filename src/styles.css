@@ -7,14 +7,6 @@
   font-family: "Dancing Script", cursive;
 }
 
-/* .drawer-side::-webkit-scrollbar {
-  width: 4px;
-}
-
-.drawer-side {
-  scrollbar-width: thin;
-} */
-
 /* Hide scrollbar for Chrome, Safari and Opera */
 .no-scrollbar::-webkit-scrollbar {
   display: none;

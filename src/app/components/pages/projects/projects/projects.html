@@ -1,0 +1,48 @@
+<div class="p-4">
+  <div class="flex justify-between items-center">
+    <h2>
+      <span class="text-3xl font-semibold">Projects</span>
+      <span class="text-base-content/60 ml-2">102 projects</span>
+    </h2>
+    <button
+      class="btn bg-sky-900 hover:bg-sky-800 text-white px-2 rounded-xl btn-md"
+      onclick="add_task.showModal()"
+    >
+      <i class="fa-solid fa-plus"></i>
+      Add Project ..
+    </button>
+  </div>
+  <app-add-task></app-add-task>
+  <div class="bg-base-300/30 flex justify-between items-center rounded-lg px-2 my-4">
+    <ul class="rounded-box flex flex-wrap p-2 gap-2">
+      <li>
+        <a>All</a>
+      </li>
+      <div class="divider divider-horizontal hidden md:flex"></div>
+      <li>
+        <a>Active <span class="px-2 bg-cyan-50/30 text-sky-800 rounded-full">(8)</span></a>
+      </li>
+      <div class="divider divider-horizontal hidden md:flex"></div>
+      <li>
+        <a>Completed <span class="px-2 bg-yellow-50/50 text-yellow-500 rounded-full">(16)</span></a>
+      </li>
+    </ul>
+    <button class="btn btn-sm btn-ghost m-1 bg-base-100/50 rounded-xl px-6">
+      <span><i class="fa-regular fa-calendar-check"></i></span>
+      <span class="hidden md:flex">Sort by: Due Date</span>
+      <i class="fa-solid fa-chevron-down text-base-content/70 text-xs font-thin"></i>
+    </button>
+  </div>
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+    <app-project></app-project>
+    <app-project></app-project>
+    <app-project></app-project>
+    <app-project></app-project>
+    <app-project></app-project>
+    <app-project></app-project>
+  </div>
+  <div class="mt-8 flex flex-col md:flex-row gap-4">
+    <app-overdue-projects-list class="flex-1"></app-overdue-projects-list>
+    <app-task-activity class="hidden md:flex"></app-task-activity>
+  </div>
+</div>

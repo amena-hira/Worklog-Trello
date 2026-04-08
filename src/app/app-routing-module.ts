@@ -6,6 +6,8 @@ import { Main } from './components/layout/main/main';
 import { Dashboard } from './components/pages/dashboard/dashboard/dashboard';
 import { Tasks } from './components/pages/tasks/tasks/tasks';
 import { Inbox } from './components/pages/inbox/inbox/inbox';
+import { Calendar } from './components/pages/calendar/calendar/calendar';
+import { Projects } from './components/pages/projects/projects/projects';
 
 const routes: Routes = [
   {
@@ -23,6 +25,8 @@ const routes: Routes = [
       { path: '', component: Dashboard },
       { path: 'tasks', component: Tasks},
       { path: 'inbox', component: Inbox},
+      { path: 'calendar', component: Calendar},
+      { path: 'projects', component: Projects},
     ]
   }
 ];

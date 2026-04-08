@@ -26,6 +26,14 @@ import { Task } from './components/pages/tasks/task/task';
 import { AddTask } from './components/pages/tasks/add-task/add-task';
 import { Inbox } from './components/pages/inbox/inbox/inbox';
 import { MessageProcessing } from './components/pages/inbox/message-processing/message-processing';
+import { Calendar } from './components/pages/calendar/calendar/calendar';
+import { CalendarPreviousViewDirective, CalendarTodayDirective, CalendarNextViewDirective, CalendarMonthViewComponent, CalendarWeekViewComponent, CalendarDayViewComponent, CalendarDatePipe, DateAdapter, provideCalendar } from 'angular-calendar';
+import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
+import { Projects } from './components/pages/projects/projects/projects';
+import { Project } from './components/pages/projects/project/project';
+import { AddProject } from './components/pages/projects/add-project/add-project';
+import { OverdueProjectsList } from './components/pages/projects/overdue-projects-list/overdue-projects-list';
+import { Updates } from './components/pages/projects/updates/updates';
 
 @NgModule({
   declarations: [
@@ -48,7 +56,13 @@ import { MessageProcessing } from './components/pages/inbox/message-processing/m
     Task,
     AddTask,
     Inbox,
-    MessageProcessing
+    MessageProcessing,
+    Calendar,
+    Projects,
+    Project,
+    AddProject,
+    OverdueProjectsList,
+    Updates
   ],
   imports: [
     MatSlideToggleModule,
@@ -56,10 +70,14 @@ import { MessageProcessing } from './components/pages/inbox/message-processing/m
     ReactiveFormsModule,
     FormsModule,
     BrowserModule,
-    AppRoutingModule
+    AppRoutingModule, CalendarPreviousViewDirective, CalendarTodayDirective, CalendarNextViewDirective, CalendarMonthViewComponent, CalendarWeekViewComponent, CalendarDayViewComponent, CalendarDatePipe,
   ],
   providers: [
-    provideBrowserGlobalErrorListeners()
+    provideBrowserGlobalErrorListeners(),
+    provideCalendar({
+      provide: DateAdapter,
+      useFactory: adapterFactory,
+    })
   ],
   bootstrap: [App]
 })

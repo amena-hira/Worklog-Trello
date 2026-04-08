@@ -1,0 +1,85 @@
+<div class="cal-page p-4 h-[calc(100dvh-4rem)] bg-sky-50 rounded-tl-3xl">
+  <div class="cal-header flex items-end gap-2 mb-4">
+    <h3 class="text-3xl font-semibold">Calendar</h3> 
+    <div class="cal-date-field text-base-content/60 ">{{ currentMonth }}</div>
+  </div>
+  <div class="bg-base-300/30 rounded-lg px-2 mb-4">
+    <ul class="rounded-box flex flex-wrap p-2 gap-2">
+      <li>
+          <a>All</a>
+      </li>
+      <div class="divider divider-horizontal hidden md:flex"></div>
+      <li>
+        <a>Today <span class="px-2 bg-cyan-50/30 text-sky-800 rounded-full">(8)</span></a>
+        
+      </li>
+      <div class="divider divider-horizontal hidden md:flex"></div>
+      <li>
+        <a>Tomorrow <span class="px-2 bg-yellow-50/50 text-yellow-500 rounded-full">(16)</span></a>
+        
+      </li>
+      <div class="divider divider-horizontal hidden md:flex"></div>
+      <li>
+        <a>Next Week <span class="px-2 bg-red-50/50 text-red-600 rounded-full">(25)</span></a>
+      </li>
+      <div class="divider divider-horizontal hidden md:flex"></div>
+      <li>
+        <a>Completed <span class="px-2 bg-green-50/30 text-green-700 rounded-full">(87)</span></a>
+      </li>
+    </ul>
+  </div>
+  <div class="cal-container">
+    <div class="cal-buttons flex flex-col md:flex-row items-center justify-between mb-4">
+      <div class="cal-date-nav-buttons flex">
+        <button
+          mwlCalendarPreviousView
+          [(viewDate)]="viewDate"
+          [view]="view"
+          class="btn btn-sm btn-soft btn-circle bg-sky-400 text-white"
+          id="previous"
+        >
+          <i class="fa-solid fa-angle-left"></i>
+        </button>
+        <button mwlCalendarToday [(viewDate)]="viewDate" class="btn btn-sm btn-soft bg-sky-400 text-white" id="today">Today</button>
+        <button mwlCalendarNextView [(viewDate)]="viewDate" [view]="view" class="btn btn-sm btn-soft btn-circle bg-sky-400 text-white" id="next">
+          <i class="fa-solid fa-angle-right"></i>
+        </button>
+      </div>
+      <div class="cal-date-field">{{ viewDate | calendarDate: view + 'ViewTitle' : 'en' }}</div>
+      <div class="cal-view-buttons">
+        <button
+          (click)="setView(CalendarView.Month)"
+          [class.active]="view === CalendarView.Month"
+          class="btn btn-sm btn-soft bg-sky-400 text-white"
+        >
+          Month
+        </button>
+        <button
+          (click)="setView(CalendarView.Week)"
+          [class.active]="view === CalendarView.Week"
+          class="btn btn-sm btn-soft bg-sky-400 text-white"
+        >
+          Week
+        </button>
+        <button
+          (click)="setView(CalendarView.Day)"
+          [class.active]="view === CalendarView.Day"
+          class="btn btn-sm btn-soft bg-sky-400 text-white"
+        >
+          Day
+        </button>
+      </div>
+    </div>
+    @switch (view) {
+      @case (CalendarView.Month) {
+        <mwl-calendar-month-view [viewDate]="viewDate" [events]="events" />
+      }
+      @case (CalendarView.Week) {
+        <mwl-calendar-week-view [viewDate]="viewDate" [events]="events" />
+      }
+      @case (CalendarView.Day) {
+        <mwl-calendar-day-view [viewDate]="viewDate" [events]="events" />
+      }
+    }
+  </div>
+</div>
