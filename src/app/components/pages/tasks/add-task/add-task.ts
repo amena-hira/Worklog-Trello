@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 
 type Assignee = { id: number; name: string; avatar: string };
 
@@ -14,6 +15,7 @@ export class AddTask implements OnInit {
   selectedMembers: Assignee[] = [];
   searchTerm = '';
   filteredAssignees: Assignee[] = [];
+  form!: FormGroup;
 
   assignees: Assignee[] = [
     { id: 1, name: 'Alice', avatar: 'https://randomuser.me/api/portraits/men/1.jpg' },
@@ -22,12 +24,32 @@ export class AddTask implements OnInit {
     { id: 4, name: 'David', avatar: 'https://randomuser.me/api/portraits/men/3.jpg' },
   ];
 
-  constructor(private fb: FormBuilder) {}
+  projectColors = [ 'border-sky-600 bg-sky-600', 'border-violet-500 bg-violet-500', 'border-fuchsia-600 bg-fuchsia-600', 'border-green-600 bg-green-600',  'border-teal-500 bg-teal-600', 'border-yellow-500 bg-yellow-500', 'border-orange-500 bg-orange-500', 'border-rose-600 bg-rose-600' ];
+
+  constructor(private fb: FormBuilder, private router:Router) {}
 
   ngOnInit(): void {
+    const url = this.router.url;
+    if (url.includes('project')) {
+        this.buildProjectForm();
+    } else {
+        this.buildTaskForm();
+    }
     this.filteredAssignees = this.assignees;
+  }
 
-    this.taskForm = this.fb.group({
+  buildProjectForm(){
+    this.form = this.fb.group({
+      name: ['', [Validators.required]],
+      description: [''],
+      dueDate: [''],
+      assignees: [[] as number[]],
+      color: [''],
+    });
+  }
+
+  buildTaskForm(){
+    this.form = this.fb.group({
       name: ['', [Validators.required]],
       description: [''],
       project: [''],
@@ -38,14 +60,14 @@ export class AddTask implements OnInit {
   }
 
   private syncAssignees(): void {
-    this.taskForm.patchValue({
+    this.form.patchValue({
       assignees: this.selectedMembers.map((m) => m.id),
     });
   }
 
   onSubmit(): void {
-    if (this.taskForm.valid) {
-      console.log('Task Data:', this.taskForm.value);
+    if (this.form.valid) {
+      console.log('Data:', this.form.value);
     } else {
       console.log('Form is invalid');
     }

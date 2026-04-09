@@ -5,173 +5,204 @@
     <form method="dialog">
       <button class="btn btn-xs btn-circle btn-ghost absolute right-2 top-2">✕</button>
     </form>
-    <form [formGroup]="taskForm" (ngSubmit)="onSubmit()" action="" class="pt-4 space-y-4">
-      <fieldset class="fieldset">
-        <legend class="fieldset-legend text-base text-base-content/60 font-normal">
-          Task Name
-        </legend>
-        <input
-          formControlName="name"
-          type="text"
-          class="input focus:border-0 focus:outline-0 shadow-sm w-full"
-          placeholder="Type here"
-        />
-      </fieldset>
-      <fieldset class="fieldset">
-        <legend class="fieldset-legend text-base text-base-content/60 font-normal">
-          Description
-        </legend>
-        <textarea
-          formControlName="description"
-          class="textarea focus:border-0 focus:outline-0 shadow-sm w-full"
-          placeholder="Type here"
-        ></textarea>
-      </fieldset>
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" action="" class="pt-4 space-y-4">
+      @if (form.get('name')) {
+        <fieldset class="fieldset">
+          <legend class="fieldset-legend text-base text-base-content/60 font-normal">
+            Task Name
+          </legend>
+          <input
+            formControlName="name"
+            type="text"
+            class="input focus:border-0 focus:outline-0 shadow-sm w-full"
+            placeholder="Type here"
+          />
+        </fieldset>
+      }
+      @if (form.get('name')?.invalid && form.get('name')?.touched) {
+        <p class="text-sm text-red-500">*Task name is required.</p>
+      }
 
-      <div
-        class="flex flex-col md:flex-row gap-2 md:gap-4 items-start md:items-center justify-between bg-base-100 shadow-sm rounded-lg p-2"
-      >
-        <h2>
-          <i class="fa-solid fa-briefcase"></i>
-          <span>Project</span>
-        </h2>
-        <div class="w-full md:w-auto">
-          <select
-            formControlName="project"
-            class="select md:select-ghost md:border-0 md:outline-none w-full"
-          >
-            <option value="" disabled selected>Select Project</option>
-            <option value="1">Project 1</option>
-            <option value="2">Project 2</option>
-            <option value="3">Project 3</option>
-          </select>
-        </div>
-        <div>
-          <span>Feb 03,2026</span>
-          <i class="fa-regular fa-calendar"></i>
-        </div>
-      </div>
+      @if (form.get('description')) {
+        <fieldset class="fieldset">
+          <legend class="fieldset-legend text-base text-base-content/60 font-normal">
+            Description
+          </legend>
+          <textarea
+            formControlName="description"
+            class="textarea focus:border-0 focus:outline-0 shadow-sm w-full"
+            placeholder="Type here"
+          ></textarea>
+        </fieldset>
+      }
 
-      <div class="flex flex-col gap-2 bg-base-100 shadow-sm rounded-lg p-2">
+      @if (form.get('project')) {
         <div
-          class="flex flex-col md:flex-row gap-2 md:gap-4 items-start md:items-center justify-between w-full"
+          class="flex flex-col md:flex-row gap-2 md:gap-4 items-start md:items-center justify-between bg-base-100 shadow-sm rounded-lg p-2"
         >
           <h2>
-            <i class="fa-solid fa-users mr-0.5"></i>
-            <span>Assignees</span>
+            <i class="fa-solid fa-briefcase"></i>
+            <span>Project</span>
           </h2>
-
           <div class="w-full md:w-auto">
-            <div class="dropdown w-full dropdown-top">
-              <div
-                tabindex="0"
-                role="button"
-                class="btn md:btn-ghost w-full rounded-field md:border-0 flex justify-between items-center"
-              >
-                <span class="text-base-content/60">Select Members</span>
-                <i class="fa-solid fa-chevron-down text-base-content/60 text-xs font-thin"></i>
-              </div>
+            <select
+              formControlName="project"
+              class="select md:select-ghost md:border-0 md:outline-none w-full"
+            >
+              <option value="" disabled selected>Select Project</option>
+              <option value="1">Project 1</option>
+              <option value="2">Project 2</option>
+              <option value="3">Project 3</option>
+            </select>
+          </div>
+          <div>
+            <span>Feb 03,2026</span>
+            <i class="fa-regular fa-calendar"></i>
+          </div>
+        </div>
+      }
+      @if (form.get('assignees')) {
+        <div class="flex flex-col gap-2 bg-base-100 shadow-sm rounded-lg p-2">
+          <div
+            class="flex flex-col md:flex-row gap-2 md:gap-4 items-start md:items-center justify-between w-full"
+          >
+            <h2>
+              <i class="fa-solid fa-users mr-0.5"></i>
+              <span>Assignees</span>
+            </h2>
 
-              <div
-                tabindex="0"
-                class="dropdown-content bg-base-100 rounded-box z-10 mt-4 w-full p-2 shadow-sm"
-              >
-                <!-- <input
-                  [(ngModel)]="searchTerm"
-                  name="search"
-                  (ngModelChange)="onSearch()"
-                  type="search"
-                  class="input input-sm w-full mb-2 focus:border-0 focus:outline-0"
-                  placeholder="Search"
-                /> -->
-                <input
-                  type="search"
-                  class="input input-sm w-full mb-2 focus:border-0 focus:outline-0"
-                  placeholder="Search"
-                  [value]="searchTerm"
-                  (input)="onSearchInput($event)"
-                />
+            <div class="w-full md:w-auto">
+              <div class="dropdown w-full dropdown-top">
+                <div
+                  tabindex="0"
+                  role="button"
+                  class="btn md:btn-ghost w-full rounded-field md:border-0 flex justify-between items-center"
+                >
+                  <span class="text-base-content/60">Select Members</span>
+                  <i class="fa-solid fa-chevron-down text-base-content/60 text-xs font-thin"></i>
+                </div>
 
-                @for (member of filteredAssignees; track member.id) {
-                  <div
-                    class="flex items-center justify-between gap-2 px-2 py-2 rounded-lg cursor-pointer hover:bg-base-200"
-                    (click)="onSelectMember(member)"
-                  >
-                    <span class="flex items-center gap-2">
-                      <span class="w-6 h-6 rounded-full overflow-hidden">
-                        <img
-                          [src]="member.avatar"
-                          [alt]="member.name"
-                          class="w-full h-full object-cover"
-                        />
+                <div
+                  tabindex="0"
+                  class="dropdown-content bg-base-100 rounded-box z-10 mt-4 w-full p-2 shadow-sm"
+                >
+                  <input
+                    type="search"
+                    class="input input-sm w-full mb-2 focus:border-0 focus:outline-0"
+                    placeholder="Search"
+                    [value]="searchTerm"
+                    (input)="onSearchInput($event)"
+                  />
+
+                  @for (member of filteredAssignees; track member.id) {
+                    <div
+                      class="flex items-center justify-between gap-2 px-2 py-2 rounded-lg cursor-pointer hover:bg-base-200"
+                      (click)="onSelectMember(member)"
+                    >
+                      <span class="flex items-center gap-2">
+                        <span class="w-6 h-6 rounded-full overflow-hidden">
+                          <img
+                            [src]="member.avatar"
+                            [alt]="member.name"
+                            class="w-full h-full object-cover"
+                          />
+                        </span>
+                        <span>{{ member.name }}</span>
                       </span>
-                      <span>{{ member.name }}</span>
-                    </span>
 
-                    <input
-                      type="checkbox"
-                      class="checkbox checkbox-sm pointer-events-none"
-                      [checked]="isSelected(member)"
-                    />
-                  </div>
-                }
+                      <input
+                        type="checkbox"
+                        class="checkbox checkbox-sm pointer-events-none"
+                        [checked]="isSelected(member)"
+                      />
+                    </div>
+                  }
+                </div>
               </div>
             </div>
           </div>
+          <div class="flex flex-wrap gap-2">
+            @for (member of selectedMembers; track member.id) {
+              <div class="flex items-center gap-2 bg-base-200 rounded-full px-2 py-1">
+                <span class="w-6 rounded-full overflow-hidden">
+                  <img [src]="member.avatar" [alt]="member.name" />
+                </span>
+                <span class="font-medium text-sm">{{ member.name }}</span>
+                <button
+                  type="button"
+                  class="cursor-pointer opacity-70 hover:opacity-100"
+                  (click)="onRemoveSelectMember(member)"
+                >
+                  ×
+                </button>
+              </div>
+            }
+          </div>
         </div>
-        <div class="flex flex-wrap gap-2">
-          @for (member of selectedMembers; track member.id) {
-            <div class="flex items-center gap-2 bg-base-200 rounded-full px-2 py-1">
-              <span class="w-6 rounded-full overflow-hidden">
-                <img [src]="member.avatar" [alt]="member.name" />
-              </span>
-              <span class="font-medium text-sm">{{ member.name }}</span>
-              <button
-                type="button"
-                class="cursor-pointer opacity-70 hover:opacity-100"
-                (click)="onRemoveSelectMember(member)"
-              >
-                ×
-              </button>
-            </div>
-          }
-        </div>
-      </div>
+      }
 
-      <div
-        class="flex flex-col md:flex-row gap-2 md:gap-4 items-start md:items-center justify-between bg-base-100 shadow-sm rounded-lg p-2"
-      >
-        <h2>
-          <i class="fa-solid fa-flag"></i>
-          <span>Priority</span>
-        </h2>
-        <div class="w-full md:w-auto">
-          <select
-            formControlName="priority"
-            class="select md:select-ghost md:border-0 md:outline-none w-full"
-          >
-            <option value="" disabled selected>Select Priority</option>
-            <option value="low">Low</option>
-            <option value="medium">Medium</option>
-            <option value="high">High</option>
-          </select>
+      @if (form.get('priority')) {
+        <div
+          class="flex flex-col md:flex-row gap-2 md:gap-4 items-start md:items-center justify-between bg-base-100 shadow-sm rounded-lg p-2"
+        >
+          <h2>
+            <i class="fa-solid fa-flag"></i>
+            <span>Priority</span>
+          </h2>
+          <div class="w-full md:w-auto">
+            <select
+              formControlName="priority"
+              class="select md:select-ghost md:border-0 md:outline-none w-full"
+            >
+              <option value="" disabled selected>Select Priority</option>
+              <option value="low">Low</option>
+              <option value="medium">Medium</option>
+              <option value="high">High</option>
+            </select>
+          </div>
         </div>
-      </div>
-      <div
-        class="flex flex-col md:flex-row gap-2 md:gap-4 items-start md:items-center justify-between bg-base-100 shadow-sm rounded-lg p-2"
-      >
-        <h2>
-          <i class="fa-solid fa-calendar"></i>
-          <span>Date</span>
-        </h2>
-        <div class="w-full md:w-auto">
-          <input
-            formControlName="dueDate"
-            type="date"
-            class="input focus:border-0 focus:outline-0 shadow-sm w-full"
-          />
+      }
+
+      @if (form.get('dueDate')) {
+        <div
+          class="flex flex-col md:flex-row gap-2 md:gap-4 items-start md:items-center justify-between bg-base-100 shadow-sm rounded-lg p-2"
+        >
+          <h2>
+            <i class="fa-solid fa-calendar"></i>
+            <span>Date</span>
+          </h2>
+          <div class="w-full md:w-auto">
+            <input
+              formControlName="dueDate"
+              type="date"
+              class="input focus:border-0 focus:outline-0 shadow-sm w-full"
+            />
+          </div>
         </div>
-      </div>
+      }
+
+      @if (form.get('color')) {
+        <div
+          class="flex flex-col md:flex-row gap-2 md:gap-4 items-center justify-between bg-base-100 shadow-sm rounded-lg p-2"
+        >
+          <h2>
+            <i
+              class="fa-solid fa-palette bg-linear-to-r from-red-500 via-yellow-500 to-purple-500 bg-clip-text text-transparent"
+            ></i>
+            <span>Color</span>
+          </h2>
+          <div class="w-full md:w-auto flex gap-2 justify-center md:justify-end flex-wrap">
+            @for (color of projectColors; track color) {
+              <input
+                type="checkbox"
+                [checked]="form.get('color')?.value === color"
+                (change)="form.get('color')?.setValue(color)"
+                class="checkbox rounded-full {{ color }} {{ color }} checked:text-white"
+              />
+            }
+          </div>
+        </div>
+      }
 
       <div class="flex justify-end gap-2">
         <button type="reset" class="btn">Cancel</button>
