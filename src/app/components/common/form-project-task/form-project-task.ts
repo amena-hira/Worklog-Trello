@@ -2,15 +2,15 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 
-type Assignee = { id: number; name: string; avatar: string };
+type Assignee = { id: number; name: string; avatar: string }; 
 
 @Component({
-  selector: 'app-add-task',
+  selector: 'app-form-project-task',
   standalone: false,
-  templateUrl: './add-task.html',
-  styleUrl: './add-task.css',
+  templateUrl: './form-project-task.html',
+  styleUrl: './form-project-task.css',
 })
-export class AddTask implements OnInit {
+export class FormProjectTask implements OnInit {
   taskForm!: FormGroup;
   selectedMembers: Assignee[] = [];
   searchTerm = '';

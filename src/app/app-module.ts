@@ -34,6 +34,7 @@ import { Project } from './components/pages/projects/project/project';
 import { AddProject } from './components/pages/projects/add-project/add-project';
 import { OverdueProjectsList } from './components/pages/projects/overdue-projects-list/overdue-projects-list';
 import { Updates } from './components/pages/projects/updates/updates';
+import { FormProjectTask } from './components/common/form-project-task/form-project-task';
 
 @NgModule({
   declarations: [
@@ -62,7 +63,8 @@ import { Updates } from './components/pages/projects/updates/updates';
     Project,
     AddProject,
     OverdueProjectsList,
-    Updates
+    Updates,
+    FormProjectTask
   ],
   imports: [
     MatSlideToggleModule,
