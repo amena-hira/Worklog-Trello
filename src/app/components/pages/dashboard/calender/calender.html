@@ -19,10 +19,13 @@
                 <span class="text-sm font-medium ml-auto" [ngClass]="{'bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center': day.isToday}">
                   {{ day.date | date:'d' }}
                 </span>
-                @for (task of day.tasks; track task.name) {
-                  <div class="text-[10px] p-1 rounded bg-blue-100 text-blue-700 truncate w-full" [title]="task.name">
+                @for (task of day.displayTasks; track task.name) {
+                  <div class="text-[10px] p-1 rounded bg-blue-100 text-blue-700 truncate w-full tooltip" [title]="task.name">
                     {{ task.name }}
                   </div>
+                }
+                @if (day.hasMore) {
+                  <div class="tooltip text-xs font-bold text-center leading-none tooltip-info" [attr.data-tip]="day.tasks.length + ' Tasks'">...</div>
                 }
               }
             </div>

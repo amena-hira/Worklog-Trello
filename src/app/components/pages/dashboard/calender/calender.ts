@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { TaskService } from '../../../../service/tasks/task.service';
 
 @Component({
   selector: 'app-calender',
@@ -7,36 +8,7 @@ import { Component, OnInit } from '@angular/core';
   styleUrl: './calender.css',
 })
 export class Calender implements OnInit{
-  priority_Tasks = [
-    {
-      name: 'Design Homepage',
-      dueDate: '2026-02-27',
-      priority: 'High',
-      status: 'In Progress',
-      statusColor: 'badge-success',
-    },
-    {
-      name: 'Implement Login',
-      dueDate: '2026-02-05',
-      priority: 'Medium',
-      status: 'Pending',
-      statusColor: 'badge-warning',
-    },
-    {
-      name: 'Write Unit Tests',
-      dueDate: '2026-03-10',
-      priority: 'Low',
-      status: 'Overdue',
-      statusColor: 'badge-error',
-    },
-    {
-      name: 'Deploy to Staging',
-      dueDate: '2026-03-15',
-      priority: 'High',
-      status: 'Pending',
-      statusColor: 'badge-warning',
-    }
-  ];
+  priority_Tasks: any[] = [];
 
   // Calendar Logic
   currentDate = new Date(); // Initialized to match sample data
@@ -44,8 +16,20 @@ export class Calender implements OnInit{
   calendarDays: any[] = [];
   weekDays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
+  constructor(private taskService: TaskService) {}
+
   ngOnInit() {
-    this.generateCalendar();
+    this.fetchTasks();
+  }
+
+  fetchTasks() {
+    this.taskService.getAllTasks().subscribe({
+      next: (tasks) => {
+        this.priority_Tasks = tasks;
+        this.generateCalendar(); // Re-generate calendar once tasks load
+      },
+      error: (err) => console.error('Error fetching tasks for calendar:', err)
+    });
   }
 
   generateCalendar() {
@@ -67,9 +51,20 @@ export class Calender implements OnInit{
     for (let i = 1; i <= daysInMonth; i++) {
       const date = new Date(year, month, i);
       const dateString = this.formatDate(date);
-      const tasks = this.priority_Tasks.filter(t => t.dueDate === dateString);
+      const tasks = this.priority_Tasks.filter(t => {
+        if (!t.dueDate) return false;
+        // Ensure backend dates match the 'YYYY-MM-DD' comparison
+        return this.formatDate(new Date(t.dueDate)) === dateString;
+      });
       const isToday = date.toDateString() === this.today.toDateString();
-      days.push({ date, isCurrentMonth: true, tasks, isToday });
+      days.push({ 
+        date, 
+        isCurrentMonth: true, 
+        tasks: tasks,
+        displayTasks: tasks.slice(0, 1),
+        hasMore: tasks.length > 1,
+        isToday 
+      });
     }
 
     this.calendarDays = days;
