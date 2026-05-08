@@ -7,7 +7,7 @@ import { HttpClient } from '@angular/common/http';
 @Injectable({
   providedIn: 'root',
 })
-export class Users {
+export class UsersService {
   private apiURL = environment.apiUrl + 'users';
 
   constructor(private http: HttpClient) { }

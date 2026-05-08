@@ -1,8 +1,10 @@
-import { NgModule, provideBrowserGlobalErrorListeners } from '@angular/core';
+import { LOCALE_ID, NgModule, provideBrowserGlobalErrorListeners } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
 
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import {MatTabsModule} from '@angular/material/tabs';
+import { provideNativeDateAdapter } from '@angular/material/core';
 
 import { AppRoutingModule } from './app-routing-module';
 import { App } from './app';
@@ -35,6 +37,7 @@ import { AddProject } from './components/pages/projects/add-project/add-project'
 import { OverdueProjectsList } from './components/pages/projects/overdue-projects-list/overdue-projects-list';
 import { Updates } from './components/pages/projects/updates/updates';
 import { FormProjectTask } from './components/common/form-project-task/form-project-task';
+import { authInterceptor } from './auth/auth-interceptor';
 
 @NgModule({
   declarations: [
@@ -75,6 +78,14 @@ import { FormProjectTask } from './components/common/form-project-task/form-proj
     AppRoutingModule, CalendarPreviousViewDirective, CalendarTodayDirective, CalendarNextViewDirective, CalendarMonthViewComponent, CalendarWeekViewComponent, CalendarDayViewComponent, CalendarDatePipe,
   ],
   providers: [
+    provideHttpClient(
+      withInterceptors([
+        authInterceptor
+      ])
+    ),
+    provideNativeDateAdapter(),
+    // localization to display in French format
+    { provide: LOCALE_ID, useValue: "fr"},
     provideBrowserGlobalErrorListeners(),
     provideCalendar({
       provide: DateAdapter,

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { last } from 'rxjs';
+import { AuthService } from '../../../service/auth/auth.service';
 
 @Component({
   selector: 'app-register',
@@ -19,7 +20,8 @@ export class Register implements OnInit{
 
   constructor(
     private fb: FormBuilder,
-    private route: Router
+    private route: Router,
+    public authService: AuthService
   ) { }
 
   ngOnInit(): void {
@@ -35,7 +37,16 @@ export class Register implements OnInit{
   onSubmit(){
     if(this.signupForm.valid){
       console.log(this.signupForm.value);
-      this.route.navigate(['/']);
+      this.authService.signup(this.signupForm.value).subscribe({
+        next: (response) => {
+          console.log(response);
+          this.authService.updateAuthState(response.token, response.role, response.email);
+          this.route.navigate(['']);
+        },
+        error: (error) => {
+          console.error(error);
+        }
+      });
     }
   }
 }

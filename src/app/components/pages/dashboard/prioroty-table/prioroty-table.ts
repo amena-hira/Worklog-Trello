@@ -1,4 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { Task } from '../../../../model/task';
+import { TaskService } from '../../../../service/tasks/task.service';
 
 @Component({
   selector: 'app-prioroty-table',
@@ -6,7 +8,7 @@ import { Component } from '@angular/core';
   templateUrl: './prioroty-table.html',
   styleUrl: './prioroty-table.css',
 })
-export class PriorotyTable {
+export class PriorotyTable implements OnInit {
   priority_Tasks = [
     {
       name: 'Design Homepage',
@@ -73,4 +75,25 @@ export class PriorotyTable {
       textColor: 'text-emerald-700',
     },
   ];
+
+  today_tasks: Task[] = [];
+
+  constructor(private taskService:TaskService) { }
+
+  ngOnInit(): void {
+    this.fetchTodaysTasks()
+  }
+
+  fetchTodaysTasks() {
+    console.log('Fetching today\'s tasks...');
+    this.taskService.getAllTasks().subscribe(tasks => {
+      console.log('All tasks fetched:', tasks);
+      const today = new Date();
+      this.today_tasks = tasks.filter(task => {
+        const dueDate = new Date(task.dueDate!);
+        return dueDate.toDateString() === today.toDateString();
+      });
+      console.log("Todays Task: ",this.today_tasks);
+    });
+  }
 }
