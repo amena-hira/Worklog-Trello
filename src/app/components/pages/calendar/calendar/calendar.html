@@ -1,9 +1,9 @@
-<div class="cal-page p-4 h-[calc(100dvh-4rem)] bg-sky-50 rounded-tl-3xl">
-  <div class="cal-header flex items-end gap-2 mb-4">
+<div class="cal-page p-4 h-[calc(100dvh-4rem)] bg-sky-50 rounded-tl-3xl flex flex-col overflow-hidden">
+  <div class="cal-header flex items-end gap-2 mb-4 shrink-0">
     <h3 class="text-3xl font-semibold">Calendar</h3> 
     <div class="cal-date-field text-base-content/60 ">{{ currentMonth }}</div>
   </div>
-  <div class="bg-base-300/30 rounded-lg px-2 mb-4">
+  <div class="bg-base-300/30 rounded-lg px-2 mb-4 shrink-0">
     <ul class="rounded-box flex flex-wrap p-2 gap-2">
       <li>
           <a>All</a>
@@ -28,7 +28,7 @@
       </li>
     </ul>
   </div>
-  <div class="cal-container">
+  <div class="cal-container flex-1 min-h-0 flex flex-col overflow-hidden">
     <div class="cal-buttons flex flex-col md:flex-row items-center justify-between mb-4">
       <div class="cal-date-nav-buttons flex">
         <button
@@ -70,16 +70,19 @@
         </button>
       </div>
     </div>
-    @switch (view) {
-      @case (CalendarView.Month) {
-        <mwl-calendar-month-view [viewDate]="viewDate" [events]="events" />
+    <div class="flex-1 min-h-0 overflow-auto">
+
+      @switch (view) {
+        @case (CalendarView.Month) {
+          <mwl-calendar-month-view [viewDate]="viewDate" [events]="events" />
+        }
+        @case (CalendarView.Week) {
+          <mwl-calendar-week-view [viewDate]="viewDate" [events]="events" />
+        }
+        @case (CalendarView.Day) {
+          <mwl-calendar-day-view [viewDate]="viewDate" [events]="events" />
+        }
       }
-      @case (CalendarView.Week) {
-        <mwl-calendar-week-view [viewDate]="viewDate" [events]="events" />
-      }
-      @case (CalendarView.Day) {
-        <mwl-calendar-day-view [viewDate]="viewDate" [events]="events" />
-      }
-    }
+    </div>
   </div>
 </div>
