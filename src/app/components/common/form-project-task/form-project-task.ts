@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { UsersService } from '../../../service/users/users.service';
@@ -13,7 +13,9 @@ type Assignee = { id: number; name: string; avatar: string };
   templateUrl: './form-project-task.html',
   styleUrl: './form-project-task.css',
 })
-export class FormProjectTask implements OnInit {
+export class FormProjectTask implements OnInit, OnChanges {
+  @Input() editData: any = null;
+  editId: number | null = null;
   taskForm!: FormGroup;
   selectedMembers: Assignee[] = [];
   searchTerm = '';
@@ -22,6 +24,9 @@ export class FormProjectTask implements OnInit {
 
   title = '';
   currentUserEmail = '';
+
+  showToast = false;
+  toastMessage = '';
 
   assignees: Assignee[] = [];
   projects: any[] = [];
@@ -48,22 +53,38 @@ export class FormProjectTask implements OnInit {
     }
     this.fetchAssignees();
     this.fetchProjects();
+
+    if (this.editData) {
+      this.populateForm(this.editData);
+    }
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['editData'] && !changes['editData'].isFirstChange()) {
+      if (this.editData) {
+        this.populateForm(this.editData);
+      } else {
+        this.resetForm();
+      }
+    }
   }
 
   fetchAssignees(): void {
-    this.usersService.getUsers().subscribe({
-      next: (users: any[]) => {
-        this.assignees = users
-          .filter(user => user.role === 'ROLE_USER')
-          .map((user, index) => ({
-            id: user.id || index + 1, // Fallback to ensure the ID is always unique
-            name: user.last_name || `${user.first_name}`,
-            avatar: `https://i.pravatar.cc/150?u=${user.id || index}`
-          }));
-        this.filteredAssignees = this.assignees;
-      },
-      error: (err) => console.error('Error fetching users:', err)
-    });
+    if (this.title === 'Project') {
+      this.usersService.getUsers().subscribe({
+        next: (users: any[]) => {
+          this.assignees = users
+            .filter(user => user.role === 'ROLE_USER')
+            .map((user, index) => ({
+              id: user.id || index + 1, // Fallback to ensure the ID is always unique
+              name: user.name || `${user.first_name || ''} ${user.last_name || ''}`.trim(),
+              avatar: `https://i.pravatar.cc/150?u=${user.id || index}`
+            }));
+          this.filteredAssignees = this.assignees;
+        },
+        error: (err) => console.error('Error fetching users:', err)
+      });
+    }
   }
 
   fetchProjects(): void {
@@ -77,6 +98,11 @@ export class FormProjectTask implements OnInit {
           const isMember = (project.members || []).some((m: any) => m.userEmail === currentUserEmail);
           return isCreator || isMember;
         });
+
+        // If editing an existing task, pre-fill assignees immediately after projects load
+        if (this.title === 'Task' && this.form.get('projectId')?.value) {
+          this.updateAssigneesForProject(this.form.get('projectId')?.value);
+        }
       },
       error: (err) => console.error('Error fetching projects:', err)
     });
@@ -104,6 +130,31 @@ export class FormProjectTask implements OnInit {
       createdByUserEmail: [currentUserEmail],
       assignees: [[]],
     });
+
+    // Reactively update assignees dropdown whenever the selected project changes
+    this.form.get('projectId')?.valueChanges.subscribe(projectId => {
+      this.updateAssigneesForProject(projectId);
+    });
+  }
+
+  private updateAssigneesForProject(projectId: any): void {
+    const selectedProject = this.projects.find(p => p.id == projectId);
+    if (selectedProject && selectedProject.members) {
+      this.assignees = selectedProject.members.map((m: any, index: number) => ({
+        id: m.userId || m.id || index + 1,
+        name: m.userName || m.name,
+        avatar: `https://i.pravatar.cc/150?u=${m.userId || m.id || index}`
+      }));
+    } else {
+      this.assignees = [];
+    }
+    this.filteredAssignees = this.assignees;
+
+    // Clean up selected members if they don't belong to the newly selected project
+    this.selectedMembers = this.selectedMembers.filter(sm => 
+      this.assignees.some(a => a.id === sm.id)
+    );
+    this.syncAssignees();
   }
 
   private syncAssignees(): void {
@@ -118,28 +169,86 @@ export class FormProjectTask implements OnInit {
     }
   }
 
+  populateForm(data: any): void {
+    this.editId = data.id;
+    const formattedDate = data.dueDate ? new Date(data.dueDate).toISOString().split('T')[0] : '';
+    
+    if (this.title === 'Project') {
+      this.form.patchValue({
+        name: data.name,
+        description: data.description,
+        dueDate: formattedDate,
+        color: data.color || '',
+      });
+      if (data.members) {
+        this.selectedMembers = data.members.map((m: any) => ({
+          id: m.userId || m.id,
+          name: m.userName || m.name,
+          avatar: `https://i.pravatar.cc/150?u=${m.userId || m.id}`
+        }));
+        this.syncAssignees();
+      }
+    } else {
+      this.form.patchValue({
+        name: data.name,
+        description: data.description,
+        priority: data.priority,
+        isCompleted: data.isCompleted,
+        dueDate: formattedDate,
+        projectId: data.projectId || '',
+      });
+      if (data.assignees) {
+        this.selectedMembers = data.assignees.map((a: any) => ({
+          id: a.userId || a.id,
+          name: a.userName || a.name,
+          avatar: a.avatarUrl || `https://i.pravatar.cc/150?u=${a.userId || a.id}`
+        }));
+        this.syncAssignees();
+      }
+    }
+  }
+
+  resetForm(): void {
+    this.editId = null;
+    this.selectedMembers = [];
+    const email = sessionStorage.getItem('email') || '';
+    if (this.title === 'Project') {
+      this.buildProjectForm(email);
+    } else {
+      this.buildTaskForm(email);
+    }
+  }
+
   onSubmit(): void {
     if (this.form.valid) {
       console.log('Data:', this.form.value);
-      const email = sessionStorage.getItem('email') || '';
+      const payload = { ...this.form.value, id: this.editId };
 
       if (this.title === 'Project') {
-        this.projectService.createProject(this.form.value).subscribe({
+        const request = this.editId 
+          ? this.projectService.updateProject(payload)
+          : this.projectService.createProject(this.form.value);
+
+        request.subscribe({
           next: (res) => {
-            console.log('Project created successfully', res);
-            // Clear the form and reset the creator email
-            this.selectedMembers = [];
-            this.buildProjectForm(email);
+            console.log(`Project ${this.editId ? 'updated' : 'created'} successfully`, res);
+            this.displayToast(this.form.value.name, this.editId ? 'updated' : 'created');
+            this.resetForm();
+            (document.getElementById('add_task') as HTMLDialogElement)?.close();
           },
-          error: (err) => console.error('Error creating project:', err)
+          error: (err) => console.error('Error creating task:', err)
         });
       } else {
-        this.taskService.createTask(this.form.value).subscribe({
+        const request = this.editId 
+          ? this.taskService.updateTask(payload)
+          : this.taskService.createTask(this.form.value);
+
+        request.subscribe({
           next: (res) => {
-            console.log('Task created successfully', res);
-            // Clear the form and reset the creator email
-            this.selectedMembers = [];
-            this.buildTaskForm(email);
+            console.log(`Task ${this.editId ? 'updated' : 'created'} successfully`, res);
+            this.displayToast(this.form.value.name, this.editId ? 'updated' : 'created');
+            this.resetForm();
+            (document.getElementById('add_task') as HTMLDialogElement)?.close();
           },
           error: (err) => console.error('Error creating task:', err)
         });
@@ -147,6 +256,14 @@ export class FormProjectTask implements OnInit {
     } else {
       console.log('Form is invalid');
     }
+  }
+
+  private displayToast(name: string, action: string) {
+    this.toastMessage = `"${name}" was ${action} successfully ${this.title}!`;
+    this.showToast = true;
+    setTimeout(() => {
+      this.showToast = false;
+    }, 3000); // Hides the toast after 3 seconds
   }
 
   onSearchInput(event: Event): void {

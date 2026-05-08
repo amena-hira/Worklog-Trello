@@ -4,13 +4,13 @@
       <span class="text-3xl font-semibold">Tasks</span>
       <span class="text-base-content/60 ml-2">{{ totalTaskCount }} tasks</span>
     </h2>
-    <button class="btn bg-sky-900 hover:bg-sky-800 text-white px-2 rounded-xl btn-md" onclick="add_task.showModal()">
+    <button class="btn bg-sky-900 hover:bg-sky-800 text-white px-2 rounded-xl btn-md" (click)="openCreateModal()">
       <i class="fa-solid fa-plus"></i>
       Add New Task ..
     </button>
   </div>
   <!-- <app-add-task></app-add-task> -->
-   <app-form-project-task></app-form-project-task>
+   <app-form-project-task [editData]="selectedTaskForEdit"></app-form-project-task>
   <div class="bg-base-300/30 rounded-lg px-2">
     <ul class="rounded-box flex flex-wrap p-2 gap-2">
       <li>
@@ -73,10 +73,10 @@
   </div>
   <!-- Today's Tasks -->
   <div>
-    <app-task title="Today" [priority_Tasks]="todayTasks"></app-task>
+    <app-task title="Today" [priority_Tasks]="todayTasks" (onTaskEdit)="openEditModal($event)"></app-task>
   </div>
   <!-- All Task-->
   <div>
-    <app-task title="All Tasks" [priority_Tasks]="otherTasks"></app-task>
+    <app-task title="All Tasks" [priority_Tasks]="otherTasks" (onTaskEdit)="openEditModal($event)"></app-task>
   </div>
 </div>

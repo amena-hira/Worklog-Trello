@@ -17,6 +17,7 @@ export class Tasks implements OnInit {
   tomorrowsTaskCount = 0;
   nextWeekTaskCount = 0;
   completedTaskCount = 0;
+  selectedTaskForEdit: any = null;
 
   constructor(private taskService: TaskService) {}
 
@@ -65,6 +66,7 @@ export class Tasks implements OnInit {
 
         const mappedTasks = relevantTasks.map((task: TaskModel, index: number) => {
           const mappedAssignees = (task.assignees || []).map((a: any, i: number) => ({
+            ...a,
             name: a.userName || a.name,
             avatarUrl: `https://i.pravatar.cc/150?u=${a.userName || i}`
           }));
@@ -87,5 +89,17 @@ export class Tasks implements OnInit {
       },
       error: (err) => console.error('Error fetching tasks:', err)
     });
+  }
+
+  openCreateModal() {
+    this.selectedTaskForEdit = null;
+    const modal = document.getElementById('add_task') as HTMLDialogElement;
+    modal?.showModal();
+  }
+
+  openEditModal(task: any) {
+    this.selectedTaskForEdit = task;
+    const modal = document.getElementById('add_task') as HTMLDialogElement;
+    modal?.showModal();
   }
 }

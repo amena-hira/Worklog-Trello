@@ -1,7 +1,7 @@
 <!-- Open the modal using ID.showModal() method -->
 <dialog id="add_task" class="modal">
   <div class="modal-box">
-    <h3 class="text-xl font-semibold">Add New {{title}}</h3>
+    <h3 class="text-xl font-semibold">{{ editId ? 'Edit' : 'Add New' }} {{title}}</h3>
     <form method="dialog">
       <button class="btn btn-xs btn-circle btn-ghost absolute right-2 top-2">✕</button>
     </form>
@@ -207,7 +207,7 @@
 
       <div class="flex justify-end gap-2">
         <button type="reset" class="btn">Cancel</button>
-        <button type="submit" class="btn bg-sky-950 text-white hover:bg-sky-900">Save</button>
+        <button type="submit" class="btn bg-sky-950 text-white hover:bg-sky-900">{{ editId ? 'Update' : 'Save' }}</button>
       </div>
     </form>
   </div>
@@ -215,3 +215,11 @@
     <button>close</button>
   </form>
 </dialog>
+
+@if (showToast) {
+  <div class="toast toast-top toast-center z-9999">
+    <div class="alert alert-info text-white shadow-sm">
+      <span>{{ toastMessage }}</span>
+    </div>
+  </div>
+}
