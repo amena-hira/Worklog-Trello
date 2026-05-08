@@ -51,9 +51,17 @@ export class ProjectStatus implements OnInit{
   fetchProjects(){
     this.projectService.getRecentProjects().subscribe({
       next: (recentProjects) => {
-        this.allProjectStatus = recentProjects.map(project => {
+        const currentUserEmail = sessionStorage.getItem('email');
+        
+        const relevantProjects = recentProjects.filter(project => {
+          if (!currentUserEmail) return true; // Fallback if no user is logged in
+          const isCreator = project.createdByUserEmail === currentUserEmail;
+          const isMember = (project.members || []).some(m => m.userEmail === currentUserEmail);
+          return isCreator || isMember;
+        });
+
+        this.allProjectStatus = relevantProjects.map(project => {
           const progress = project.progress || 0;
-          const totalTasks = project.totalTasks || 0;
           const totalDue = project.tasksDue || 0;
           console.log(project.name,project.color);
 

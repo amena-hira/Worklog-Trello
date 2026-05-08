@@ -89,9 +89,19 @@ export class PriorotyTable implements OnInit {
     this.taskService.getAllTasks().subscribe(tasks => {
       console.log('All tasks fetched:', tasks);
       const today = new Date();
+      const currentUserEmail = sessionStorage.getItem('email');
+      
       this.today_tasks = tasks.filter(task => {
-        const dueDate = new Date(task.dueDate!);
-        return dueDate.toDateString() === today.toDateString();
+        if (!task.dueDate) return false;
+        const dueDate = new Date(task.dueDate);
+        const isToday = dueDate.toDateString() === today.toDateString();
+        
+        if (!currentUserEmail) return isToday;
+        
+        const isAssignee = (task.assignees || []).some((a: any) => a.userEmail === currentUserEmail || a.email === currentUserEmail);
+        const isCreator = task.createdByUserEmail === currentUserEmail;
+        
+        return isToday && (isAssignee || isCreator);
       });
       console.log("Todays Task: ",this.today_tasks);
     });

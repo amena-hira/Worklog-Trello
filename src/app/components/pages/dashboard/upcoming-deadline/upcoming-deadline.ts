@@ -26,13 +26,21 @@ export class UpcomingDeadline implements OnInit {
         threeDaysFromNow.setDate(today.getDate() + 3);
         threeDaysFromNow.setHours(23, 59, 59, 999); // End of the 3rd day
 
+        const currentUserEmail = sessionStorage.getItem('email');
+
         // Filter for uncompleted tasks due within the next 3 days
         const upcomingTasks = tasks.filter(task => {
           if (task.isCompleted || task.completed || !task.dueDate) {
             return false;
           }
           const dueDate = new Date(task.dueDate);
-          return dueDate >= today && dueDate <= threeDaysFromNow;
+          const isUpcoming = dueDate >= today && dueDate <= threeDaysFromNow;
+          if (!isUpcoming) return false;
+          if (!currentUserEmail) return true;
+          
+          const isCreator = task.createdByUserEmail === currentUserEmail;
+          const isAssignee = (task.assignees || []).some((a: any) => a.userEmail === currentUserEmail || a.email === currentUserEmail);
+          return isCreator || isAssignee;
         });
 
         // Sort them so the most urgent appear first

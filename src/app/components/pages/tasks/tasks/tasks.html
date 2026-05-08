@@ -73,14 +73,10 @@
   </div>
   <!-- Today's Tasks -->
   <div>
-    <app-task></app-task>
+    <app-task title="Today" [priority_Tasks]="todayTasks"></app-task>
   </div>
-  <!-- Tomorrow -->
+  <!-- All Task-->
   <div>
-    <app-task></app-task>
-  </div>
-  <!-- Next week -->
-  <div>
-    <app-task></app-task>
+    <app-task title="All Tasks" [priority_Tasks]="otherTasks"></app-task>
   </div>
 </div>

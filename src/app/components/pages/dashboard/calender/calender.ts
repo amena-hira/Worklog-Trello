@@ -25,7 +25,16 @@ export class Calender implements OnInit{
   fetchTasks() {
     this.taskService.getAllTasks().subscribe({
       next: (tasks) => {
-        this.priority_Tasks = tasks;
+        const currentUserEmail = sessionStorage.getItem('email');
+        
+        const relevantTasks = tasks.filter(task => {
+          if (!currentUserEmail) return true; // Fallback if no user is logged in
+          const isCreator = task.createdByUserEmail === currentUserEmail;
+          const isAssignee = (task.assignees || []).some((a: any) => a.userEmail === currentUserEmail || a.email === currentUserEmail);
+          return isCreator || isAssignee;
+        });
+
+        this.priority_Tasks = relevantTasks;
         this.generateCalendar(); // Re-generate calendar once tasks load
       },
       error: (err) => console.error('Error fetching tasks for calendar:', err)
