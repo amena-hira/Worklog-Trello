@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { HttpClient } from '@angular/common/http';
-import { Observable, shareReplay, tap } from 'rxjs';
+import { Observable, shareReplay, tap, BehaviorSubject, switchMap } from 'rxjs';
 import { Project } from '../../model/project';
 
 @Injectable({
@@ -9,20 +9,19 @@ import { Project } from '../../model/project';
 })
 export class ProjectService {
   private apiUrl = environment.apiUrl + 'projects';
-  private projectsCache$?: Observable<Project[]>;
+  private reload$ = new BehaviorSubject<void>(undefined);
+  private projectsCache$: Observable<Project[]> = this.reload$.pipe(
+    switchMap(() => this.http.get<Project[]>(this.apiUrl)),
+    shareReplay(1)
+  );
 
   constructor(private http: HttpClient) { }
 
   clearCache() {
-    this.projectsCache$ = undefined;
+    this.reload$.next();
   }
 
   getAllProjects(): Observable<Project[]> {
-    if (!this.projectsCache$) {
-      this.projectsCache$ = this.http.get<Project[]>(this.apiUrl).pipe(
-        shareReplay(1)
-      );
-    }
     return this.projectsCache$;
   }
 

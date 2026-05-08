@@ -12,6 +12,12 @@ export class Tasks implements OnInit {
   todayTasks: any[] = [];
   otherTasks: any[] = [];
 
+  totalTaskCount = 0;
+  todaysTaskCount = 0;
+  tomorrowsTaskCount = 0;
+  nextWeekTaskCount = 0;
+  completedTaskCount = 0;
+
   constructor(private taskService: TaskService) {}
 
   ngOnInit(): void {
@@ -25,6 +31,36 @@ export class Tasks implements OnInit {
           const isCreator = task.createdByUserEmail === currentUserEmail;
           const isAssignee = (task.assignees || []).some((a: any) => a.userEmail === currentUserEmail || a.email === currentUserEmail);
           return isCreator || isAssignee;
+        });
+
+        // Calculate Totals
+        this.totalTaskCount = relevantTasks.length;
+        this.completedTaskCount = relevantTasks.filter(t => t.isCompleted || !!t.completed).length;
+
+        const todayDate = new Date();
+        todayDate.setHours(0, 0, 0, 0);
+        
+        const tomorrowDate = new Date(todayDate);
+        tomorrowDate.setDate(todayDate.getDate() + 1);
+        
+        const nextWeekDate = new Date(todayDate);
+        nextWeekDate.setDate(todayDate.getDate() + 7);
+
+        // Iterate and calculate upcoming deadlines (ignoring already completed tasks)
+        const pendingTasks = relevantTasks.filter(t => !t.isCompleted && !t.completed && t.dueDate);
+        
+        pendingTasks.forEach(t => {
+          const d = new Date(t.dueDate!);
+          d.setHours(0, 0, 0, 0);
+          const taskTime = d.getTime();
+
+          if (taskTime === todayDate.getTime()) {
+            this.todaysTaskCount++;
+          } else if (taskTime === tomorrowDate.getTime()) {
+            this.tomorrowsTaskCount++;
+          } else if (taskTime > tomorrowDate.getTime() && taskTime <= nextWeekDate.getTime()) {
+            this.nextWeekTaskCount++;
+          }
         });
 
         const mappedTasks = relevantTasks.map((task: TaskModel, index: number) => {

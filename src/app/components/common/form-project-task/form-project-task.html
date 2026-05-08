@@ -1,7 +1,7 @@
 <!-- Open the modal using ID.showModal() method -->
 <dialog id="add_task" class="modal">
   <div class="modal-box">
-    <h3 class="text-xl font-semibold">Add New Task</h3>
+    <h3 class="text-xl font-semibold">Add New {{title}}</h3>
     <form method="dialog">
       <button class="btn btn-xs btn-circle btn-ghost absolute right-2 top-2">✕</button>
     </form>
@@ -9,7 +9,7 @@
       @if (form.get('name')) {
         <fieldset class="fieldset">
           <legend class="fieldset-legend text-base text-base-content/60 font-normal">
-            Task Name
+            {{title}} Name
           </legend>
           <input
             formControlName="name"
@@ -20,7 +20,7 @@
         </fieldset>
       }
       @if (form.get('name')?.invalid && form.get('name')?.touched) {
-        <p class="text-sm text-red-500">*Task name is required.</p>
+        <p class="text-sm text-red-500">*{{title}} name is required.</p>
       }
 
       @if (form.get('description')) {
@@ -36,7 +36,7 @@
         </fieldset>
       }
 
-      @if (form.get('project')) {
+      @if (form.get('projectId')) {
         <div
           class="flex flex-col md:flex-row gap-2 md:gap-4 items-start md:items-center justify-between bg-base-100 shadow-sm rounded-lg p-2"
         >
@@ -46,13 +46,13 @@
           </h2>
           <div class="w-full md:w-auto">
             <select
-              formControlName="project"
+              formControlName="projectId"
               class="select md:select-ghost md:border-0 md:outline-none w-full"
             >
               <option value="" disabled selected>Select Project</option>
-              <option value="1">Project 1</option>
-              <option value="2">Project 2</option>
-              <option value="3">Project 3</option>
+              @for (project of projects; track project.id) {
+                <option [value]="project.id">{{ project.name }}</option>
+              }
             </select>
           </div>
           <div>
@@ -61,7 +61,7 @@
           </div>
         </div>
       }
-      @if (form.get('assignees')) {
+      @if (form.get('assignees') || form.get('members')) {
         <div class="flex flex-col gap-2 bg-base-100 shadow-sm rounded-lg p-2">
           <div
             class="flex flex-col md:flex-row gap-2 md:gap-4 items-start md:items-center justify-between w-full"
@@ -99,20 +99,20 @@
                       class="flex items-center justify-between gap-2 px-2 py-2 rounded-lg cursor-pointer hover:bg-base-200"
                       (click)="onSelectMember(member)"
                     >
-                      <span class="flex items-center gap-2">
-                        <span class="w-6 h-6 rounded-full overflow-hidden">
+                    <span class="flex items-center gap-2 min-w-0">
+                      <span class="w-6 h-6 rounded-full overflow-hidden shrink-0">
                           <img
                             [src]="member.avatar"
                             [alt]="member.name"
                             class="w-full h-full object-cover"
                           />
                         </span>
-                        <span>{{ member.name }}</span>
+                      <span class="truncate">{{ member.name }}</span>
                       </span>
 
                       <input
                         type="checkbox"
-                        class="checkbox checkbox-sm pointer-events-none"
+                      class="checkbox checkbox-sm pointer-events-none shrink-0"
                         [checked]="isSelected(member)"
                       />
                     </div>
@@ -123,14 +123,14 @@
           </div>
           <div class="flex flex-wrap gap-2">
             @for (member of selectedMembers; track member.id) {
-              <div class="flex items-center gap-2 bg-base-200 rounded-full px-2 py-1">
-                <span class="w-6 rounded-full overflow-hidden">
+              <div class="flex items-center gap-2 bg-base-200 rounded-full px-2 py-1 max-w-full">
+                <span class="w-6 rounded-full overflow-hidden shrink-0">
                   <img [src]="member.avatar" [alt]="member.name" />
                 </span>
-                <span class="font-medium text-sm">{{ member.name }}</span>
+                <span class="font-medium text-sm truncate">{{ member.name }}</span>
                 <button
                   type="button"
-                  class="cursor-pointer opacity-70 hover:opacity-100"
+                  class="cursor-pointer opacity-70 hover:opacity-100 shrink-0"
                   (click)="onRemoveSelectMember(member)"
                 >
                   ×
@@ -155,9 +155,9 @@
               class="select md:select-ghost md:border-0 md:outline-none w-full"
             >
               <option value="" disabled selected>Select Priority</option>
-              <option value="low">Low</option>
-              <option value="medium">Medium</option>
-              <option value="high">High</option>
+              <option value="LOW">Low</option>
+              <option value="MEDIUM">Medium</option>
+              <option value="HIGH">High</option>
             </select>
           </div>
         </div>
@@ -197,8 +197,9 @@
                 type="checkbox"
                 [checked]="form.get('color')?.value === color"
                 (change)="form.get('color')?.setValue(color)"
-                class="checkbox rounded-full {{ color }} {{ color }} checked:text-white"
+                class="checkbox rounded-full border-{{ color }}-600 bg-{{ color }}-600 checked:text-white"
               />
+
             }
           </div>
         </div>

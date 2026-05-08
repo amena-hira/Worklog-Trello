@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { Task } from '../../model/task';
-import { Observable, shareReplay, tap } from 'rxjs';
+import { Observable, shareReplay, tap, BehaviorSubject, switchMap } from 'rxjs';
 import { UserTask } from '../../model/user-task';
 
 
@@ -11,12 +11,16 @@ import { UserTask } from '../../model/user-task';
 })
 export class TaskService {
   private apiURL = environment.apiUrl + 'tasks';
-  private tasksCache$?: Observable<Task[]>;
+  private reload$ = new BehaviorSubject<void>(undefined);
+  private tasksCache$: Observable<Task[]> = this.reload$.pipe(
+    switchMap(() => this.http.get<Task[]>(this.apiURL)),
+    shareReplay(1)
+  );
 
   constructor(private http:HttpClient) { }
 
   clearCache() {
-    this.tasksCache$ = undefined;
+    this.reload$.next();
   }
 
   createTask(item:Task): Observable<Task>{
@@ -26,11 +30,6 @@ export class TaskService {
   }
 
   getAllTasks(): Observable<Task[]> {
-    if (!this.tasksCache$) {
-      this.tasksCache$ = this.http.get<Task[]>(this.apiURL).pipe(
-        shareReplay(1)
-      );
-    }
     return this.tasksCache$;
   }
 
