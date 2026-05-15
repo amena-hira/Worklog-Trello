@@ -73,10 +73,10 @@
   </div>
   <!-- Today's Tasks -->
   <div>
-    <app-task title="Today" [priority_Tasks]="todayTasks" (onTaskEdit)="openEditModal($event)"></app-task>
+    <app-task title="Today" [priority_Tasks]="todayTasks" (onTaskEdit)="openEditModal($event)" (onTaskDelete)="deleteTask($event)"></app-task>
   </div>
   <!-- All Task-->
   <div>
-    <app-task title="All Tasks" [priority_Tasks]="otherTasks" (onTaskEdit)="openEditModal($event)"></app-task>
+    <app-task title="All Tasks" [priority_Tasks]="otherTasks" (onTaskEdit)="openEditModal($event)" (onTaskDelete)="deleteTask($event)"></app-task>
   </div>
 </div>

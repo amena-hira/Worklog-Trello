@@ -22,7 +22,7 @@
             </td>
             <td>
               <i class="fa-regular fa-calendar {{ task.textColor }} font-light text-xs"></i>
-              <span>Due in 3 days</span>
+              <span [ngClass]="task.dueDays < 0 ? 'text-error font-semibold' : ''">{{ task.dueDate }}</span>
             </td>
             <td class="text-center">
               <button type="button" class="btn btn-ghost btn-sm text-left">

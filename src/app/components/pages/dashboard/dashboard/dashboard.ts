@@ -13,23 +13,23 @@ export class Dashboard implements OnInit {
   cards = [
     {
       title: 'Completed',
-      total: 123,
+      total: 0,
       icon: 'fa-regular fa-square-check',
       color: 'text-blue-400',
     },
     {
       title: 'Incompleted',
-      total: 21,
+      total: 0,
       icon: 'fa-regular fa-circle-xmark',
       color: 'text-rose-700',
     },
     {
       title: 'Overdue',
-      total: 4,
+      total: 0,
       icon: 'fa-solid fa-triangle-exclamation',
       color: 'text-amber-500',
     },
-    { title: 'Total Tasks', total: 148, icon: 'fa-solid fa-list-check', color: 'text-teal-500' },
+    { title: 'Total Tasks', total: 0, icon: 'fa-solid fa-list-check', color: 'text-teal-500' },
   ];
 
   currentYear = this.today.getFullYear();

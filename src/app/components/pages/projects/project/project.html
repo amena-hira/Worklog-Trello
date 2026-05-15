@@ -1,26 +1,35 @@
 <div class="card w-full bg-base-100 shadow-sm">
   <div class="card-body">
-    <h2 class="text-2xl font-bold">Project Alpha</h2>
+    <h2 class="text-xl font-bold">{{ project.name }}</h2>
     <span class="badge badge-sm badge-ghost">Client Work</span>
-    <progress class="progress w-full h-1.5 text-sky-600 my-2" value="75" max="100"></progress>
+    <progress class="progress w-full h-1.5 {{ project.textColor }} my-2" value="{{ project.progress }}" max="100"></progress>
     <div class="flex justify-between items-center">
-      <p class="text-sm text-gray-500">12 tasks remaining</p>
-      <p class="text-sm text-end">75%</p>
+      <p class="text-sm text-gray-500">{{ project.totalDue }} tasks remaining</p>
+      <p class="text-sm text-end">{{ project.progress }}%</p>
     </div>
     <hr class="text-gray-200 my-3">
     <div class="flex items-center justify-between">
-      <div class="flex items-center gap-2 text-sm text-gray-500">
+      <div class="flex items-center gap-2 text-sm" [ngClass]="project.dueDays < 0 ? 'text-error font-semibold' : 'text-gray-500'">
         <i class="fa-regular fa-calendar"></i>
-        <p>Due in 3 days</p>
+        <p>
+          @if (project.dueDays < 0) { Overdue by {{ -project.dueDays }} days }
+          @else if (project.dueDays === 0) { Due Today }
+          @else { Due in {{ project.dueDays }} days }
+        </p>
       </div>
-      <div>
-        @for (image of assigneeAvatar.images; track $index) {
-                <div class="avatar">
-                  <div class="w-5 rounded-full">
-                    <img src="{{ image }}" alt="Avatar" />
-                  </div>
-                </div>
-              }
+      <div class="flex items-center">
+        @for (image of project.assignees; track $index) {
+          @if ($index < 3) {
+            <div class="avatar">
+              <div class="w-5 rounded-full">
+                <img src="{{ image }}" alt="Avatar" />
+              </div>
+            </div>
+          }
+        }
+        @if (project.assignees?.length > 3) {
+          <span class="text-xs font-bold text-base-content/60 ml-1">...</span>
+        }
       </div>
     </div>
   </div>

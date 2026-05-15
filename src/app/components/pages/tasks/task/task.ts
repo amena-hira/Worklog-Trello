@@ -10,4 +10,5 @@ export class Task {
   @Input() title: string = 'Tasks';
   @Input() priority_Tasks: any[] = [];
   @Output() onTaskEdit = new EventEmitter<any>();
+  @Output() onTaskDelete = new EventEmitter<any>();
 }

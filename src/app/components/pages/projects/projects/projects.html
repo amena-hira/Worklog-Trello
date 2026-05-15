@@ -35,12 +35,9 @@
     </button>
   </div>
   <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-    <app-project></app-project>
-    <app-project></app-project>
-    <app-project></app-project>
-    <app-project></app-project>
-    <app-project></app-project>
-    <app-project></app-project>
+    @for (project of projects; track $index) {
+      <app-project [project]="project"></app-project>
+    }
   </div>
   <div class="mt-8 flex flex-col md:flex-row gap-4">
     <app-overdue-projects-list class="flex-1"></app-overdue-projects-list>

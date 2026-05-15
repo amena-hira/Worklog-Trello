@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { ProjectService } from '../../../../service/projects/project.service';
 
 @Component({
   selector: 'app-overdue-projects-list',
@@ -6,91 +7,70 @@ import { Component } from '@angular/core';
   templateUrl: './overdue-projects-list.html',
   styleUrl: './overdue-projects-list.css',
 })
-export class OverdueProjectsList {
-  priority_Tasks = [
-    {
-      name: 'Design Homepage',
-      project: 'Website',
-      priority: 'High',
-      dueDate: '10:30 AM',
-      bgColor: 'bg-red-100',
-      textColor: 'text-red-700',
-      assigneeAvatar: {
-        images: [
-          'https://randomuser.me/api/portraits/men/1.jpg',
-          'https://randomuser.me/api/portraits/men/2.jpg',
-          'https://randomuser.me/api/portraits/women/1.jpg',
-        ],
-        members: [
-          { name: 'Alice', avatarUrl: 'https://i.pravatar.cc/150?img=1' },
-          { name: 'Bob', avatarUrl: 'https://i.pravatar.cc/150?img=2' },
-          { name: 'Charlie', avatarUrl: 'https://i.pravatar.cc/150?img=3' },
-          { name: 'David', avatarUrl: 'https://i.pravatar.cc/150?img=4' },
-        ],
+export class OverdueProjectsList implements OnInit {
+  priority_Tasks: any[] = [];
+
+  constructor(private projectService: ProjectService) {}
+
+  ngOnInit(): void {
+    this.fetchOverdueProjects();
+  }
+
+  fetchOverdueProjects() {
+    this.projectService.getAllProjects().subscribe({
+      next: (projects) => {
+        const currentUserEmail = sessionStorage.getItem('email');
+        const today = new Date();
+        today.setHours(0, 0, 0, 0); // Normalize time to start of today
+
+        const filteredProjects = projects.filter(project => {
+          // Only include incomplete projects that have a due date
+          if (project.completed || !project.dueDate) return false;
+          
+          if (currentUserEmail) {
+            const isCreator = project.createdByUserEmail === currentUserEmail;
+            const isMember = (project.members || []).some((m: any) => m.userEmail === currentUserEmail);
+            if (!isCreator && !isMember) return false;
+          }
+
+          const dueDate = new Date(project.dueDate);
+          dueDate.setHours(0, 0, 0, 0);
+          const diffTime = dueDate.getTime() - today.getTime();
+          const dueDays = Math.round(diffTime / (1000 * 60 * 60 * 24));
+
+          // Include projects that are overdue (< 0) or due within the next 3 days
+          return dueDays <= 3;
+        });
+
+        // Sort them so the most overdue/urgent appear first
+        filteredProjects.sort((a, b) => new Date(a.dueDate!).getTime() - new Date(b.dueDate!).getTime());
+
+        this.priority_Tasks = filteredProjects.map((project, index) => {
+          const dueDate = new Date(project.dueDate!);
+          dueDate.setHours(0, 0, 0, 0);
+          const diffTime = dueDate.getTime() - today.getTime();
+          const dueDays = Math.round(diffTime / (1000 * 60 * 60 * 24));
+
+          const isOverdue = dueDays < 0;
+          const isToday = dueDays === 0;
+          const isTomorrow = dueDays === 1;
+
+          let dueDateStr = `In ${dueDays} days`;
+          if (isOverdue) dueDateStr = `Overdue by ${-dueDays} days!`;
+          else if (isToday) dueDateStr = 'Today!';
+          else if (isTomorrow) dueDateStr = 'Tomorrow!';
+
+          return {
+            name: project.name,
+            project: 'Project',
+            dueDate: dueDateStr,
+            dueDays: dueDays,
+            bgColor: project.color ? `bg-${project.color}-100` : 'bg-gray-100',
+            textColor: project.color ? `text-${project.color}-700` : 'text-gray-700'
+          };
+        });
       },
-    },
-    {
-      name: 'Implement Login',
-      project: 'CLient',
-      priority: 'Medium',
-      dueDate: '12:00 PM',
-      bgColor: 'bg-sky-100',
-      textColor: 'text-sky-700',
-      assigneeAvatar: {
-        images: [
-          'https://randomuser.me/api/portraits/men/1.jpg',
-          'https://randomuser.me/api/portraits/men/2.jpg',
-          'https://randomuser.me/api/portraits/women/1.jpg',
-        ],
-        members: [
-          { name: 'Alice', avatarUrl: 'https://i.pravatar.cc/150?img=1' },
-          { name: 'Bob', avatarUrl: 'https://i.pravatar.cc/150?img=2' },
-          { name: 'Charlie', avatarUrl: 'https://i.pravatar.cc/150?img=3' },
-          { name: 'David', avatarUrl: 'https://i.pravatar.cc/150?img=4' },
-        ],
-      },
-    },
-    {
-      name: 'Write Unit Tests',
-      project: 'Personal',
-      priority: 'Low',
-      dueDate: '4:30 PM',
-      bgColor: 'bg-emerald-100',
-      textColor: 'text-emerald-700',
-      assigneeAvatar: {
-        images: [
-          'https://randomuser.me/api/portraits/men/1.jpg',
-          'https://randomuser.me/api/portraits/men/2.jpg',
-          'https://randomuser.me/api/portraits/women/1.jpg',
-        ],
-        members: [
-          { name: 'Alice', avatarUrl: 'https://i.pravatar.cc/150?img=1' },
-          { name: 'Bob', avatarUrl: 'https://i.pravatar.cc/150?img=2' },
-          { name: 'Charlie', avatarUrl: 'https://i.pravatar.cc/150?img=3' },
-          { name: 'David', avatarUrl: 'https://i.pravatar.cc/150?img=4' },
-        ],
-      },
-    },
-    {
-      name: 'Deploy to Staging',
-      project: 'Marketing',
-      priority: 'High',
-      dueDate: '2:59 PM',
-      bgColor: 'bg-rose-100',
-      textColor: 'text-rose-700',
-      assigneeAvatar: {
-        images: [
-          'https://randomuser.me/api/portraits/men/1.jpg',
-          'https://randomuser.me/api/portraits/men/2.jpg',
-          'https://randomuser.me/api/portraits/women/1.jpg',
-        ],
-        members: [
-          { name: 'Alice', avatarUrl: 'https://i.pravatar.cc/150?img=1' },
-          { name: 'Bob', avatarUrl: 'https://i.pravatar.cc/150?img=2' },
-          { name: 'Charlie', avatarUrl: 'https://i.pravatar.cc/150?img=3' },
-          { name: 'David', avatarUrl: 'https://i.pravatar.cc/150?img=4' },
-        ],
-      },
-    },
-  ];
+      error: (err) => console.error('Error fetching overdue projects:', err)
+    });
+  }
 }

@@ -38,6 +38,7 @@ import { OverdueProjectsList } from './components/pages/projects/overdue-project
 import { Updates } from './components/pages/projects/updates/updates';
 import { FormProjectTask } from './components/common/form-project-task/form-project-task';
 import { authInterceptor } from './auth/auth-interceptor';
+import { FormDelete } from './components/common/form-delete/form-delete';
 
 @NgModule({
   declarations: [
@@ -67,7 +68,8 @@ import { authInterceptor } from './auth/auth-interceptor';
     AddProject,
     OverdueProjectsList,
     Updates,
-    FormProjectTask
+    FormProjectTask,
+    FormDelete
   ],
   imports: [
     MatSlideToggleModule,
