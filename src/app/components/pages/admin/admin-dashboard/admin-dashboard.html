@@ -63,6 +63,83 @@
 
   <!-- Detailed Lists Section -->
   <div class="grid grid-cols-1 xl:grid-cols-2 gap-6 mt-4 items-start">
-    
+    <!-- Recent Tasks -->
+    <div class="card bg-base-100 shadow-sm border border-base-200">
+      <div class="card-body p-0">
+        <div class="p-6 pb-4 border-b border-base-200 flex justify-between items-center">
+          <h3 class="text-lg font-bold">Recent Tasks</h3>
+          <button class="btn btn-sm btn-ghost">View All</button>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="table w-full">
+            <thead>
+              <tr>
+                <th>Task</th>
+                <th>Project</th>
+                <th>Priority</th>
+                <th>Assignees</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let task of recentTasks">
+                <td>
+                  <div class="font-medium">{{ task.title || task.name }}</div>
+                </td>
+                <td>
+                  <div class="badge badge-sm badge-ghost">{{ task.project }}</div>
+                </td>
+                <td>
+                  <div class="badge badge-sm border-none font-medium" [ngClass]="task.bgColor + ' ' + task.textColor">
+                    {{ task.priority }}
+                  </div>
+                </td>
+                <td>
+                  <div class="avatar-group -space-x-3 rtl:space-x-reverse">
+                    <div class="avatar border-none" *ngFor="let avatar of task.assigneeAvatar?.images" style="width: 2rem; height: 2rem;">
+                      <div class="w-8 rounded-full">
+                        <img [src]="avatar" alt="Assignee Avatar" />
+                      </div>
+                    </div>
+                    <div class="avatar placeholder border-none" *ngIf="!task.assigneeAvatar?.images?.length" style="width: 2rem; height: 2rem;">
+                      <div class="bg-neutral text-neutral-content rounded-full w-8">
+                        <span class="text-xs">?</span>
+                      </div>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="p-6 text-center text-sm text-base-content/60" *ngIf="recentTasks.length === 0">
+            No recent tasks found.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Project & Task Status Summary -->
+    <div class="card bg-base-100 shadow-sm border border-base-200">
+      <div class="card-body p-6">
+        <h3 class="text-lg font-bold mb-4 border-b border-base-200 pb-4">Completion Status</h3>
+        <div class="flex flex-col gap-6">
+          <!-- Completed Projects -->
+          <div>
+            <div class="flex justify-between items-center mb-2">
+              <span class="font-medium text-base-content/80">Completed Projects</span>
+              <span class="text-sm font-semibold">{{ completedProjects }} / {{ totalProjects }}</span>
+            </div>
+            <progress class="progress progress-primary w-full h-2" [value]="completedProjects" [max]="totalProjects || 1"></progress>
+          </div>
+          <!-- Completed Tasks -->
+          <div>
+            <div class="flex justify-between items-center mb-2">
+              <span class="font-medium text-base-content/80">Completed Tasks</span>
+              <span class="text-sm font-semibold">{{ completedTasks }} / {{ totalTasks }}</span>
+            </div>
+            <progress class="progress progress-success w-full h-2" [value]="completedTasks" [max]="totalTasks || 1"></progress>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>

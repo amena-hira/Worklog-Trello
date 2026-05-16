@@ -32,7 +32,11 @@ export class Login implements OnInit {
           this.authService.updateAuthState(response.token, response.role, response.email);
           this.taskService.clearCache();
           this.projectService.clearCache();
-          this.route.navigate(['']);
+          if(response.role === 'ROLE_ADMIN'){
+            this.route.navigate(['/admin/dashboard']);
+          } else {
+            this.route.navigate(['']);
+          }
         },
         error: (error) => {
           console.error(error);

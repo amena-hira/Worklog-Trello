@@ -60,8 +60,12 @@ export class AdminDashboard implements OnInit {
         this.pendingTasks = this.totalTasks - this.completedTasks;
         console.log(this.pendingTasks);
 
-        // Get the 5 most recently created or updated tasks to display
-        const sortedTasks = [...tasks].slice(0, 5);
+        // Sort tasks by most recently updated or created first, then take top 5
+        const sortedTasks = [...tasks].sort((a, b) => {
+          const dateA = new Date(a?.modified || a?.created  || 0).getTime();
+          const dateB = new Date(b?.modified || b?.created ||0).getTime();
+          return dateB - dateA; // Descending order (newest first)
+        }).slice(0, 5);
         this.recentTasks = this.mapTasksData(sortedTasks);
       },
       error: (err) => console.error('Error fetching tasks:', err),
