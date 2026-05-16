@@ -28,16 +28,8 @@ export class Tasks implements OnInit {
   private fetchTasks() {
     this.taskService.getAllTasks().subscribe({
       next: (tasks) => {
-        const currentUserEmail = sessionStorage.getItem('email');
-        
-        const relevantTasks = tasks.filter((task: TaskModel) => {
-          if (!currentUserEmail) return true;
-          const isCreator = task.createdByUserEmail === currentUserEmail;
-          const isAssignee = (task.assignees || []).some((a: any) => a.userEmail === currentUserEmail || a.email === currentUserEmail);
-          return isCreator || isAssignee;
-        });
-
-        const mappedTasks = this.mapTasksData(relevantTasks);
+        // The backend now provides exactly the tasks for the logged-in user
+        const mappedTasks = this.mapTasksData(tasks);
         this.distributeTasks(mappedTasks);
         this.calculateCounters(mappedTasks);
       },
@@ -46,6 +38,10 @@ export class Tasks implements OnInit {
   }
 
   private mapTasksData(tasks: any[]): any[] {
+    const currentUserEmail = sessionStorage.getItem('email');
+    const role = sessionStorage.getItem('role');
+    const isAdmin = role === 'admin' || role === 'ADMIN';
+
     return tasks.map((task, index) => {
       const mappedAssignees = (task.assignees || []).map((a: any, i: number) => ({
         ...a,
@@ -55,6 +51,7 @@ export class Tasks implements OnInit {
 
       return {
         ...task,
+        canEdit: isAdmin || task.createdByUserEmail === currentUserEmail,
         assigneeAvatar: {
           images: mappedAssignees.map((a: any) => a.avatarUrl),
           assignees: mappedAssignees
@@ -71,6 +68,12 @@ export class Tasks implements OnInit {
     const todayStr = new Date().toDateString();
     this.todayTasks = tasks.filter(task => task.dueDate && new Date(task.dueDate).toDateString() === todayStr);
     this.otherTasks = tasks.filter(task => !task.dueDate || new Date(task.dueDate).toDateString() !== todayStr);
+
+    this.otherTasks.sort((a, b) => {
+      if (!a.dueDate) return 1;
+      if (!b.dueDate) return -1;
+      return new Date(b.dueDate).getTime() - new Date(a.dueDate).getTime();
+    });
   }
 
   private calculateCounters(tasks: any[]) {
@@ -127,13 +130,7 @@ export class Tasks implements OnInit {
     if (!task || !task.id) return;
 
     this.taskService.deleteTask(task.id).subscribe({
-      next: () => {
-        this.todayTasks = this.todayTasks.filter(t => t.id !== task.id);
-        this.otherTasks = this.otherTasks.filter(t => t.id !== task.id);
-
-        // Re-calculate counters dynamically to update headers seamlessly
-        this.calculateCounters([...this.todayTasks, ...this.otherTasks]);
-      },
+      next: () => {},
       error: (err) => console.error('Error deleting task:', err)
     });
   }

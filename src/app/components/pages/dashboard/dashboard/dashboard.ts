@@ -53,9 +53,8 @@ export class Dashboard implements OnInit {
   }
 
   fetchUserTaskStatus(){
-    const email = sessionStorage.getItem('email');
-    if (email) {
-      this.taskService.getUserTaskStats(email).subscribe({
+   
+      this.taskService.getUserTaskStats().subscribe({
         next: (stats: any) => {
           this.cards[0].total = stats.completedTasks;
           this.cards[1].total = stats.incompleteTasks;
@@ -64,6 +63,6 @@ export class Dashboard implements OnInit {
         },
         error: (err) => console.error('Error fetching user tasks:', err)
       });
-    }
+    
   }
 }

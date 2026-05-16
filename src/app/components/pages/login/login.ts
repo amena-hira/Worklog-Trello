@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../service/auth/auth.service';
+import { TaskService } from '../../../service/tasks/task.service';
 
 @Component({
   selector: 'app-login',
@@ -12,7 +13,7 @@ import { AuthService } from '../../../service/auth/auth.service';
 export class Login implements OnInit {
   loginForm! : FormGroup;
 
-  constructor(private fb:FormBuilder, private route:Router, public authService: AuthService){}
+  constructor(private fb:FormBuilder, private route:Router, public authService: AuthService, private taskService: TaskService){}
 
   ngOnInit(): void {
     this.loginForm = this.fb.group({
@@ -28,6 +29,7 @@ export class Login implements OnInit {
         next: (response) => {
           console.log(response);
           this.authService.updateAuthState(response.token, response.role, response.email);
+          this.taskService.clearCache();
           this.route.navigate(['']);
         },
         error: (error) => {

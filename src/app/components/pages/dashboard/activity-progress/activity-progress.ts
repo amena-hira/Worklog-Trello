@@ -55,9 +55,7 @@ export class ActivityProgress implements AfterViewInit, OnDestroy {
   }
 
   fetchUserTaskStatus() {
-    const email = sessionStorage.getItem('email');
-    if (email) {
-      this.taskService.getUserTaskStats(email).subscribe({
+      this.taskService.getUserTaskStats().subscribe({
         next: (stats: any) => {
           this.totalTasks = stats.totalTasks || 0;
           this.completedTasks = stats.completedTasks || 0;
@@ -71,7 +69,7 @@ export class ActivityProgress implements AfterViewInit, OnDestroy {
         },
         error: (err) => console.error('Error fetching user task stats for chart:', err)
       });
-    }
+    
   }
 
   ngOnDestroy(): void {

@@ -13,7 +13,7 @@ export class TaskService {
   private apiURL = environment.apiUrl + 'tasks';
   private reload$ = new BehaviorSubject<void>(undefined);
   private tasksCache$: Observable<Task[]> = this.reload$.pipe(
-    switchMap(() => this.http.get<Task[]>(this.apiURL)),
+    switchMap(() => this.http.get<Task[]>(`${this.apiURL}/my-tasks`)),
     shareReplay(1)
   );
 
@@ -53,7 +53,7 @@ export class TaskService {
     );
   }
 
-  getUserTaskStats(email: string): Observable<UserTask> {
-    return this.http.get<UserTask>(`${this.apiURL}/stats/${email}`);
+  getUserTaskStats(): Observable<UserTask> {
+    return this.http.get<UserTask>(`${this.apiURL}/stats`);
   }
 }
