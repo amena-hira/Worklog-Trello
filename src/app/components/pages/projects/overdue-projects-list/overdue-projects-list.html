@@ -3,29 +3,67 @@
     <h3 class="card-title">Upcoming Due Dates</h3>
     <hr class="text-gray-200 mt-3" />
     <table class="table table-zebra">
+      <!-- head -->
+      <thead>
+        <tr>
+          <th class="text-black">Project Name</th>
+          <th>Due Date</th>
+          <th class="text-center">Created By</th>
+          <th class="text-center">Completed</th>
+          <th class="text-center">Actions</th>
+        </tr>
+      </thead>
       <tbody>
         <!-- row 1 -->
-        @for (task of priority_Tasks; track $index) {
-          <tr>
+        @for (project of projects; track $index) {
+          <tr
+            [ngClass]="
+              project.isOverdue && !project.completed
+                ? 'text-red-800 bg-error/20 [&>td]:bg-error/20 [&>th]:bg-error/20'
+                : ''
+            "
+          >
             <th>
               <div class="flex items-center gap-2">
                 <div>
-                  <i class="fa-solid fa-square-check {{ task.textColor }} text-xl mt-1"></i>
+                  <i class="fa-solid fa-briefcase {{ project.textColor }} text-xl mt-1"></i>
                 </div>
-                <h2 class="font-semibold">{{ task.name }}</h2>
+                <h2 class="font-semibold">{{ project.name }}</h2>
               </div>
             </th>
             <td>
-              <h4 class="badge badge-sm {{ task.bgColor }} {{ task.textColor }} whitespace-nowrap">
-                {{ task.project }}
-              </h4>
-            </td>
-            <td>
-              <i class="fa-regular fa-calendar {{ task.textColor }} font-light text-xs"></i>
-              <span [ngClass]="task.dueDays < 0 ? 'text-error font-semibold' : ''">{{ task.dueDate }}</span>
+              <i class="fa-regular fa-calendar {{ project.textColor }} font-light text-xs"></i>
+              <span
+                [ngClass]="project.isOverdue && !project.completed ? 'text-red-800 font-semibold' : ''"
+                >{{ project.dueDate }}</span
+              >
             </td>
             <td class="text-center">
-              <button type="button" class="btn btn-ghost btn-sm text-left">
+              <div class="tooltip" [attr.data-tip]="project.createdByUserEmail">
+                <div class="avatar">
+                  <div class="w-6 rounded-full cursor-help shadow-sm">
+                    <img
+                      src="https://i.pravatar.cc/150?u={{ project.createdByUserEmail }}"
+                      alt="Creator"
+                    />
+                  </div>
+                </div>
+              </div>
+            </td>
+            <td class="text-center">
+              <input
+                type="checkbox"
+                class="checkbox checkbox-sm rounded-sm {{ project.borderColor }}"
+                [checked]="project.completed"
+              />
+            </td>
+            
+            
+            <td class="text-center">
+              <button type="button" class="btn btn-ghost btn-sm text-left" [disabled]="!project.canEdit" (click)="onProjectEdit.emit(project)">
+                <i class="fa-solid fa-pen"></i>
+              </button>
+              <button type="button" class="btn btn-ghost btn-sm text-left" [disabled]="!project.canEdit" (click)="deleteModal.open(project)">
                 <i class="fa-solid fa-trash-can"></i>
               </button>
             </td>
@@ -35,3 +73,9 @@
     </table>
   </div>
 </div>
+
+<app-form-delete
+  #deleteModal
+  [itemType]="'project'"
+  (deleted)="onProjectDelete.emit($event)"
+></app-form-delete>

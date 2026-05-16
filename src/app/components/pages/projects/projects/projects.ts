@@ -10,6 +10,10 @@ import { Project } from '../../../../model/project';
 })
 export class Projects implements OnInit {
   projects: any[] = [];
+  totalProjectsCount = 0;
+  activeProjectsCount = 0;
+  completedProjectsCount = 0;
+  selectedProjectForEdit: any = null;
 
   constructor(private projectService: ProjectService) {}
 
@@ -17,19 +21,43 @@ export class Projects implements OnInit {
     this.fetchProjects();
   }
 
+  openCreateModal() {
+    this.selectedProjectForEdit = null;
+    const modal = document.getElementById('add_task') as HTMLDialogElement;
+    modal?.showModal();
+  }
+
+  openEditModal(project: any) {
+    this.selectedProjectForEdit = project;
+    const modal = document.getElementById('add_task') as HTMLDialogElement;
+    modal?.showModal();
+  }
+
   fetchProjects(): void {
     this.projectService.getAllProjects().subscribe({
       next: (projects) => {
         const currentUserEmail = sessionStorage.getItem('email');
         
-        let filteredProjects = projects.filter((project: Project) => {
-          if (project.completed) return false; // Excludes completed projects
-
-          if (!currentUserEmail) return true; // Fallback if no user is logged in
+        // Filter for projects created by the user, where they are a member, or an assignee of any of its tasks
+        const relevantProjects = projects.filter((project: any) => {
+          if (!currentUserEmail) return true;
+          
           const isCreator = project.createdByUserEmail === currentUserEmail;
-          const isMember = (project.members || []).some(m => m.userEmail === currentUserEmail);
-          return isCreator || isMember;
+          const isMember = (project.members || []).some((m: any) => m.userEmail === currentUserEmail || m.email === currentUserEmail);
+          const isTaskAssignee = (project.tasks || []).some((task: any) => 
+            (task.assignees || []).some((a: any) => a.userEmail === currentUserEmail || a.email === currentUserEmail)
+          );
+
+          return isCreator || isMember || isTaskAssignee;
         });
+
+        // Calculate dynamic counts
+        this.totalProjectsCount = relevantProjects.length;
+        this.completedProjectsCount = relevantProjects.filter((p: any) => p.completed).length;
+        this.activeProjectsCount = relevantProjects.filter((p: any) => !p.completed).length;
+
+        // Show only active ones in the recent list
+        let filteredProjects = relevantProjects.filter((project: any) => !project.completed);
 
         // Sort descending by created date (newest first)
         filteredProjects.sort((a, b) => {
@@ -38,13 +66,10 @@ export class Projects implements OnInit {
           return dateB - dateA;
         });
 
-        // Take only the recent 6 projects
-        const recentProjects = filteredProjects.slice(0, 6);
-
         const today = new Date();
         today.setHours(0, 0, 0, 0);
 
-        this.projects = recentProjects.map(project => {
+        this.projects = filteredProjects.map(project => {
           let dueDays = 0;
           if (project.dueDate) {
             const dueDate = new Date(project.dueDate);
@@ -64,6 +89,15 @@ export class Projects implements OnInit {
         });
       },
       error: (err) => console.error('Error fetching projects:', err)
+    });
+  }
+
+  deleteProject(project: any) {
+    if (!project || !project.id) return;
+
+    this.projectService.deleteProject(project.id).subscribe({
+      next: () => {},
+      error: (err) => console.error('Error deleting project:', err)
     });
   }
 }

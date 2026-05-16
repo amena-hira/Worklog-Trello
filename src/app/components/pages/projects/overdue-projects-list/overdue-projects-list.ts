@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { ProjectService } from '../../../../service/projects/project.service';
 
 @Component({
@@ -8,65 +8,57 @@ import { ProjectService } from '../../../../service/projects/project.service';
   styleUrl: './overdue-projects-list.css',
 })
 export class OverdueProjectsList implements OnInit {
-  priority_Tasks: any[] = [];
+  projects: any[] = [];
+
+  @Output() onProjectEdit = new EventEmitter<any>();
+  @Output() onProjectDelete = new EventEmitter<any>();
 
   constructor(private projectService: ProjectService) {}
 
   ngOnInit(): void {
-    this.fetchOverdueProjects();
+    this.fetchProjects();
   }
 
-  fetchOverdueProjects() {
+  fetchProjects() {
     this.projectService.getAllProjects().subscribe({
       next: (projects) => {
-        const currentUserEmail = sessionStorage.getItem('email');
         const today = new Date();
-        today.setHours(0, 0, 0, 0); // Normalize time to start of today
+        today.setHours(0, 0, 0, 0);
 
-        const filteredProjects = projects.filter(project => {
-          // Only include incomplete projects that have a due date
-          if (project.completed || !project.dueDate) return false;
-          
-          if (currentUserEmail) {
-            const isCreator = project.createdByUserEmail === currentUserEmail;
-            const isMember = (project.members || []).some((m: any) => m.userEmail === currentUserEmail);
-            if (!isCreator && !isMember) return false;
-          }
+        const currentUserEmail = sessionStorage.getItem('email');
+        const role = sessionStorage.getItem('role');
+        const isAdmin = role === 'admin' || role === 'ADMIN';
 
-          const dueDate = new Date(project.dueDate);
-          dueDate.setHours(0, 0, 0, 0);
-          const diffTime = dueDate.getTime() - today.getTime();
-          const dueDays = Math.round(diffTime / (1000 * 60 * 60 * 24));
-
-          // Include projects that are overdue (< 0) or due within the next 3 days
-          return dueDays <= 3;
+        // Sort them by due date in descending order
+        const sortedProjects = [...projects].sort((a: any, b: any) => {
+          if (!a.dueDate) return 1;
+          if (!b.dueDate) return -1;
+          return new Date(b.dueDate).getTime() - new Date(a.dueDate).getTime();
         });
 
-        // Sort them so the most overdue/urgent appear first
-        filteredProjects.sort((a, b) => new Date(a.dueDate!).getTime() - new Date(b.dueDate!).getTime());
-
-        this.priority_Tasks = filteredProjects.map((project, index) => {
-          const dueDate = new Date(project.dueDate!);
-          dueDate.setHours(0, 0, 0, 0);
-          const diffTime = dueDate.getTime() - today.getTime();
-          const dueDays = Math.round(diffTime / (1000 * 60 * 60 * 24));
-
-          const isOverdue = dueDays < 0;
-          const isToday = dueDays === 0;
-          const isTomorrow = dueDays === 1;
-
-          let dueDateStr = `In ${dueDays} days`;
-          if (isOverdue) dueDateStr = `Overdue by ${-dueDays} days!`;
-          else if (isToday) dueDateStr = 'Today!';
-          else if (isTomorrow) dueDateStr = 'Tomorrow!';
+        this.projects = sortedProjects.map((project: any) => {
+          let isOverdue = false;
+          if (project.dueDate) {
+            const dueDate = new Date(project.dueDate);
+            dueDate.setHours(0, 0, 0, 0);
+            isOverdue = dueDate.getTime() < today.getTime();
+          }
+          
+          const isCompleted = !!project.completed;
+          const showError = isOverdue && !isCompleted;
 
           return {
+            ...project,
             name: project.name,
             project: 'Project',
-            dueDate: dueDateStr,
-            dueDays: dueDays,
-            bgColor: project.color ? `bg-${project.color}-100` : 'bg-gray-100',
-            textColor: project.color ? `text-${project.color}-700` : 'text-gray-700'
+            dueDate: project.dueDate || 'No due date',
+            bgColor: showError ? 'bg-error/20' : (project.color ? `bg-${project.color}-100` : 'bg-gray-100'),
+            textColor: showError ? 'text-red-800' : (project.color ? `text-${project.color}-700` : 'text-gray-700'),
+            borderColor: showError ? 'border-red-500' : (project.color ? `border-${project.color}-500` : 'border-gray-500'),
+            createdByUserEmail: project.createdByUserEmail,
+            completed: isCompleted,
+            isOverdue: isOverdue,
+            canEdit: isAdmin || project.createdByUserEmail === currentUserEmail
           };
         });
       },

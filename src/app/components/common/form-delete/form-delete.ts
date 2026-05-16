@@ -10,13 +10,15 @@ export class FormDelete {
   @ViewChild('delete_modal') deleteModal!: ElementRef<HTMLDialogElement>;
 
   @Input() itemType: 'task' | 'project' = 'task';
+  itemName: string = '';
   itemToDelete: any = null;
 
   @Output() deleted = new EventEmitter<any>();
-
+  
   
   open(item: any) {
     this.itemToDelete = item;
+    this.itemName = item?.name || '';
     this.deleteModal.nativeElement.showModal();
   }
 

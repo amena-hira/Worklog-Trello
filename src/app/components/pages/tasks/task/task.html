@@ -114,15 +114,14 @@
               </div>
             </td>
             <td class="text-center">
-              @if (task.canEdit) {
-                <button
-                  type="button"
-                  class="btn btn-ghost btn-sm text-left"
-                  (click)="deleteModal.open(task)"
-                >
-                  <i class="fa-solid fa-trash-can"></i>
-                </button>
-              }
+          <button
+            type="button"
+            class="btn btn-ghost btn-sm text-left"
+            [disabled]="!task.canEdit"
+            (click)="deleteModal.open(task)"
+          >
+            <i class="fa-solid fa-trash-can"></i>
+          </button>
             </td>
           </tr>
         }

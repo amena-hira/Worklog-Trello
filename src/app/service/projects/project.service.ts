@@ -11,7 +11,7 @@ export class ProjectService {
   private apiUrl = environment.apiUrl + 'projects';
   private reload$ = new BehaviorSubject<void>(undefined);
   private projectsCache$: Observable<Project[]> = this.reload$.pipe(
-    switchMap(() => this.http.get<Project[]>(this.apiUrl)),
+    switchMap(() => this.http.get<Project[]>(`${this.apiUrl}/my-projects`)),
     shareReplay(1)
   );
 
