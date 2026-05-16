@@ -9,7 +9,7 @@ import { Component, ViewChild, ElementRef, Input, Output, EventEmitter } from '@
 export class FormDelete {
   @ViewChild('delete_modal') deleteModal!: ElementRef<HTMLDialogElement>;
 
-  @Input() itemType: 'task' | 'project' = 'task';
+  @Input() itemType: 'task' | 'project' | 'user' = 'task';
   itemName: string = '';
   itemToDelete: any = null;
 

@@ -12,6 +12,7 @@ import { Profile } from './components/pages/profile/profile';
 import { authGuard } from './auth/auth-guard';
 import { AdminDashboard } from './components/pages/admin/admin-dashboard/admin-dashboard';
 import { adminGuard } from './auth/admin/admin-guard';
+import { WorklogUsers } from './components/pages/admin/worklog-users/worklog-users';
 
 const routes: Routes = [
   {
@@ -35,6 +36,7 @@ const routes: Routes = [
       { path: 'profile', component: Profile },
       // Admin only route
       { path: 'admin/dashboard', component: AdminDashboard, canActivate: [adminGuard] },
+      { path: 'admin/users', component: WorklogUsers, canActivate: [adminGuard] },
     ]
   }
 ];

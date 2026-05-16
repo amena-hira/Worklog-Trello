@@ -1,0 +1,94 @@
+<div class="p-4 flex flex-col gap-6 w-full max-w-7xl mx-auto">
+  <!-- Header -->
+  <div class="flex justify-between items-center">
+    <h2>
+      <span class="text-3xl font-semibold">Users List</span>
+      <span class="text-base-content/60 ml-2 text-sm hidden md:inline-block"
+        >Manage and view all users</span
+      >
+    </h2>
+    <button
+      class="btn bg-sky-900 hover:bg-sky-800 text-white px-4 rounded-xl btn-md"
+      (click)="openCreateModal()"
+    >
+      <i class="fa-solid fa-plus"></i>
+      Add User
+    </button>
+  </div>
+
+  <!-- Users Table Card -->
+  <div class="card bg-base-100 shadow-sm border border-base-200">
+    <div class="card-body p-4">
+      <div class="p-6 pb-4 border-b border-base-200 flex justify-between items-center">
+        <h3 class="text-lg font-bold">All Users</h3>
+        <div class="join">
+          <input class="input input-sm input-bordered join-item" placeholder="Search users..." />
+          <button class="btn btn-sm btn-primary join-item">Search</button>
+        </div>
+      </div>
+
+      <div class="overflow-x-auto">
+        <table class="table table-zebra">
+          <thead>
+            <tr>
+              <th>User</th>
+              <th>Email</th>
+              <th>Role</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Loading State -->
+            @if (loading) {
+              <tr>
+                <td colspan="4" class="text-center p-6">
+                  <span class="loading loading-spinner loading-md text-primary"></span>
+                </td>
+              </tr>
+            } @else {
+              <!-- Data Display -->
+              @for (user of users; track $index) {
+                <tr>
+                  <td>
+                    <div class="font-medium">
+                      {{ user.name || user.first_name + ' ' + user.last_name || 'Unknown User' }}
+                    </div>
+                  </td>
+                  <td class="text-sm text-base-content/80">{{ user.email || 'N/A' }}</td>
+                  <td>
+                    <div class="badge badge-sm badge-ghost">{{ user.role || 'USER' }}</div>
+                  </td>
+                  <td>
+                    <button
+                      type="button"
+                      class="btn btn-ghost btn-sm text-left"
+                      (click)="openEditModal(user)"
+                    >
+                      <i class="fa-solid fa-pen text-green-800"></i>
+                    </button>
+                    <button
+                      type="button"
+                      class="btn btn-ghost btn-sm text-left"
+                      (click)="openDeleteModal(user)"
+                    >
+                      <i class="fa-solid fa-trash-can text-red-800"></i>
+                    </button>
+                  </td>
+                </tr>
+              } @empty {
+                <!-- Empty State -->
+                <tr>
+                  <td colspan="4" class="text-center p-6 text-base-content/60">No users found.</td>
+                </tr>
+              }
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<app-edit-profile [isAddMode]="isAddMode" [userData]="selectedUser" (profileUpdated)="fetchUsers()"></app-edit-profile>
+
+<app-form-delete itemType="user" (deleted)="onUserDeleted($event)"></app-form-delete>

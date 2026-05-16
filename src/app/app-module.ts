@@ -42,6 +42,7 @@ import { FormDelete } from './components/common/form-delete/form-delete';
 import { Profile } from './components/pages/profile/profile';
 import { EditProfile } from './components/modal/profile/edit-profile/edit-profile';
 import { AdminDashboard } from './components/pages/admin/admin-dashboard/admin-dashboard';
+import { WorklogUsers } from './components/pages/admin/worklog-users/worklog-users';
 
 @NgModule({
   declarations: [
@@ -75,7 +76,8 @@ import { AdminDashboard } from './components/pages/admin/admin-dashboard/admin-d
     FormDelete,
     Profile,
     EditProfile,
-    AdminDashboard
+    AdminDashboard,
+    WorklogUsers
   ],
   imports: [
     MatSlideToggleModule,

@@ -15,31 +15,64 @@ export class EditProfile implements OnInit {
 
   @Output() profileUpdated = new EventEmitter<any>();
 
+  @Input() isAddMode: boolean = false;
+
+  get isAdmin(): boolean {
+    return sessionStorage.getItem('authRole') === 'ROLE_ADMIN';
+  }
+
+  get canEditEmail(): boolean {
+    return this.isAddMode || this.isAdmin;
+  }
+
   // Using a setter dynamically watches for changes from the parent component
   @Input() 
   set userData(data: any) {
     this._userData = data;
     
+    // Helper to ensure gender case matches radio button values ('male', 'female')
+    const formattedGender = data?.gender 
+      ? data.gender.toLowerCase() 
+      : '';
+
     // If the form is already initialized, patch the new incoming data into it
-    if (this.profileForm && data) {
-      this.profileForm.patchValue({
-        first_name: data.firstName || '',
-        last_name: data.lastName || '',
-        email: data.email || '',
-        gender: data.gender || ''
-      });
+    if (this.profileForm) {
+      if (data) {
+        this.profileForm.patchValue({
+          first_name: data.first_name || '',
+          last_name: data.last_name || '',
+          email: data.email || '',
+          gender: formattedGender,
+          role: data.role || 'USER'
+        });
+        if (!this.canEditEmail) {
+          this.profileForm.get('email')?.disable();
+        } else {
+          this.profileForm.get('email')?.enable();
+        }
+      } else {
+        this.profileForm.reset();
+        if (this.canEditEmail) {
+          this.profileForm.get('email')?.enable();
+        }
+      }
     }
   }
 
   constructor(private fb: FormBuilder, private usersService: UsersService) {}
 
   ngOnInit(): void {
+    const initialGender = this._userData?.gender 
+      ? this._userData.gender.toLowerCase() 
+      : '';
+
     // Initialize the form explicitly using FormControls
     this.profileForm = this.fb.group({
-      first_name: new FormControl(this._userData?.firstName || '', [Validators.required]),
-      last_name: new FormControl(this._userData?.lastName || '', [Validators.required]),
-      email: new FormControl({ value: this._userData?.email || '', disabled: true }),
-      gender: new FormControl(this._userData?.gender || '')
+      first_name: new FormControl(this._userData?.first_name || '', [Validators.required]),
+      last_name: new FormControl(this._userData?.last_name || '', [Validators.required]),
+      email: new FormControl({ value: this._userData?.email || '', disabled: !this.canEditEmail }, [Validators.required, Validators.email]),
+      gender: new FormControl(initialGender),
+      role: new FormControl(this._userData?.role || 'ROLE_USER')
     });
   }
 
@@ -53,14 +86,37 @@ export class EditProfile implements OnInit {
       const updatedData = this.profileForm.getRawValue();
       console.log(updatedData);
       
-      
-      this.usersService.updateMe(updatedData).subscribe({
-        next: (res) => {
-          this.profileUpdated.emit(res);
-          this.closeModal();
-        },
-        error: (err) => console.error('Error updating profile:', err)
-      });
+      if (this.isAdmin && this.isAddMode) {
+        // Admin adding a new user
+        const payload = { ...updatedData, password: '123456' };
+        this.usersService.addUser(payload).subscribe({
+          next: (res) => {
+            this.profileUpdated.emit(res);
+            this.closeModal();
+          },
+          error: (err) => console.error('Error creating user:', err)
+        });
+      } else if (this.isAdmin && !this.isAddMode) {
+        // Admin updating an existing user
+        const payload = { ...updatedData, id: this._userData?.id };
+        console.log(payload, this._userData?.id)
+        this.usersService.updateUser(payload).subscribe({
+          next: (res) => {
+            this.profileUpdated.emit(res);
+            this.closeModal();
+          },
+          error: (err) => console.error('Error updating user:', err)
+        });
+      } else {
+        // Normal user updating their own profile
+        this.usersService.updateMe(updatedData).subscribe({
+          next: (res) => {
+            this.profileUpdated.emit(res);
+            this.closeModal();
+          },
+          error: (err) => console.error('Error updating profile:', err)
+        });
+      }
     }
   }
 
