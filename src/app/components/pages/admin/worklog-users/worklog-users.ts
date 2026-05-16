@@ -13,6 +13,7 @@ export class WorklogUsers {
   loading: boolean = true;
   selectedUser: any = null;
   isAddMode: boolean = false;
+  errorMessage: string | null = null;
 
   @ViewChild(FormDelete) deleteModal!: FormDelete;
 
@@ -24,14 +25,15 @@ export class WorklogUsers {
 
   fetchUsers() {
     this.loading = true;
+    this.errorMessage = null;
     this.usersService.getUsers().subscribe({
       next: (data) => {
         this.users = data || [];
         this.loading = false;
       },
       error: (err) => {
-        console.error('Error fetching users:', err);
         this.loading = false;
+        this.showError(err.error?.message || 'An unexpected error occurred while fetching users.');
       },
     });
   }
@@ -61,7 +63,14 @@ export class WorklogUsers {
       next: () => {
         this.fetchUsers(); // Refresh the list after successful deletion
       },
-      error: (err) => console.error('Error deleting user:', err),
+      error: (err) => {
+        this.showError(err.error?.message || 'An unexpected error occurred while deleting the user.');
+      },
     });
+  }
+
+  showError(message: string) {
+    this.errorMessage = message;
+    setTimeout(() => this.errorMessage = null, 5000); // Auto-hide after 5 seconds
   }
 }

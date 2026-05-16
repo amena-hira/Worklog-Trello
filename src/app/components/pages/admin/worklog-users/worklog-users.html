@@ -92,3 +92,12 @@
 <app-edit-profile [isAddMode]="isAddMode" [userData]="selectedUser" (profileUpdated)="fetchUsers()"></app-edit-profile>
 
 <app-form-delete itemType="user" (deleted)="onUserDeleted($event)"></app-form-delete>
+
+<!-- Global Error Toast for Worklog Users -->
+@if (errorMessage) {
+  <div class="toast toast-top toast-end z-50">
+    <div class="alert alert-error text-white shadow-lg">
+      <span><i class="fa-solid fa-circle-exclamation mr-2"></i> {{ errorMessage }}</span>
+    </div>
+  </div>
+}

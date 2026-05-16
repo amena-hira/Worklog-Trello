@@ -12,6 +12,7 @@ export class EditProfile implements OnInit {
   
   profileForm!: FormGroup;
   private _userData: any = null;
+  errorMessage: string | null = null;
 
   @Output() profileUpdated = new EventEmitter<any>();
 
@@ -29,6 +30,7 @@ export class EditProfile implements OnInit {
   @Input() 
   set userData(data: any) {
     this._userData = data;
+    this.errorMessage = null; // Reset errors when switching modes/users
     
     // Helper to ensure gender case matches radio button values ('male', 'female')
     const formattedGender = data?.gender 
@@ -84,6 +86,7 @@ export class EditProfile implements OnInit {
   onSubmit() {
     if (this.profileForm.valid) {
       const updatedData = this.profileForm.getRawValue();
+      this.errorMessage = null; // Clear previous errors
       console.log(updatedData);
       
       if (this.isAdmin && this.isAddMode) {
@@ -94,7 +97,10 @@ export class EditProfile implements OnInit {
             this.profileUpdated.emit(res);
             this.closeModal();
           },
-          error: (err) => console.error('Error creating user:', err)
+          error: (err) => {
+            console.error('Error creating user:', err);
+            this.errorMessage = err.error?.message || 'An unexpected error occurred while creating the user.';
+          }
         });
       } else if (this.isAdmin && !this.isAddMode) {
         // Admin updating an existing user
@@ -105,7 +111,10 @@ export class EditProfile implements OnInit {
             this.profileUpdated.emit(res);
             this.closeModal();
           },
-          error: (err) => console.error('Error updating user:', err)
+          error: (err) => {
+            console.error('Error updating user:', err);
+            this.errorMessage = err.error?.message || 'An unexpected error occurred while updating the user.';
+          }
         });
       } else {
         // Normal user updating their own profile
@@ -114,7 +123,10 @@ export class EditProfile implements OnInit {
             this.profileUpdated.emit(res);
             this.closeModal();
           },
-          error: (err) => console.error('Error updating profile:', err)
+          error: (err) => {
+            console.error('Error updating profile:', err);
+            this.errorMessage = err.error?.message || 'An unexpected error occurred while updating your profile.';
+          }
         });
       }
     }
