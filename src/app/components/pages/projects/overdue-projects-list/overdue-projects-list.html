@@ -1,12 +1,11 @@
 <div class="card bg-base-100 rounded-2xl shadow-sm p-4 h-full">
   <div class="overflow-x-auto md:overflow-visible">
-    <h3 class="card-title">Upcoming Due Dates</h3>
-    <hr class="text-gray-200 mt-3" />
     <table class="table table-zebra">
       <!-- head -->
       <thead>
         <tr>
           <th class="text-black">Project Name</th>
+          <th class="text-center">Total Tasks</th>
           <th>Due Date</th>
           <th class="text-center">Created By</th>
           <th class="text-center">Completed</th>
@@ -31,6 +30,9 @@
                 <h2 class="font-semibold">{{ project.name }}</h2>
               </div>
             </th>
+            <td class="text-center">
+              <span class="badge badge-sm badge-ghost">{{ project.totalTasks || 0 }}</span>
+            </td>
             <td>
               <i class="fa-regular fa-calendar {{ project.textColor }} font-light text-xs"></i>
               <span

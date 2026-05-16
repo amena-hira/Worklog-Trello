@@ -28,6 +28,14 @@ export class UsersService {
     return this.http.get<User>(`${this.apiURL}/email/${email}`);
   }
 
+  getMe(): Observable<User> {
+    return this.http.get<User>(`${this.apiURL}/me`);
+  }
+
+  updateMe(item: User): Observable<User> {
+    return this.http.put<User>(`${this.apiURL}/me`, item);
+  }
+
   updateUser(item: User): Observable<User> {
     return this.http.put<User>(`${this.apiURL}/${item.id}`, item);
   }

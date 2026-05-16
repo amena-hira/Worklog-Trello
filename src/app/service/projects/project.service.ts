@@ -10,8 +10,14 @@ import { Project } from '../../model/project';
 export class ProjectService {
   private apiUrl = environment.apiUrl + 'projects';
   private reload$ = new BehaviorSubject<void>(undefined);
+  
   private projectsCache$: Observable<Project[]> = this.reload$.pipe(
-    switchMap(() => this.http.get<Project[]>(`${this.apiUrl}/my-projects`)),
+    switchMap(() => {
+      const role = sessionStorage.getItem('authRole');
+      const isAdmin = role === 'admin' || role === 'ADMIN' || role === 'ROLE_ADMIN';
+      const endpoint = isAdmin ? this.apiUrl : `${this.apiUrl}/my-projects`;
+      return this.http.get<Project[]>(endpoint);
+    }),
     shareReplay(1)
   );
 

@@ -22,6 +22,8 @@ export class OverdueProjectsList implements OnInit {
   fetchProjects() {
     this.projectService.getAllProjects().subscribe({
       next: (projects) => {
+        console.log(projects);
+
         const today = new Date();
         today.setHours(0, 0, 0, 0);
 
@@ -51,6 +53,7 @@ export class OverdueProjectsList implements OnInit {
             ...project,
             name: project.name,
             project: 'Project',
+            totalTasks: project.totalTasks,
             dueDate: project.dueDate || 'No due date',
             bgColor: showError ? 'bg-error/20' : (project.color ? `bg-${project.color}-100` : 'bg-gray-100'),
             textColor: showError ? 'text-red-800' : (project.color ? `text-${project.color}-700` : 'text-gray-700'),

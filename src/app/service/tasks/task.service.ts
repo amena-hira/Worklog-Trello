@@ -13,7 +13,12 @@ export class TaskService {
   private apiURL = environment.apiUrl + 'tasks';
   private reload$ = new BehaviorSubject<void>(undefined);
   private tasksCache$: Observable<Task[]> = this.reload$.pipe(
-    switchMap(() => this.http.get<Task[]>(`${this.apiURL}/my-tasks`)),
+    switchMap(() => {
+      const role = sessionStorage.getItem('authRole');
+      const isAdmin = role === 'admin' || role === 'ADMIN' || role === 'ROLE_ADMIN';
+      const endpoint = isAdmin ? this.apiURL : `${this.apiURL}/my-tasks`;
+      return this.http.get<Task[]>(endpoint);
+    }),
     shareReplay(1)
   );
 

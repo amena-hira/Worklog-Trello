@@ -39,6 +39,9 @@ import { Updates } from './components/pages/projects/updates/updates';
 import { FormProjectTask } from './components/common/form-project-task/form-project-task';
 import { authInterceptor } from './auth/auth-interceptor';
 import { FormDelete } from './components/common/form-delete/form-delete';
+import { Profile } from './components/pages/profile/profile';
+import { EditProfile } from './components/modal/profile/edit-profile/edit-profile';
+import { AdminDashboard } from './components/pages/admin/admin-dashboard/admin-dashboard';
 
 @NgModule({
   declarations: [
@@ -69,7 +72,10 @@ import { FormDelete } from './components/common/form-delete/form-delete';
     OverdueProjectsList,
     Updates,
     FormProjectTask,
-    FormDelete
+    FormDelete,
+    Profile,
+    EditProfile,
+    AdminDashboard
   ],
   imports: [
     MatSlideToggleModule,

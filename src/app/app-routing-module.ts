@@ -8,7 +8,9 @@ import { Tasks } from './components/pages/tasks/tasks/tasks';
 import { Inbox } from './components/pages/inbox/inbox/inbox';
 import { Calendar } from './components/pages/calendar/calendar/calendar';
 import { Projects } from './components/pages/projects/projects/projects';
+import { Profile } from './components/pages/profile/profile';
 import { authGuard } from './auth/auth-guard';
+import { AdminDashboard } from './components/pages/admin/admin-dashboard/admin-dashboard';
 
 const routes: Routes = [
   {
@@ -28,6 +30,14 @@ const routes: Routes = [
       { path: 'inbox', component: Inbox, canActivate:[authGuard] },
       { path: 'calendar', component: Calendar, canActivate:[authGuard] },
       { path: 'projects', component: Projects, canActivate:[authGuard] },
+      { path: 'profile', component: Profile, canActivate:[authGuard] },
+    ]
+  },
+  {
+    path: '',
+    component: Main,
+    children: [
+      { path: 'admin', component: AdminDashboard, canActivate:[authGuard] },
     ]
   }
 ];

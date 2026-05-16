@@ -1,0 +1,68 @@
+<div class="p-4 flex flex-col gap-6 w-full max-w-7xl mx-auto">
+  <div class="flex justify-between items-center">
+    <h2>
+      <span class="text-3xl font-semibold">Admin Dashboard</span>
+      <span class="text-base-content/60 ml-2 text-sm hidden md:inline-block">System Overview</span>
+    </h2>
+  </div>
+
+  <!-- Top KPI Stats Section -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-2">
+    <!-- Total Users -->
+    <div class="card bg-base-100 shadow-sm border border-base-200">
+      <div class="card-body p-6 flex flex-row items-center justify-between">
+        <div>
+          <h3 class="text-base-content/70 font-semibold text-sm">Total Users</h3>
+          <p class="text-3xl font-bold mt-1 text-primary">{{ totalUsers }}</p>
+        </div>
+        <div class="bg-primary/10 p-4 rounded-2xl text-primary text-2xl">
+          <i class="fa-solid fa-users"></i>
+        </div>
+      </div>
+    </div>
+
+    <!-- Total Projects -->
+    <div class="card bg-base-100 shadow-sm border border-base-200">
+      <div class="card-body p-6 flex flex-row items-center justify-between">
+        <div>
+          <h3 class="text-base-content/70 font-semibold text-sm">Total Projects</h3>
+          <p class="text-3xl font-bold mt-1 text-indigo-600">{{ totalProjects }}</p>
+        </div>
+        <div class="bg-indigo-100 p-4 rounded-2xl text-indigo-700 text-2xl">
+          <i class="fa-solid fa-briefcase"></i>
+        </div>
+      </div>
+    </div>
+
+    <!-- Active Projects -->
+    <div class="card bg-base-100 shadow-sm border border-base-200">
+      <div class="card-body p-6 flex flex-row items-center justify-between">
+        <div>
+          <h3 class="text-base-content/70 font-semibold text-sm">Active Projects</h3>
+          <p class="text-3xl font-bold mt-1 text-cyan-600">{{ activeProjects }}</p>
+        </div>
+        <div class="bg-cyan-100 p-4 rounded-2xl text-cyan-700 text-2xl">
+          <i class="fa-solid fa-spinner"></i>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pending Tasks -->
+    <div class="card bg-base-100 shadow-sm border border-base-200">
+      <div class="card-body p-6 flex flex-row items-center justify-between">
+        <div>
+          <h3 class="text-base-content/70 font-semibold text-sm">Pending Tasks</h3>
+          <p class="text-3xl font-bold mt-1 text-warning">{{ pendingTasks }}</p>
+        </div>
+        <div class="bg-warning/10 p-4 rounded-2xl text-warning text-2xl">
+          <i class="fa-solid fa-clock"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Detailed Lists Section -->
+  <div class="grid grid-cols-1 xl:grid-cols-2 gap-6 mt-4 items-start">
+    
+  </div>
+</div>

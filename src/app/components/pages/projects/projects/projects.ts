@@ -36,28 +36,17 @@ export class Projects implements OnInit {
   fetchProjects(): void {
     this.projectService.getAllProjects().subscribe({
       next: (projects) => {
+        
         const currentUserEmail = sessionStorage.getItem('email');
         
-        // Filter for projects created by the user, where they are a member, or an assignee of any of its tasks
-        const relevantProjects = projects.filter((project: any) => {
-          if (!currentUserEmail) return true;
-          
-          const isCreator = project.createdByUserEmail === currentUserEmail;
-          const isMember = (project.members || []).some((m: any) => m.userEmail === currentUserEmail || m.email === currentUserEmail);
-          const isTaskAssignee = (project.tasks || []).some((task: any) => 
-            (task.assignees || []).some((a: any) => a.userEmail === currentUserEmail || a.email === currentUserEmail)
-          );
-
-          return isCreator || isMember || isTaskAssignee;
-        });
-
-        // Calculate dynamic counts
-        this.totalProjectsCount = relevantProjects.length;
-        this.completedProjectsCount = relevantProjects.filter((p: any) => p.completed).length;
-        this.activeProjectsCount = relevantProjects.filter((p: any) => !p.completed).length;
+        // The backend now provides exactly the projects for the logged-in user
+        this.totalProjectsCount = projects.length;
+        console.log(this.totalProjectsCount);
+        this.completedProjectsCount = projects.filter((p: any) => p.completed).length;
+        this.activeProjectsCount = projects.filter((p: any) => !p.completed).length;
 
         // Show only active ones in the recent list
-        let filteredProjects = relevantProjects.filter((project: any) => !project.completed);
+        let filteredProjects = projects.filter((project: any) => !project.completed);
 
         // Sort descending by created date (newest first)
         filteredProjects.sort((a, b) => {
@@ -100,4 +89,6 @@ export class Projects implements OnInit {
       error: (err) => console.error('Error deleting project:', err)
     });
   }
+
+
 }
