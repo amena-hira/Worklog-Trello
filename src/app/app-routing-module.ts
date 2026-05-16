@@ -11,6 +11,7 @@ import { Projects } from './components/pages/projects/projects/projects';
 import { Profile } from './components/pages/profile/profile';
 import { authGuard } from './auth/auth-guard';
 import { AdminDashboard } from './components/pages/admin/admin-dashboard/admin-dashboard';
+import { adminGuard } from './auth/admin/admin-guard';
 
 const routes: Routes = [
   {
@@ -24,20 +25,16 @@ const routes: Routes = [
   {
     path: '',
     component: Main,
+    canActivate: [authGuard], // Protects all children inside this block
     children: [
-      { path: '', component: Dashboard, canActivate:[authGuard] },
-      { path: 'tasks', component: Tasks, canActivate:[authGuard] },
-      { path: 'inbox', component: Inbox, canActivate:[authGuard] },
-      { path: 'calendar', component: Calendar, canActivate:[authGuard] },
-      { path: 'projects', component: Projects, canActivate:[authGuard] },
-      { path: 'profile', component: Profile, canActivate:[authGuard] },
-    ]
-  },
-  {
-    path: '',
-    component: Main,
-    children: [
-      { path: 'admin/dashboard', component: AdminDashboard, canActivate:[authGuard] },
+      { path: '', component: Dashboard },
+      { path: 'tasks', component: Tasks },
+      { path: 'inbox', component: Inbox },
+      { path: 'calendar', component: Calendar },
+      { path: 'projects', component: Projects },
+      { path: 'profile', component: Profile },
+      // Admin only route
+      { path: 'admin/dashboard', component: AdminDashboard, canActivate: [adminGuard] },
     ]
   }
 ];
