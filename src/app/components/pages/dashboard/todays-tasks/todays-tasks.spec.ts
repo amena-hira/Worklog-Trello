@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { PriorotyTable } from './prioroty-table';
+import { TodaysTasks } from './todays-tasks';
 
-describe('PriorotyTable', () => {
-  let component: PriorotyTable;
-  let fixture: ComponentFixture<PriorotyTable>;
+describe('TodaysTasks', () => {
+  let component: TodaysTasks;
+  let fixture: ComponentFixture<TodaysTasks>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [PriorotyTable]
+      declarations: [TodaysTasks]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(PriorotyTable);
+    fixture = TestBed.createComponent(TodaysTasks);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

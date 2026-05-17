@@ -16,7 +16,6 @@ import { AuthCard } from './components/shared/auth-card/auth-card';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Main } from './components/layout/main/main';
 import { DrawerSidebar } from './components/shared/drawer-sidebar/drawer-sidebar';
-import { PriorotyTable } from './components/pages/dashboard/prioroty-table/prioroty-table';
 import { TaskActivity } from './components/pages/dashboard/task-activity/task-activity';
 import { Calender } from './components/pages/dashboard/calender/calender';
 import { ProjectStatus } from './components/pages/dashboard/project-status/project-status';
@@ -46,6 +45,8 @@ import { WorklogUsers } from './components/pages/admin/worklog-users/worklog-use
 import { Toast } from './components/common/toast/toast';
 import { Alert } from './components/common/alert/alert';
 import { Loader } from './components/common/loader/loader';
+import { TodaysTasks } from './components/pages/dashboard/todays-tasks/todays-tasks';
+import { Quote } from './components/pages/dashboard/quote/quote';
 
 @NgModule({
   declarations: [
@@ -57,7 +58,6 @@ import { Loader } from './components/common/loader/loader';
     AuthCard,
     Main,
     DrawerSidebar,
-    PriorotyTable,
     TaskActivity,
     Calender,
     ProjectStatus,
@@ -83,7 +83,9 @@ import { Loader } from './components/common/loader/loader';
     WorklogUsers,
     Toast,
     Alert,
-    Loader
+    Loader,
+    TodaysTasks,
+    Quote
   ],
   imports: [
     MatSlideToggleModule,

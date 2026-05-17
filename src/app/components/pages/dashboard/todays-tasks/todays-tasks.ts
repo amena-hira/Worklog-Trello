@@ -1,45 +1,45 @@
-import { Component, OnInit } from '@angular/core';
-import { Task } from '../../../../model/task';
+import { Component } from '@angular/core';
 import { TaskService } from '../../../../service/tasks/task.service';
+import { Task } from '../../../../model/task';
 
 @Component({
-  selector: 'app-prioroty-table',
+  selector: 'app-todays-tasks',
   standalone: false,
-  templateUrl: './prioroty-table.html',
-  styleUrl: './prioroty-table.css',
+  templateUrl: './todays-tasks.html',
+  styleUrl: './todays-tasks.css',
 })
-export class PriorotyTable implements OnInit {
-  
-
+export class TodaysTasks {
   today_tasks: Task[] = [];
   selectedTaskForEdit: any = null;
 
-  constructor(private taskService:TaskService) { }
+  constructor(private taskService: TaskService) {}
 
   ngOnInit(): void {
-    this.fetchTodaysTasks()
+    this.fetchTodaysTasks();
   }
 
   fetchTodaysTasks() {
-    console.log('Fetching today\'s tasks...');
-    this.taskService.getAllTasks().subscribe(tasks => {
+    console.log("Fetching today's tasks...");
+    this.taskService.getAllTasks().subscribe((tasks) => {
       console.log('All tasks fetched:', tasks);
       const today = new Date();
       const currentUserEmail = sessionStorage.getItem('email');
-      
-      this.today_tasks = tasks.filter(task => {
+
+      this.today_tasks = tasks.filter((task) => {
         if (!task.dueDate) return false;
         const dueDate = new Date(task.dueDate);
         const isToday = dueDate.toDateString() === today.toDateString();
-        
+
         if (!currentUserEmail) return isToday;
-        
-        const isAssignee = (task.assignees || []).some((a: any) => a.userEmail === currentUserEmail || a.email === currentUserEmail);
+
+        const isAssignee = (task.assignees || []).some(
+          (a: any) => a.userEmail === currentUserEmail || a.email === currentUserEmail,
+        );
         const isCreator = task.createdByUserEmail === currentUserEmail;
-        
+
         return isToday && (isAssignee || isCreator);
       });
-      console.log("Todays Task: ",this.today_tasks);
+      console.log('Todays Task: ', this.today_tasks);
     });
   }
 
