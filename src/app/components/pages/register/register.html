@@ -21,10 +21,23 @@
         <label for="gender" class="inline-block ml-1">{{ gender.viewValue }}</label>
       }
     </div>
-    <button class="btn btn-neutral mt-4 tracking-wider">Sign up</button>
+    <button class="btn btn-neutral mt-4 tracking-wider" [disabled]="signupForm.invalid || isSubmitting">
+      @if (isSubmitting) {
+        <span class="loading loading-spinner loading-sm"></span> Signing up...
+      } @else {
+        Sign up
+      }
+    </button>
   </form>
   <p class="pt-4 text-center text-gray-700">
     Already have an WorkLog account?
     <a routerLink="/login" class="link link-hover text-blue-500">Log in</a>
   </p>
 </app-auth-card>
+
+@if (errorMessage) {
+  <app-toast [errorMessage]="errorMessage"></app-toast>
+}
+@if (successMessage) {
+  <app-toast [successMessage]="successMessage"></app-toast>
+}
