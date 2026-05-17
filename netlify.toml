@@ -1,10 +1,11 @@
 [build]
-  # The command Netlify should run to build your Angular app
   command = "npm run build"
-  
-  # The directory where your built files are placed. 
-  # IMPORTANT: Check your angular.json "outputPath" to confirm if it should be "dist/todo/browser" or just "dist/todo"
-  publish = "dist/todo/browser"
+  # Fix: Use capital 'T' because Linux servers are case-sensitive
+  publish = "dist/Todo/browser"
+
+[build.environment]
+  # Fix: Force Netlify to use Node 20, which is required by Angular 17+ and the Netlify Angular plugin
+  NODE_VERSION = "20"
 
 [[redirects]]
   from = "/*"
