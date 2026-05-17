@@ -12,58 +12,102 @@ import { ProjectService } from '../../../service/projects/project.service';
   styleUrl: './login.css',
 })
 export class Login implements OnInit {
-  loginForm! : FormGroup;
+  loginForm!: FormGroup;
   isSubmitting = false;
   errorMessage: string | null = null;
   successMessage: string | null = null;
 
-  constructor(private fb:FormBuilder, private route:Router, public authService: AuthService, private taskService: TaskService, private projectService:ProjectService){}
+  constructor(
+    private fb: FormBuilder,
+    private route: Router,
+    public authService: AuthService,
+    private taskService: TaskService,
+    private projectService: ProjectService,
+  ) {}
 
   ngOnInit(): void {
     this.loginForm = this.fb.group({
-      email: ['',[Validators.required, Validators.email]],
-      password: ['',[Validators.required, Validators.minLength(6)]]
-    })
+      email: [
+        '',
+        [
+          Validators.required,
+          Validators.email,
+          Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/),
+        ],
+      ],
+      password: ['', [Validators.required, Validators.minLength(6)]],
+    });
   }
 
-  onSubmit(){
-    if(this.loginForm.valid){
-      this.isSubmitting = true;
-      this.errorMessage = null;
-      this.successMessage = null;
-      console.log(this.loginForm.value);
-      this.authService.login(this.loginForm.value).subscribe({
-        next: (response) => {
-          console.log(response);
-          this.authService.updateAuthState(response.token, response.role, response.email);
-          this.taskService.clearCache();
-          this.projectService.clearCache();
-          this.isSubmitting = false;
-          this.showSuccess('Login successful! Redirecting...');
-          setTimeout(() => {
-            if(response.role === 'ROLE_ADMIN'){
-              this.route.navigate(['/admin/dashboard']);
-            } else {
-              this.route.navigate(['']);
-            }
-          }, 1500); // Brief delay so the user can see the success toast
-        },
-        error: (error) => {
-          console.error(error);
-          this.showError(error.error?.message || 'An unexpected error occurred while logging in.');
-          this.isSubmitting = false;
-        }
-      });
+  getErrorMessage(controlName: string): string | null {
+    const control = this.loginForm.get(controlName);
+
+    if (!control || !(control.touched || control.dirty) || !control.errors) {
+      return null;
     }
+
+    const fieldNames: Record<string, string> = {
+      email: 'Email',
+      password: 'Password',
+    };
+
+    const fieldName = fieldNames[controlName];
+
+    if (control.errors['required']) {
+      return `${fieldName} is required`;
+    }
+
+    if (control.errors['email'] || control.errors['pattern']) {
+      return 'Please enter a valid email address';
+    }
+
+    if (control.errors['minlength']) {
+      return `${fieldName} must be at least ${control.errors['minlength'].requiredLength} characters`;
+    }
+
+    return null;
+  }
+
+  onSubmit() {
+    if (this.loginForm.invalid) {
+      this.loginForm.markAllAsTouched();
+      return;
+    }
+
+    this.isSubmitting = true;
+    this.errorMessage = null;
+    this.successMessage = null;
+
+    this.authService.login(this.loginForm.value).subscribe({
+      next: (response) => {
+        this.authService.updateAuthState(response.token, response.role, response.email);
+        this.taskService.clearCache();
+        this.projectService.clearCache();
+        this.isSubmitting = false;
+        this.showSuccess('Login successful! Redirecting...');
+
+        setTimeout(() => {
+          if (response.role === 'ROLE_ADMIN') {
+            this.route.navigate(['/admin/dashboard']);
+          } else {
+            this.route.navigate(['']);
+          }
+        }, 1500);
+      },
+      error: (error) => {
+        this.showError(error.error?.message || 'An unexpected error occurred while logging in.');
+        this.isSubmitting = false;
+      },
+    });
   }
 
   showError(message: string) {
-      this.errorMessage = message;
-      setTimeout(() => this.errorMessage = null, 5000); // Auto-hide after 5 seconds
-    }
+    this.errorMessage = message;
+    setTimeout(() => (this.errorMessage = null), 5000); // Auto-hide after 5 seconds
+  }
 
   showSuccess(message: string) {
-      this.successMessage = message;
-      setTimeout(() => this.successMessage = null, 5000); // Auto-hide after 5 seconds
-    }
+    this.successMessage = message;
+    setTimeout(() => (this.successMessage = null), 5000); // Auto-hide after 5 seconds
+  }
 }

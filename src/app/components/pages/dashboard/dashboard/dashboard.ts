@@ -9,7 +9,13 @@ import { TaskService } from '../../../../service/tasks/task.service';
   styleUrl: './dashboard.css',
 })
 export class Dashboard implements OnInit {
-  today = new Date()
+  user_name?: string;
+  loading = true;
+  errorMessage: string | null = null;
+  
+  today = new Date();
+  currentYear = this.today.getFullYear();
+
   cards = [
     {
       title: 'Completed',
@@ -32,19 +38,13 @@ export class Dashboard implements OnInit {
     { title: 'Total Tasks', total: 0, icon: 'fa-solid fa-list-check', color: 'text-teal-500' },
   ];
 
-  currentYear = this.today.getFullYear();
-
   constructor(public userService:UsersService, public taskService:TaskService) {}
-
-  user_name?: string;
-  loading = true;
-  errorMessage: string | null = null;
 
   ngOnInit(): void {
     const email = sessionStorage.getItem('email');
     this.loading = true;
     this.errorMessage = null;
-    
+
     let completeCount = 0;
     const checkDone = () => {
       completeCount++;

@@ -1,13 +1,33 @@
 <app-auth-card>
   <form [formGroup]="signupForm" (ngSubmit)="onSubmit()" class="fieldset">
-    <label class="label">Last Name</label>
-    <input type="text" class="input w-full" placeholder="Last Name" formControlName="last_name"/>
     <label class="label">First Name</label>
     <input type="text" class="input w-full" placeholder="First Name" formControlName="first_name"/>
+    @if (getErrorMessage('first_name')) {
+      <p class="text-red-500 text-sm mt-1">
+        {{ getErrorMessage('first_name') }}
+      </p>
+    }
+    <label class="label">Last Name</label>
+    <input type="text" class="input w-full" placeholder="Last Name" formControlName="last_name"/>
+    @if (getErrorMessage('last_name')) {
+      <p class="text-red-500 text-sm mt-1">
+        {{ getErrorMessage('last_name') }}
+      </p>
+    }
     <label class="label">Email</label>
     <input type="email" class="input w-full" placeholder="Email" formControlName="email"/>
+    @if (getErrorMessage('email')) {
+      <p class="text-red-500 text-sm mt-1">
+        {{ getErrorMessage('email') }}
+      </p>
+    }
     <label class="label">Password</label>
     <input type="password" class="input w-full" placeholder="Password" formControlName="password"/>
+    @if (getErrorMessage('password')) {
+      <p class="text-red-500 text-sm mt-1">
+        {{ getErrorMessage('password') }}
+      </p>
+    }
     <label class="label">Gender</label>
     <div class="flex items-center">
       @for (gender of genders; track gender.value; let isFirst = $first) {
@@ -21,6 +41,11 @@
         <label for="gender" class="inline-block ml-1">{{ gender.viewValue }}</label>
       }
     </div>
+    @if (getErrorMessage('gender')) {
+      <p class="text-red-500 text-sm mt-1">
+        {{ getErrorMessage('gender') }}
+      </p>
+    }
     <button class="btn btn-neutral mt-4 tracking-wider" [disabled]="signupForm.invalid || isSubmitting">
       @if (isSubmitting) {
         <span class="loading loading-spinner loading-sm"></span> Signing up...
