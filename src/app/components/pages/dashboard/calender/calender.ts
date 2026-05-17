@@ -15,6 +15,8 @@ export class Calender implements OnInit{
   today = new Date();
   calendarDays: any[] = [];
   weekDays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  loading = true;
+  errorMessage: string | null = null;
 
   constructor(private taskService: TaskService) {}
 
@@ -23,6 +25,8 @@ export class Calender implements OnInit{
   }
 
   fetchTasks() {
+    this.loading = true;
+    this.errorMessage = null;
     this.taskService.getAllTasks().subscribe({
       next: (tasks) => {
         const currentUserEmail = sessionStorage.getItem('email');
@@ -36,8 +40,13 @@ export class Calender implements OnInit{
 
         this.priority_Tasks = relevantTasks;
         this.generateCalendar(); // Re-generate calendar once tasks load
+        this.loading = false;
       },
-      error: (err) => console.error('Error fetching tasks for calendar:', err)
+      error: (err) => {
+        console.error('Error fetching tasks for calendar:', err);
+        this.errorMessage = err?.error?.message || 'Failed to fetch calendar tasks.';
+        this.loading = false;
+      }
     });
   }
 

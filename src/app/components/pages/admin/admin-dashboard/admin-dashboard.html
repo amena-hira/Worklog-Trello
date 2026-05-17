@@ -6,140 +6,158 @@
     </h2>
   </div>
 
-  <!-- Top KPI Stats Section -->
-  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-2">
-    <!-- Total Users -->
-    <div class="card bg-base-100 shadow-sm border border-base-200">
-      <div class="card-body p-6 flex flex-row items-center justify-between">
-        <div>
-          <h3 class="text-base-content/70 font-semibold text-sm">Total Users</h3>
-          <p class="text-3xl font-bold mt-1 text-primary">{{ totalUsers }}</p>
-        </div>
-        <div class="bg-primary/10 p-4 rounded-2xl text-primary text-2xl">
-          <i class="fa-solid fa-users"></i>
-        </div>
-      </div>
+  @if (loading) {
+    <div class="flex justify-center items-center h-64 w-full">
+      <span class="loading loading-spinner loading-lg text-sky-600"></span>
     </div>
-
-    <!-- Total Projects -->
-    <div class="card bg-base-100 shadow-sm border border-base-200">
-      <div class="card-body p-6 flex flex-row items-center justify-between">
-        <div>
-          <h3 class="text-base-content/70 font-semibold text-sm">Total Projects</h3>
-          <p class="text-3xl font-bold mt-1 text-indigo-600">{{ totalProjects }}</p>
-        </div>
-        <div class="bg-indigo-100 p-4 rounded-2xl text-indigo-700 text-2xl">
-          <i class="fa-solid fa-briefcase"></i>
-        </div>
-      </div>
-    </div>
-
-    <!-- Active Projects -->
-    <div class="card bg-base-100 shadow-sm border border-base-200">
-      <div class="card-body p-6 flex flex-row items-center justify-between">
-        <div>
-          <h3 class="text-base-content/70 font-semibold text-sm">Active Projects</h3>
-          <p class="text-3xl font-bold mt-1 text-cyan-600">{{ activeProjects }}</p>
-        </div>
-        <div class="bg-cyan-100 p-4 rounded-2xl text-cyan-700 text-2xl">
-          <i class="fa-solid fa-spinner"></i>
-        </div>
-      </div>
-    </div>
-
-    <!-- Pending Tasks -->
-    <div class="card bg-base-100 shadow-sm border border-base-200">
-      <div class="card-body p-6 flex flex-row items-center justify-between">
-        <div>
-          <h3 class="text-base-content/70 font-semibold text-sm">Pending Tasks</h3>
-          <p class="text-3xl font-bold mt-1 text-warning">{{ pendingTasks }}</p>
-        </div>
-        <div class="bg-warning/10 p-4 rounded-2xl text-warning text-2xl">
-          <i class="fa-solid fa-clock"></i>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Detailed Lists Section -->
-  <div class="grid grid-cols-1 xl:grid-cols-2 gap-6 mt-4 items-start">
-    <!-- Recent Tasks -->
-    <div class="card bg-base-100 shadow-sm border border-base-200">
-      <div class="card-body p-0">
-        <div class="p-6 pb-4 border-b border-base-200 flex justify-between items-center">
-          <h3 class="text-lg font-bold">Recent Tasks</h3>
-          <button class="btn btn-sm btn-ghost">View All</button>
-        </div>
-        <div class="overflow-x-auto">
-          <table class="table w-full">
-            <thead>
-              <tr>
-                <th>Task</th>
-                <th>Project</th>
-                <th>Priority</th>
-                <th>Assignees</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let task of recentTasks">
-                <td>
-                  <div class="font-medium">{{ task.title || task.name }}</div>
-                </td>
-                <td>
-                  <div class="badge badge-sm badge-ghost">{{ task.project }}</div>
-                </td>
-                <td>
-                  <div class="badge badge-sm border-none font-medium" [ngClass]="task.bgColor + ' ' + task.textColor">
-                    {{ task.priority }}
-                  </div>
-                </td>
-                <td>
-                  <div class="avatar-group -space-x-3 rtl:space-x-reverse">
-                    <div class="avatar border-none" *ngFor="let avatar of task.assigneeAvatar?.images" style="width: 2rem; height: 2rem;">
-                      <div class="w-8 rounded-full">
-                        <img [src]="avatar" alt="Assignee Avatar" />
-                      </div>
-                    </div>
-                    <div class="avatar placeholder border-none" *ngIf="!task.assigneeAvatar?.images?.length" style="width: 2rem; height: 2rem;">
-                      <div class="bg-neutral text-neutral-content rounded-full w-8">
-                        <span class="text-xs">?</span>
-                      </div>
-                    </div>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-          <div class="p-6 text-center text-sm text-base-content/60" *ngIf="recentTasks.length === 0">
-            No recent tasks found.
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Project & Task Status Summary -->
-    <div class="card bg-base-100 shadow-sm border border-base-200">
-      <div class="card-body p-6">
-        <h3 class="text-lg font-bold mb-4 border-b border-base-200 pb-4">Completion Status</h3>
-        <div class="flex flex-col gap-6">
-          <!-- Completed Projects -->
+  } @else {
+    <!-- Top KPI Stats Section -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-2">
+      <!-- Total Users -->
+      <div class="card bg-base-100 shadow-sm border border-base-200">
+        <div class="card-body p-6 flex flex-row items-center justify-between">
           <div>
-            <div class="flex justify-between items-center mb-2">
-              <span class="font-medium text-base-content/80">Completed Projects</span>
-              <span class="text-sm font-semibold">{{ completedProjects }} / {{ totalProjects }}</span>
-            </div>
-            <progress class="progress progress-primary w-full h-2" [value]="completedProjects" [max]="totalProjects || 1"></progress>
+            <h3 class="text-base-content/70 font-semibold text-sm">Total Users</h3>
+            <p class="text-3xl font-bold mt-1 text-primary">{{ totalUsers }}</p>
           </div>
-          <!-- Completed Tasks -->
+          <div class="bg-primary/10 p-4 rounded-2xl text-primary text-2xl">
+            <i class="fa-solid fa-users"></i>
+          </div>
+        </div>
+      </div>
+
+      <!-- Total Projects -->
+      <div class="card bg-base-100 shadow-sm border border-base-200">
+        <div class="card-body p-6 flex flex-row items-center justify-between">
           <div>
-            <div class="flex justify-between items-center mb-2">
-              <span class="font-medium text-base-content/80">Completed Tasks</span>
-              <span class="text-sm font-semibold">{{ completedTasks }} / {{ totalTasks }}</span>
-            </div>
-            <progress class="progress progress-success w-full h-2" [value]="completedTasks" [max]="totalTasks || 1"></progress>
+            <h3 class="text-base-content/70 font-semibold text-sm">Total Projects</h3>
+            <p class="text-3xl font-bold mt-1 text-indigo-600">{{ totalProjects }}</p>
+          </div>
+          <div class="bg-indigo-100 p-4 rounded-2xl text-indigo-700 text-2xl">
+            <i class="fa-solid fa-briefcase"></i>
+          </div>
+        </div>
+      </div>
+
+      <!-- Active Projects -->
+      <div class="card bg-base-100 shadow-sm border border-base-200">
+        <div class="card-body p-6 flex flex-row items-center justify-between">
+          <div>
+            <h3 class="text-base-content/70 font-semibold text-sm">Active Projects</h3>
+            <p class="text-3xl font-bold mt-1 text-cyan-600">{{ activeProjects }}</p>
+          </div>
+          <div class="bg-cyan-100 p-4 rounded-2xl text-cyan-700 text-2xl">
+            <i class="fa-solid fa-spinner"></i>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pending Tasks -->
+      <div class="card bg-base-100 shadow-sm border border-base-200">
+        <div class="card-body p-6 flex flex-row items-center justify-between">
+          <div>
+            <h3 class="text-base-content/70 font-semibold text-sm">Pending Tasks</h3>
+            <p class="text-3xl font-bold mt-1 text-warning">{{ pendingTasks }}</p>
+          </div>
+          <div class="bg-warning/10 p-4 rounded-2xl text-warning text-2xl">
+            <i class="fa-solid fa-clock"></i>
           </div>
         </div>
       </div>
     </div>
-  </div>
+
+    <!-- Detailed Lists Section -->
+    <div class="grid grid-cols-1 xl:grid-cols-2 gap-6 mt-4 items-start">
+      <!-- Recent Tasks -->
+      <div class="card bg-base-100 shadow-sm border border-base-200">
+        <div class="card-body p-0">
+          <div class="p-6 pb-4 border-b border-base-200 flex justify-between items-center">
+            <h3 class="text-lg font-bold">Recent Tasks</h3>
+            <button class="btn btn-sm btn-ghost">View All</button>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="table w-full">
+              <thead>
+                <tr>
+                  <th>Task</th>
+                  <th>Project</th>
+                  <th>Priority</th>
+                  <th>Assignees</th>
+                </tr>
+              </thead>
+              <tbody>
+              @for (task of recentTasks; track $index) {
+                <tr>
+                  <td>
+                    <div class="font-medium">{{ task.title || task.name }}</div>
+                  </td>
+                  <td>
+                    <div class="badge badge-sm badge-ghost">{{ task.project }}</div>
+                  </td>
+                  <td>
+                    <div class="badge badge-sm border-none font-medium" [ngClass]="task.bgColor + ' ' + task.textColor">
+                      {{ task.priority }}
+                    </div>
+                  </td>
+                  <td>
+                    <div class="avatar-group -space-x-3 rtl:space-x-reverse">
+                      @for (avatar of task.assigneeAvatar?.images; track $index) {
+                        <div class="avatar border-none" style="width: 2rem; height: 2rem;">
+                          <div class="w-8 rounded-full">
+                            <img [src]="avatar" alt="Assignee Avatar" />
+                          </div>
+                        </div>
+                      }
+                      @if (!task.assigneeAvatar?.images?.length) {
+                        <div class="avatar placeholder border-none" style="width: 2rem; height: 2rem;">
+                          <div class="bg-neutral text-neutral-content rounded-full w-8">
+                            <span class="text-xs">?</span>
+                          </div>
+                        </div>
+                      }
+                      </div>
+                  </td>
+                </tr>
+              }
+              </tbody>
+            </table>
+          @if (recentTasks.length === 0) {
+            <div class="p-6 text-center text-sm text-base-content/60">
+              No recent tasks found.
+            </div>
+          }
+          </div>
+        </div>
+      </div>
+
+      <!-- Project & Task Status Summary -->
+      <div class="card bg-base-100 shadow-sm border border-base-200">
+        <div class="card-body p-6">
+          <h3 class="text-lg font-bold mb-4 border-b border-base-200 pb-4">Completion Status</h3>
+          <div class="flex flex-col gap-6">
+            <!-- Completed Projects -->
+            <div>
+              <div class="flex justify-between items-center mb-2">
+                <span class="font-medium text-base-content/80">Completed Projects</span>
+                <span class="text-sm font-semibold">{{ completedProjects }} / {{ totalProjects }}</span>
+              </div>
+              <progress class="progress progress-primary w-full h-2" [value]="completedProjects" [max]="totalProjects || 1"></progress>
+            </div>
+            <!-- Completed Tasks -->
+            <div>
+              <div class="flex justify-between items-center mb-2">
+                <span class="font-medium text-base-content/80">Completed Tasks</span>
+                <span class="text-sm font-semibold">{{ completedTasks }} / {{ totalTasks }}</span>
+              </div>
+              <progress class="progress progress-success w-full h-2" [value]="completedTasks" [max]="totalTasks || 1"></progress>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
 </div>
+
+@if (errorMessage) {
+  <app-toast [errorMessage]="errorMessage"></app-toast>
+}

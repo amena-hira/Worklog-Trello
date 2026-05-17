@@ -18,6 +18,8 @@ export class ActivityProgress implements AfterViewInit, OnDestroy {
   completedTasks: number = 0;
   incompleteTasks: number = 0;
   overdueTasks: number = 0;
+  loading = true;
+  errorMessage: string | null = null;
 
   constructor(private taskService: TaskService) {}
 
@@ -55,6 +57,8 @@ export class ActivityProgress implements AfterViewInit, OnDestroy {
   }
 
   fetchUserTaskStatus() {
+      this.loading = true;
+      this.errorMessage = null;
       this.taskService.getUserTaskStats().subscribe({
         next: (stats: any) => {
           this.totalTasks = stats.totalTasks || 0;
@@ -66,8 +70,13 @@ export class ActivityProgress implements AfterViewInit, OnDestroy {
             this.chart.data.datasets[0].data = [this.completedTasks, this.incompleteTasks, this.incompleteTasks, this.overdueTasks];
             this.chart.update();
           }
+          this.loading = false;
         },
-        error: (err) => console.error('Error fetching user task stats for chart:', err)
+        error: (err) => {
+          console.error('Error fetching user task stats for chart:', err);
+          this.errorMessage = err?.error?.message || 'Failed to fetch chart statistics.';
+          this.loading = false;
+        }
       });
     
   }

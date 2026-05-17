@@ -17,6 +17,8 @@ export class Register implements OnInit{
   ]
 
   signupForm! : FormGroup;
+  isSubmitting = false;
+  errorMessage: string | null = null;
 
   constructor(
     private fb: FormBuilder,
@@ -36,15 +38,20 @@ export class Register implements OnInit{
 
   onSubmit(){
     if(this.signupForm.valid){
+      this.isSubmitting = true;
+      this.errorMessage = null;
       console.log(this.signupForm.value);
       this.authService.signup(this.signupForm.value).subscribe({
         next: (response) => {
           console.log(response);
           this.authService.updateAuthState(response.token, response.role, response.email);
+          this.isSubmitting = false;
           this.route.navigate(['']);
         },
         error: (error) => {
           console.error(error);
+          this.errorMessage = error.error?.message || 'Registration failed. Please try again later.';
+          this.isSubmitting = false;
         }
       });
     }

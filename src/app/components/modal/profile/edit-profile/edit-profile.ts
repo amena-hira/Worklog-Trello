@@ -13,6 +13,7 @@ export class EditProfile implements OnInit {
   profileForm!: FormGroup;
   private _userData: any = null;
   errorMessage: string | null = null;
+  isSubmitting: boolean = false;
 
   @Output() profileUpdated = new EventEmitter<any>();
 
@@ -87,6 +88,7 @@ export class EditProfile implements OnInit {
     if (this.profileForm.valid) {
       const updatedData = this.profileForm.getRawValue();
       this.errorMessage = null; // Clear previous errors
+      this.isSubmitting = true;
       console.log(updatedData);
       
       if (this.isAdmin && this.isAddMode) {
@@ -95,11 +97,13 @@ export class EditProfile implements OnInit {
         this.usersService.addUser(payload).subscribe({
           next: (res) => {
             this.profileUpdated.emit(res);
+            this.isSubmitting = false;
             this.closeModal();
           },
           error: (err) => {
             console.error('Error creating user:', err);
             this.errorMessage = err.error?.message || 'An unexpected error occurred while creating the user.';
+            this.isSubmitting = false;
           }
         });
       } else if (this.isAdmin && !this.isAddMode) {
@@ -109,11 +113,13 @@ export class EditProfile implements OnInit {
         this.usersService.updateUser(payload).subscribe({
           next: (res) => {
             this.profileUpdated.emit(res);
+            this.isSubmitting = false;
             this.closeModal();
           },
           error: (err) => {
             console.error('Error updating user:', err);
             this.errorMessage = err.error?.message || 'An unexpected error occurred while updating the user.';
+            this.isSubmitting = false;
           }
         });
       } else {
@@ -121,11 +127,13 @@ export class EditProfile implements OnInit {
         this.usersService.updateMe(updatedData).subscribe({
           next: (res) => {
             this.profileUpdated.emit(res);
+            this.isSubmitting = false;
             this.closeModal();
           },
           error: (err) => {
             console.error('Error updating profile:', err);
             this.errorMessage = err.error?.message || 'An unexpected error occurred while updating your profile.';
+            this.isSubmitting = false;
           }
         });
       }
