@@ -1,86 +1,94 @@
-<div class="p-4 flex flex-col gap-3">
-  <div class="flex justify-between items-center">
-    <h2>
-      <span class="text-3xl font-semibold">Tasks</span>
-      <span class="text-base-content/60 ml-2">{{ totalTaskCount }} tasks</span>
-    </h2>
-    <button class="btn bg-sky-900 hover:bg-sky-800 text-white px-2 rounded-xl btn-md" (click)="openCreateModal()">
-      <i class="fa-solid fa-plus"></i>
-      Add New Task ..
-    </button>
+@if (loading) {
+  <div class="flex justify-center items-center h-[80vh] w-full">
+    <app-loader></app-loader>
   </div>
-  <!-- <app-add-task></app-add-task> -->
-   <app-form-project-task [editData]="selectedTaskForEdit"></app-form-project-task>
-  <div class="bg-base-300/30 rounded-lg px-2">
-    <ul class="rounded-box flex flex-wrap p-2 gap-2">
-      <li>
-          <a>All</a>
-      </li>
-      <div class="divider divider-horizontal hidden md:flex"></div>
-      <li>
-        <a>Today <span class="px-2 bg-cyan-50/30 text-sky-800 rounded-full">({{ todaysTaskCount }})</span></a>
-        
-      </li>
-      <div class="divider divider-horizontal hidden md:flex"></div>
-      <li>
-        <a>Tomorrow <span class="px-2 bg-yellow-50/50 text-yellow-500 rounded-full">({{ tomorrowsTaskCount }})</span></a>
-        
-      </li>
-      <div class="divider divider-horizontal hidden md:flex"></div>
-      <li>
-        <a>Next Week <span class="px-2 bg-red-50/50 text-red-600 rounded-full">({{ nextWeekTaskCount }})</span></a>
-      </li>
-      <div class="divider divider-horizontal hidden md:flex"></div>
-      <li>
-        <a>Completed <span class="px-2 bg-green-50/30 text-green-700 rounded-full">({{ completedTaskCount }})</span></a>
-      </li>
-    </ul>
-  </div>
-  <div class="gap-2 flex-wrap flex justify-between md:justify-end">
-    <div class="dropdown dropdown-start">
-      <div tabindex="0" role="button" class="btn btn-wide m-1 bg-base-100/50 rounded-xl px-6">
-        <span><i class="fa-solid fa-briefcase"></i></span>
-        <span class="hidden md:flex">All Projects</span>
-        <i class="fa-solid fa-chevron-down text-base-content/70 text-xs font-thin"></i>
-      </div>
-      <ul tabindex="-1" class="dropdown-content menu bg-base-100 rounded-box z-1 p-2 shadow-sm w-full">
-        <li><a>Item 1</a></li>
-        <li><a>Item 2</a></li>
+} @else {
+  <div class="p-4 flex flex-col gap-3">
+    <div class="flex justify-between items-center">
+      <h2>
+        <span class="text-3xl font-semibold">Tasks</span>
+        <span class="text-base-content/60 ml-2">{{ totalTaskCount }} tasks</span>
+      </h2>
+      <button class="btn bg-sky-900 hover:bg-sky-800 text-white px-2 rounded-xl btn-md" (click)="openCreateModal()">
+        <i class="fa-solid fa-plus"></i>
+        Add New Task ..
+      </button>
+    </div>
+     <app-form-project-task [editData]="selectedTaskForEdit"></app-form-project-task>
+    <div class="bg-base-300/30 rounded-lg px-2">
+      <ul class="rounded-box flex flex-wrap p-2 gap-2">
+        <li>
+            <a>All</a>
+        </li>
+        <div class="divider divider-horizontal hidden md:flex"></div>
+        <li>
+          <a>Today <span class="px-2 bg-cyan-50/30 text-sky-800 rounded-full">({{ todaysTaskCount }})</span></a>
+          
+        </li>
+        <div class="divider divider-horizontal hidden md:flex"></div>
+        <li>
+          <a>Tomorrow <span class="px-2 bg-yellow-50/50 text-yellow-500 rounded-full">({{ tomorrowsTaskCount }})</span></a>
+          
+        </li>
+        <div class="divider divider-horizontal hidden md:flex"></div>
+        <li>
+          <a>Next Week <span class="px-2 bg-red-50/50 text-red-600 rounded-full">({{ nextWeekTaskCount }})</span></a>
+        </li>
+        <div class="divider divider-horizontal hidden md:flex"></div>
+        <li>
+          <a>Completed <span class="px-2 bg-green-50/30 text-green-700 rounded-full">({{ completedTaskCount }})</span></a>
+        </li>
       </ul>
     </div>
-    <div class="dropdown dropdown-start rounded-full">
-      <div tabindex="0" role="button" class="btn btn-wide m-1 bg-base-100/50 rounded-xl px-6">
-        <span><i class="fa-solid fa-chart-diagram"></i></span>
-        <span class="hidden md:flex">Priority</span>
-        <i class="fa-solid fa-chevron-down text-base-content/70 text-xs font-thin"></i>
+    <div class="gap-2 flex-wrap flex justify-between md:justify-end">
+      <div class="dropdown dropdown-start">
+        <div tabindex="0" role="button" class="btn btn-wide m-1 bg-base-100/50 rounded-xl px-6">
+          <span><i class="fa-solid fa-briefcase"></i></span>
+          <span class="hidden md:flex">All Projects</span>
+          <i class="fa-solid fa-chevron-down text-base-content/70 text-xs font-thin"></i>
+        </div>
+        <ul tabindex="-1" class="dropdown-content menu bg-base-100 rounded-box z-1 p-2 shadow-sm w-full">
+          <li><a>Item 1</a></li>
+          <li><a>Item 2</a></li>
+        </ul>
       </div>
-      <ul tabindex="-1" class="dropdown-content menu bg-base-100 rounded-box z-1 p-2 shadow-sm w-full">
-        <li><a>Item 1</a></li>
-        <li><a>Item 2</a></li>
-      </ul>
-    </div>
-    <div class="dropdown dropdown-start rounded-full">
-      <div tabindex="0" role="button" class="btn btn-wide m-1 bg-base-100/50 rounded-xl px-6">
-        <span><i class="fa-regular fa-calendar-check"></i></span>
-        <span class="hidden md:flex">Any date</span>
-        <i class="fa-solid fa-chevron-down text-base-content/70 text-xs font-thin"></i>
+      <div class="dropdown dropdown-start rounded-full">
+        <div tabindex="0" role="button" class="btn btn-wide m-1 bg-base-100/50 rounded-xl px-6">
+          <span><i class="fa-solid fa-chart-diagram"></i></span>
+          <span class="hidden md:flex">Priority</span>
+          <i class="fa-solid fa-chevron-down text-base-content/70 text-xs font-thin"></i>
+        </div>
+        <ul tabindex="-1" class="dropdown-content menu bg-base-100 rounded-box z-1 p-2 shadow-sm w-full">
+          <li><a>Item 1</a></li>
+          <li><a>Item 2</a></li>
+        </ul>
       </div>
-      <ul tabindex="-1" class="dropdown-content menu bg-base-100 rounded-box z-1 p-2 shadow-sm w-full">
-        <li><a>Item 1</a></li>
-        <li><a>Item 2</a></li>
-      </ul>
+      <div class="dropdown dropdown-start rounded-full">
+        <div tabindex="0" role="button" class="btn btn-wide m-1 bg-base-100/50 rounded-xl px-6">
+          <span><i class="fa-regular fa-calendar-check"></i></span>
+          <span class="hidden md:flex">Any date</span>
+          <i class="fa-solid fa-chevron-down text-base-content/70 text-xs font-thin"></i>
+        </div>
+        <ul tabindex="-1" class="dropdown-content menu bg-base-100 rounded-box z-1 p-2 shadow-sm w-full">
+          <li><a>Item 1</a></li>
+          <li><a>Item 2</a></li>
+        </ul>
+      </div>
+    </div>
+    <!-- Today's Tasks -->
+    <div>
+      <app-task title="Today" [priority_Tasks]="todayTasks" (onTaskEdit)="openEditModal($event)" (onTaskDelete)="deleteTask($event)"></app-task>
+    </div>
+    <!-- All Task-->
+    <div>
+      <app-task title="All Tasks" [priority_Tasks]="otherTasks" (onTaskEdit)="openEditModal($event)" (onTaskDelete)="deleteTask($event)"></app-task>
     </div>
   </div>
-  <!-- Today's Tasks -->
-  <div>
-    <app-task title="Today" [priority_Tasks]="todayTasks" (onTaskEdit)="openEditModal($event)" (onTaskDelete)="deleteTask($event)"></app-task>
-  </div>
-  <!-- All Task-->
-  <div>
-    <app-task title="All Tasks" [priority_Tasks]="otherTasks" (onTaskEdit)="openEditModal($event)" (onTaskDelete)="deleteTask($event)"></app-task>
-  </div>
-</div>
+}
 
 @if (errorMessage) {
   <app-toast [errorMessage]="errorMessage"></app-toast>
+}
+@if (successMessage) {
+  <app-toast [successMessage]="successMessage"></app-toast>
 }

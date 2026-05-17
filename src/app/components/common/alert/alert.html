@@ -1,3 +1,9 @@
-<div class="alert alert-error shadow-sm rounded-xl text-white text-sm py-2">
-  <span><i class="fa-solid fa-triangle-exclamation mr-1"></i> {{ errorMessage }}</span>
-</div>
+@if (successMessage) {
+  <div class="alert alert-success shadow-sm rounded-xl text-white text-sm py-2">
+    <span><i class="fa-solid fa-circle-check mr-1"></i> {{ successMessage }}</span>
+  </div>
+} @else {
+  <div class="alert alert-error shadow-sm rounded-xl text-white text-sm py-2">
+    <span><i class="fa-solid fa-triangle-exclamation mr-1"></i> {{ errorMessage }}</span>
+  </div>
+}
