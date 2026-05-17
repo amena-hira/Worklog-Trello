@@ -16,4 +16,6 @@ export class Toast {
   get errorMessage(): string {
     return this._errorMessage;
   }
+
+  @Input() successMessage: string | null | undefined = null;
 }
