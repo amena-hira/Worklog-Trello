@@ -42,7 +42,7 @@
             @if (loading) {
               <tr>
                 <td colspan="4" class="text-center p-6">
-                  <span class="loading loading-spinner loading-md text-primary"></span>
+                  <span class="loading loading-spinner loading-md text-sky-600"></span>
                 </td>
               </tr>
             } @else {
@@ -95,9 +95,5 @@
 
 <!-- Global Error Toast for Worklog Users -->
 @if (errorMessage) {
-  <div class="toast toast-top toast-end z-50">
-    <div class="alert alert-error text-white shadow-lg">
-      <span><i class="fa-solid fa-circle-exclamation mr-2"></i> {{ errorMessage }}</span>
-    </div>
-  </div>
+  <app-toast [errorMessage]="errorMessage"></app-toast>
 }

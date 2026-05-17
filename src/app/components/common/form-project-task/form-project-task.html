@@ -94,29 +94,31 @@
                     (input)="onSearchInput($event)"
                   />
 
-                  @for (member of filteredAssignees; track member.id) {
-                    <div
-                      class="flex items-center justify-between gap-2 px-2 py-2 rounded-lg cursor-pointer hover:bg-base-200"
-                      (click)="onSelectMember(member)"
-                    >
-                    <span class="flex items-center gap-2 min-w-0">
-                      <span class="w-6 h-6 rounded-full overflow-hidden shrink-0">
-                          <img
-                            [src]="member.avatar"
-                            [alt]="member.name"
-                            class="w-full h-full object-cover"
-                          />
-                        </span>
-                      <span class="truncate">{{ member.name }}</span>
+              <div class="max-h-60 overflow-y-auto pr-1">
+                @for (member of filteredAssignees; track member.id) {
+                  <div
+                    class="flex items-center justify-between gap-2 px-2 py-2 rounded-lg cursor-pointer hover:bg-base-200"
+                    (click)="onSelectMember(member)"
+                  >
+                  <span class="flex items-center gap-2 min-w-0">
+                    <span class="w-6 h-6 rounded-full overflow-hidden shrink-0">
+                        <img
+                          [src]="member.avatar"
+                          [alt]="member.name"
+                          class="w-full h-full object-cover"
+                        />
                       </span>
+                    <span class="whitespace-normal">{{ member.name }}</span>
+                    </span>
 
-                      <input
-                        type="checkbox"
-                      class="checkbox checkbox-sm pointer-events-none shrink-0"
-                        [checked]="isSelected(member)"
-                      />
-                    </div>
-                  }
+                    <input
+                      type="checkbox"
+                    class="checkbox checkbox-sm pointer-events-none shrink-0"
+                      [checked]="isSelected(member)"
+                    />
+                  </div>
+                }
+              </div>
                 </div>
               </div>
             </div>

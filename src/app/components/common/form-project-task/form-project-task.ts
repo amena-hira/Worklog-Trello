@@ -5,7 +5,7 @@ import { UsersService } from '../../../service/users/users.service';
 import { TaskService } from '../../../service/tasks/task.service';
 import { ProjectService } from '../../../service/projects/project.service';
 
-type Assignee = { id: number; name: string; avatar: string }; 
+type Assignee = { id: number; name: string; avatar: string };
 
 @Component({
   selector: 'app-form-project-task',
@@ -27,6 +27,8 @@ export class FormProjectTask implements OnInit, OnChanges {
 
   showToast = false;
   toastMessage = '';
+  isSubmitting = false;
+  errorMessage: string | null = null;
 
   assignees: Assignee[] = [];
   projects: any[] = [];
@@ -34,8 +36,8 @@ export class FormProjectTask implements OnInit, OnChanges {
   projectColors = [ 'sky', 'violet', 'fuchsia', 'green',  'teal', 'yellow', 'orange', 'rose' ];
 
   constructor(
-    private fb: FormBuilder, 
-    private router:Router, 
+    private fb: FormBuilder,
+    private router:Router,
     private usersService: UsersService,
     private taskService: TaskService,
     private projectService: ProjectService
@@ -76,10 +78,11 @@ export class FormProjectTask implements OnInit, OnChanges {
           this.assignees = users
             .filter(user => user.role === 'ROLE_USER')
             .map((user, index) => ({
-              id: user.id || index + 1, // Fallback to ensure the ID is always unique
+              id: user?.id ,
               name: user.name || `${user.first_name || ''} ${user.last_name || ''}`.trim(),
               avatar: `https://i.pravatar.cc/150?u=${user.id || index}`
             }));
+            console.log("assignees: ",this.assignees);
           this.filteredAssignees = this.assignees;
         },
         error: (err) => console.error('Error fetching users:', err)
@@ -91,7 +94,7 @@ export class FormProjectTask implements OnInit, OnChanges {
     this.projectService.getAllProjects().subscribe({
       next: (projects) => {
         const currentUserEmail = sessionStorage.getItem('email');
-        
+
         this.projects = projects.filter(project => {
           if (!currentUserEmail) return true;
           const isCreator = project.createdByUserEmail === currentUserEmail;
@@ -151,7 +154,7 @@ export class FormProjectTask implements OnInit, OnChanges {
     this.filteredAssignees = this.assignees;
 
     // Clean up selected members if they don't belong to the newly selected project
-    this.selectedMembers = this.selectedMembers.filter(sm => 
+    this.selectedMembers = this.selectedMembers.filter(sm =>
       this.assignees.some(a => a.id === sm.id)
     );
     this.syncAssignees();
@@ -172,7 +175,7 @@ export class FormProjectTask implements OnInit, OnChanges {
   populateForm(data: any): void {
     this.editId = data.id;
     const formattedDate = data.dueDate ? new Date(data.dueDate).toISOString().split('T')[0] : '';
-    
+
     if (this.title === 'Project') {
       this.form.patchValue({
         name: data.name,
@@ -211,6 +214,8 @@ export class FormProjectTask implements OnInit, OnChanges {
   resetForm(): void {
     this.editId = null;
     this.selectedMembers = [];
+    this.isSubmitting = false;
+    this.errorMessage = null;
     const email = sessionStorage.getItem('email') || '';
     if (this.title === 'Project') {
       this.buildProjectForm(email);
@@ -222,10 +227,12 @@ export class FormProjectTask implements OnInit, OnChanges {
   onSubmit(): void {
     if (this.form.valid) {
       console.log('Data:', this.form.value);
+      this.isSubmitting = true;
+      this.errorMessage = null;
       const payload = { ...this.form.value, id: this.editId };
 
       if (this.title === 'Project') {
-        const request = this.editId 
+        const request = this.editId
           ? this.projectService.updateProject(payload)
           : this.projectService.createProject(this.form.value);
 
@@ -236,10 +243,14 @@ export class FormProjectTask implements OnInit, OnChanges {
             this.resetForm();
             (document.getElementById('add_task') as HTMLDialogElement)?.close();
           },
-          error: (err) => console.error('Error creating task:', err)
+          error: (err) => {
+            console.error('Error saving project:', err);
+            this.errorMessage = err.error?.message || 'An unexpected error occurred while saving the project.';
+            this.isSubmitting = false;
+          }
         });
       } else {
-        const request = this.editId 
+        const request = this.editId
           ? this.taskService.updateTask(payload)
           : this.taskService.createTask(this.form.value);
 
@@ -250,7 +261,11 @@ export class FormProjectTask implements OnInit, OnChanges {
             this.resetForm();
             (document.getElementById('add_task') as HTMLDialogElement)?.close();
           },
-          error: (err) => console.error('Error creating task:', err)
+          error: (err) => {
+            console.error('Error saving task:', err);
+            this.errorMessage = err.error?.message || 'An unexpected error occurred while saving the task.';
+            this.isSubmitting = false;
+          }
         });
       }
     } else {

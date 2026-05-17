@@ -7,9 +7,10 @@
     
     <form [formGroup]="profileForm" (ngSubmit)="onSubmit()" class="pt-4 space-y-4">
       @if (errorMessage) {
-        <div class="alert alert-error shadow-sm rounded-xl text-white text-sm py-2">
+        <app-alert [errorMessage]="errorMessage"></app-alert>
+        <!-- <div class="alert alert-error shadow-sm rounded-xl text-white text-sm py-2">
           <span><i class="fa-solid fa-triangle-exclamation mr-1"></i> {{ errorMessage }}</span>
-        </div>
+        </div> -->
       }
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -54,7 +55,12 @@
 
       <div class="flex justify-end gap-2 pt-4">
         <button type="button" class="btn" (click)="closeModal()">Cancel</button>
-        <button type="submit" class="btn bg-sky-950 text-white hover:bg-sky-900" [disabled]="profileForm.invalid">{{ isAddMode ? 'Create User' : 'Save Changes' }}</button>
+        <button type="submit" class="btn bg-sky-950 text-white hover:bg-sky-900" [disabled]="profileForm.invalid || isSubmitting">
+          @if (isSubmitting) {
+            <span class="loading loading-spinner loading-xs"></span>
+          }
+          {{ isAddMode ? 'Create User' : 'Save Changes' }}
+        </button>
       </div>
     </form>
   </div>

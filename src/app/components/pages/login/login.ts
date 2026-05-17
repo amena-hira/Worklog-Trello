@@ -13,6 +13,8 @@ import { ProjectService } from '../../../service/projects/project.service';
 })
 export class Login implements OnInit {
   loginForm! : FormGroup;
+  isSubmitting = false;
+  errorMessage: string | null = null;
 
   constructor(private fb:FormBuilder, private route:Router, public authService: AuthService, private taskService: TaskService, private projectService:ProjectService){}
 
@@ -25,6 +27,8 @@ export class Login implements OnInit {
 
   onSubmit(){
     if(this.loginForm.valid){
+      this.isSubmitting = true;
+      this.errorMessage = null;
       console.log(this.loginForm.value);
       this.authService.login(this.loginForm.value).subscribe({
         next: (response) => {
@@ -32,6 +36,7 @@ export class Login implements OnInit {
           this.authService.updateAuthState(response.token, response.role, response.email);
           this.taskService.clearCache();
           this.projectService.clearCache();
+          this.isSubmitting = false;
           if(response.role === 'ROLE_ADMIN'){
             this.route.navigate(['/admin/dashboard']);
           } else {
@@ -40,6 +45,8 @@ export class Login implements OnInit {
         },
         error: (error) => {
           console.error(error);
+          this.errorMessage = error.error?.message || 'Login failed. Please check your credentials.';
+          this.isSubmitting = false;
         }
       });
     }

@@ -18,6 +18,8 @@ export class Tasks implements OnInit {
   nextWeekTaskCount = 0;
   completedTaskCount = 0;
   selectedTaskForEdit: any = null;
+  loading = true;
+  errorMessage: string | null = null;
 
   constructor(private taskService: TaskService) {}
 
@@ -26,14 +28,21 @@ export class Tasks implements OnInit {
   }
 
   private fetchTasks() {
+    this.loading = true;
+    this.errorMessage = null;
     this.taskService.getAllTasks().subscribe({
       next: (tasks) => {
         // The backend now provides exactly the tasks for the logged-in user
         const mappedTasks = this.mapTasksData(tasks);
         this.distributeTasks(mappedTasks);
         this.calculateCounters(mappedTasks);
+        this.loading = false;
       },
-      error: (err) => console.error('Error fetching tasks:', err)
+      error: (err) => {
+        console.error('Error fetching tasks:', err);
+        this.errorMessage = err?.error?.message || 'An unexpected error occurred while fetching tasks.';
+        this.loading = false;
+      }
     });
   }
 
@@ -130,8 +139,18 @@ export class Tasks implements OnInit {
     if (!task || !task.id) return;
 
     this.taskService.deleteTask(task.id).subscribe({
-      next: () => {},
-      error: (err) => console.error('Error deleting task:', err)
+      next: () => {
+        this.fetchTasks(); // refresh list automatically
+      },
+      error: (err) => {
+        console.error('Error deleting task:', err);
+        this.showError(err?.error?.message || 'An unexpected error occurred while deleting the task.');
+      }
     });
+  }
+
+  showError(message: string) {
+    this.errorMessage = message;
+    setTimeout(() => this.errorMessage = null, 5000); // Auto-hide after 5 seconds
   }
 }

@@ -37,6 +37,8 @@ export class ProjectStatus implements OnInit{
   ];
 
   allProjectStatus: any[] = [];
+  loading = true;
+  errorMessage: string | null = null;
 
   constructor(
     private projectService: ProjectService
@@ -49,6 +51,8 @@ export class ProjectStatus implements OnInit{
   }
 
   fetchProjects(){
+    this.loading = true;
+    this.errorMessage = null;
     this.projectService.getRecentProjects().subscribe({
       next: (recentProjects) => {
         const currentUserEmail = sessionStorage.getItem('email');
@@ -74,8 +78,13 @@ export class ProjectStatus implements OnInit{
         });
 
         console.log("All Projects: ", this.allProjectStatus);
+        this.loading = false;
       },
-      error: (err) => console.error('Error fetching projects:', err)
+      error: (err) => {
+        console.error('Error fetching projects:', err);
+        this.errorMessage = err?.error?.message || 'Failed to fetch project status.';
+        this.loading = false;
+      }
     });
   }
 
