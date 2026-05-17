@@ -18,6 +18,8 @@ export class Profile implements OnInit {
   taskStats: any = null;
   totalProjects: number = 0;
   activeProjects: number = 0;
+  loading = true;
+  errorMessage: string | null = null;
 
   constructor(
     private taskService: TaskService,
@@ -28,12 +30,20 @@ export class Profile implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.fetchUserInfo();
-    this.fetchTaskStats();
-    this.fetchProjectStats();
+    this.loading = true;
+    this.errorMessage = null;
+    let completeCount = 0;
+    const checkDone = () => {
+      completeCount++;
+      if (completeCount === 3) this.loading = false;
+    };
+
+    this.fetchUserInfo(checkDone);
+    this.fetchTaskStats(checkDone);
+    this.fetchProjectStats(checkDone);
   }
 
-  fetchUserInfo() {
+  fetchUserInfo(checkDone?: () => void) {
     this.usersService.getMe().subscribe({
       next: (user: any) => {
         this.currentUser = {
@@ -46,27 +56,41 @@ export class Profile implements OnInit {
           userName: `${user.first_name || ''} ${user.last_name || ''}`.trim() || (user.email || 'Unknown').split('@')[0],
           avatarUrl: user.avatarUrl || `https://i.pravatar.cc/150?u=${user.email}`
         };
+        if (checkDone) checkDone();
       },
-      error: (err) => console.error('Error fetching user info:', err)
+      error: (err) => {
+        console.error('Error fetching user info:', err);
+        this.errorMessage = err?.error?.message || 'Failed to fetch user info.';
+      }
     });
   }
 
-  fetchTaskStats() {
+  fetchTaskStats(checkDone?: () => void) {
     this.taskService.getUserTaskStats().subscribe({
       next: (stats) => {
         this.taskStats = stats;
+        if (checkDone) checkDone();
       },
-      error: (err) => console.error('Error fetching user task stats:', err)
+      error: (err) => {
+        console.error('Error fetching user task stats:', err);
+        this.errorMessage = err?.error?.message || 'Failed to fetch task stats.';
+        if (checkDone) checkDone();
+      }
     });
   }
 
-  fetchProjectStats() {
+  fetchProjectStats(checkDone?: () => void) {
     this.projectService.getAllProjects().subscribe({
       next: (projects) => {
         this.totalProjects = projects.length;
         this.activeProjects = projects.filter((p: any) => !p.completed).length;
+        if (checkDone) checkDone();
       },
-      error: (err) => console.error('Error fetching user project stats:', err)
+      error: (err) => {
+        console.error('Error fetching user project stats:', err);
+        this.errorMessage = err?.error?.message || 'Failed to fetch project stats.';
+        if (checkDone) checkDone();
+      }
     });
   }
 

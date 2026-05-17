@@ -14,6 +14,8 @@ export class Projects implements OnInit {
   activeProjectsCount = 0;
   completedProjectsCount = 0;
   selectedProjectForEdit: any = null;
+  loading = true;
+  errorMessage: string | null = null;
 
   constructor(private projectService: ProjectService) {}
 
@@ -34,6 +36,8 @@ export class Projects implements OnInit {
   }
 
   fetchProjects(): void {
+    this.loading = true;
+    this.errorMessage = null;
     this.projectService.getAllProjects().subscribe({
       next: (projects) => {
         
@@ -76,8 +80,13 @@ export class Projects implements OnInit {
             assignees: (project.members || []).map((m: any, i: number) => `https://i.pravatar.cc/150?u=${m.userId || i}`)
           };
         });
+        this.loading = false;
       },
-      error: (err) => console.error('Error fetching projects:', err)
+      error: (err) => {
+        console.error('Error fetching projects:', err);
+        this.errorMessage = err?.error?.message || 'An unexpected error occurred while fetching projects.';
+        this.loading = false;
+      }
     });
   }
 
@@ -85,9 +94,19 @@ export class Projects implements OnInit {
     if (!project || !project.id) return;
 
     this.projectService.deleteProject(project.id).subscribe({
-      next: () => {},
-      error: (err) => console.error('Error deleting project:', err)
+      next: () => {
+        this.fetchProjects(); // refresh list automatically
+      },
+      error: (err) => {
+        console.error('Error deleting project:', err);
+        this.showError(err.error?.message || 'An unexpected error occurred while deleting the project.');
+      }
     });
+  }
+
+  showError(message: string) {
+    this.errorMessage = message;
+    setTimeout(() => this.errorMessage = null, 5000); // Auto-hide after 5 seconds
   }
 
 

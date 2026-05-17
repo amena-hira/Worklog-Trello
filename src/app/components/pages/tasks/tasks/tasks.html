@@ -80,3 +80,7 @@
     <app-task title="All Tasks" [priority_Tasks]="otherTasks" (onTaskEdit)="openEditModal($event)" (onTaskDelete)="deleteTask($event)"></app-task>
   </div>
 </div>
+
+@if (errorMessage) {
+  <app-toast [errorMessage]="errorMessage"></app-toast>
+}

@@ -20,6 +20,8 @@ export class AdminDashboard implements OnInit {
   pendingTasks = 0;
 
   recentTasks: any[] = [];
+  loading = true;
+  errorMessage: string | null = null;
 
   constructor(
     private taskService: TaskService,
@@ -32,43 +34,65 @@ export class AdminDashboard implements OnInit {
   }
 
   fetchSystemStats() {
+    this.loading = true;
+    this.errorMessage = null;
+    let completed = 0;
+    const checkDone = () => {
+      completed++;
+      if (completed === 3) {
+        this.loading = false;
+      }
+    };
+
     // 1. Fetch Users
     this.usersService.getUsers().subscribe({
-      next: (users) => (this.totalUsers = users.length || 0),
-      error: (err) => console.error('Error fetching users:', err),
+      next: (users) => {
+        this.totalUsers = users?.length || 0;
+        checkDone();
+      },
+      error: (err) => {
+        console.error('Error fetching users:', err);
+        this.errorMessage = err?.error?.message || 'Failed to fetch user stats.';
+        checkDone();
+      },
     });
 
     // 2. Fetch Projects
     this.projectService.getAllProjects().subscribe({
       next: (projects) => {
-        this.totalProjects = projects.length;
-        console.log(this.totalProjects);
-        this.completedProjects = projects.filter((p: any) => p.completed).length;
+        this.totalProjects = projects?.length || 0;
+        this.completedProjects = projects?.filter((p: any) => p.completed).length || 0;
         this.activeProjects = this.totalProjects - this.completedProjects;
-        console.log(this.activeProjects);
-        console.log(this.completedProjects);
+        checkDone();
       },
-      error: (err) => console.error('Error fetching projects:', err),
+      error: (err) => {
+        console.error('Error fetching projects:', err);
+        this.errorMessage = err?.error?.message || 'Failed to fetch project stats.';
+        checkDone();
+      },
     });
 
     // 3. Fetch Tasks
     this.taskService.getAllTasks().subscribe({
       next: (tasks) => {
-        this.totalTasks = tasks.length;
-        console.log(this.totalTasks);
-        this.completedTasks = tasks.filter((t) => t.isCompleted || !!t.completed).length;
+        this.totalTasks = tasks?.length || 0;
+        this.completedTasks = tasks?.filter((t: any) => t.isCompleted || !!t.completed).length || 0;
         this.pendingTasks = this.totalTasks - this.completedTasks;
-        console.log(this.pendingTasks);
 
         // Sort tasks by most recently updated or created first, then take top 5
-        const sortedTasks = [...tasks].sort((a, b) => {
+        const sortedTasks = [...(tasks || [])].sort((a, b) => {
           const dateA = new Date(a?.modified || a?.created  || 0).getTime();
           const dateB = new Date(b?.modified || b?.created ||0).getTime();
           return dateB - dateA; // Descending order (newest first)
         }).slice(0, 5);
         this.recentTasks = this.mapTasksData(sortedTasks);
+        checkDone();
       },
-      error: (err) => console.error('Error fetching tasks:', err),
+      error: (err) => {
+        console.error('Error fetching tasks:', err);
+        this.errorMessage = err?.error?.message || 'Failed to fetch task stats.';
+        checkDone();
+      },
     });
   }
 

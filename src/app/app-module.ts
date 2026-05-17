@@ -43,6 +43,8 @@ import { Profile } from './components/pages/profile/profile';
 import { EditProfile } from './components/modal/profile/edit-profile/edit-profile';
 import { AdminDashboard } from './components/pages/admin/admin-dashboard/admin-dashboard';
 import { WorklogUsers } from './components/pages/admin/worklog-users/worklog-users';
+import { Toast } from './components/common/toast/toast';
+import { Alert } from './components/common/alert/alert';
 
 @NgModule({
   declarations: [
@@ -77,7 +79,9 @@ import { WorklogUsers } from './components/pages/admin/worklog-users/worklog-use
     Profile,
     EditProfile,
     AdminDashboard,
-    WorklogUsers
+    WorklogUsers,
+    Toast,
+    Alert
   ],
   imports: [
     MatSlideToggleModule,
