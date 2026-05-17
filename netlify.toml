@@ -1,0 +1,12 @@
+[build]
+  # The command Netlify should run to build your Angular app
+  command = "npm run build"
+  
+  # The directory where your built files are placed. 
+  # IMPORTANT: Check your angular.json "outputPath" to confirm if it should be "dist/todo/browser" or just "dist/todo"
+  publish = "dist/todo/browser"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
