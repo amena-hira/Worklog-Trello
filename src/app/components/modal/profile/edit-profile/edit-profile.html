@@ -1,0 +1,65 @@
+<dialog id="edit_profile_modal" class="modal">
+  <div class="modal-box">
+    <h3 class="text-xl font-semibold">{{ isAddMode ? 'Add User' : 'Edit Profile' }}</h3>
+    <form method="dialog">
+      <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+    </form>
+    
+    <form [formGroup]="profileForm" (ngSubmit)="onSubmit()" class="pt-4 space-y-4">
+      @if (errorMessage) {
+        <div class="alert alert-error shadow-sm rounded-xl text-white text-sm py-2">
+          <span><i class="fa-solid fa-triangle-exclamation mr-1"></i> {{ errorMessage }}</span>
+        </div>
+      }
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <fieldset class="fieldset">
+          <legend class="fieldset-legend text-base text-base-content/60 font-normal">First Name</legend>
+          <input formControlName="first_name" type="text" class="input focus:border-0 focus:outline-0 shadow-sm w-full" placeholder="First Name" />
+        </fieldset>
+        <fieldset class="fieldset">
+          <legend class="fieldset-legend text-base text-base-content/60 font-normal">Last Name</legend>
+          <input formControlName="last_name" type="text" class="input focus:border-0 focus:outline-0 shadow-sm w-full" placeholder="Last Name" />
+        </fieldset>
+      </div>
+
+      <fieldset class="fieldset">
+        <legend class="fieldset-legend text-base text-base-content/60 font-normal">Email</legend>
+        <input formControlName="email" type="email" placeholder="Email" class="input focus:border-0 focus:outline-0 shadow-sm w-full" [class.bg-base-200]="!canEditEmail" [class.cursor-not-allowed]="!canEditEmail" [readonly]="!canEditEmail" [attr.title]="!canEditEmail ? 'Email cannot be changed directly' : 'Enter email'" />
+      </fieldset>
+
+      <fieldset class="fieldset">
+        <legend class="fieldset-legend text-base text-base-content/60 font-normal">Gender</legend>
+        <div class="flex items-center gap-6 mt-2">
+          <label class="flex items-center gap-2 cursor-pointer">
+            <input type="radio" formControlName="gender" value="male" class="radio radio-sm" />
+            <span class="text-sm">Male</span>
+          </label>
+          <label class="flex items-center gap-2 cursor-pointer">
+            <input type="radio" formControlName="gender" value="female" class="radio radio-sm" />
+            <span class="text-sm">Female</span>
+          </label>
+        </div>
+      </fieldset>
+
+      @if (isAdmin) {
+        <fieldset class="fieldset">
+          <legend class="fieldset-legend text-base text-base-content/60 font-normal">Role</legend>
+          <select formControlName="role" class="select select-bordered focus:border-0 focus:outline-0 shadow-sm w-full">
+            <option value="ROLE_USER">User</option>
+            <option value="ROLE_ADMIN">Admin</option>
+          </select>
+        </fieldset>
+      }
+
+      <div class="flex justify-end gap-2 pt-4">
+        <button type="button" class="btn" (click)="closeModal()">Cancel</button>
+        <button type="submit" class="btn bg-sky-950 text-white hover:bg-sky-900" [disabled]="profileForm.invalid">{{ isAddMode ? 'Create User' : 'Save Changes' }}</button>
+      </div>
+    </form>
+  </div>
+  
+  <form method="dialog" class="modal-backdrop">
+    <button>close</button>
+  </form>
+</dialog>

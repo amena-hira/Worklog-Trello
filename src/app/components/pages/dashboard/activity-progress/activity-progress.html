@@ -5,13 +5,13 @@
 
     <div class="flex flex-wrap items-center justify-end gap-2 sm:gap-3 text-xs text-base-content/60">
       <span class="flex items-center gap-1">
-        <span class="status bg-info"></span> 12
+        <span class="status bg-success"></span> {{ completedTasks }}
       </span>
       <span class="flex items-center gap-1">
-        <span class="status bg-warning"></span> 46
+        <span class="status bg-warning"></span> {{ incompleteTasks }}
       </span>
       <span class="flex items-center gap-1">
-        <span class="status bg-success"></span> 35
+        <span class="status bg-error"></span> {{ overdueTasks }}
       </span>
     </div>
   </div>
@@ -30,7 +30,7 @@
           <div
             class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none"
           >
-            <div class="text-2xl sm:text-3xl font-semibold leading-none">24</div>
+            <div class="text-2xl sm:text-3xl font-semibold leading-none">{{ totalTasks }}</div>
             <div class="text-[11px] sm:text-xs text-base-content/60 mt-1">
               Total Tasks
             </div>
@@ -48,17 +48,7 @@
           <i class="fa-solid fa-circle text-[10px] text-success"></i>
           <span>Completed</span>
         </p>
-        <p class="text-sm font-semibold text-success">8</p>
-      </div>
-
-      <div
-        class="flex items-center justify-between rounded-xl px-3 py-2 bg-base-200/40"
-      >
-        <p class="flex items-center gap-2 text-sm text-base-content/70">
-          <i class="fa-solid fa-circle text-[10px] text-info"></i>
-          <span>In Progress</span>
-        </p>
-        <p class="text-sm font-semibold text-info">7</p>
+        <p class="text-sm font-semibold text-success">{{ completedTasks }}</p>
       </div>
 
       <div
@@ -66,9 +56,19 @@
       >
         <p class="flex items-center gap-2 text-sm text-base-content/70">
           <i class="fa-solid fa-circle text-[10px] text-warning"></i>
-          <span>Pending</span>
+          <span>In Progress</span>
         </p>
-        <p class="text-sm font-semibold text-warning">9</p>
+        <p class="text-sm font-semibold text-warning">{{ incompleteTasks }}</p>
+      </div>
+
+      <div
+        class="flex items-center justify-between rounded-xl px-3 py-2 bg-base-200/40"
+      >
+        <p class="flex items-center gap-2 text-sm text-base-content/70">
+          <i class="fa-solid fa-circle text-[10px] text-error"></i>
+          <span>Delayed</span>
+        </p>
+        <p class="text-sm font-semibold text-error">{{ overdueTasks }}</p>
       </div>
     </div>
   </div>

@@ -1,12 +1,15 @@
 <div class="card bg-base-100 rounded-2xl shadow-sm p-4 h-full">
-  <div class="overflow-x-auto md:overflow-visible">
+  <div class="overflow-x-auto w-full">
     <table class="table table-zebra">
       <!-- head -->
       <thead>
         <tr>
-          <th class="card-title text-black">Today<span class="text-base-content/60">(3)</span></th>
+          <th class="card-title text-black">
+            {{ title }} <span class="text-base-content/60">({{ priority_Tasks.length }})</span>
+          </th>
           <th>Priority</th>
           <th>Due Date</th>
+          <th>Created By</th>
           <th>Assignee</th>
           <th class="text-center">
             <i class="fa-solid fa-trash-can"></i>
@@ -20,13 +23,28 @@
             <th>
               <div class="flex items-center gap-2">
                 <div>
-                  <input type="checkbox" class="checkbox checkbox-sm rounded-sm" />
+                  <input
+                    type="checkbox"
+                    class="checkbox checkbox-sm rounded-sm"
+                    [checked]="task.isCompleted || task.completed"
+                  />
                 </div>
                 <div>
                   <i class="fa-solid fa-square-check {{ task.textColor }} text-xl mt-1"></i>
                 </div>
                 <div class="flex">
-                  <h2 class="font-semibold">{{ task.name }}</h2>
+                  @if (task.canEdit) {
+                    <h2
+                      class="font-semibold cursor-pointer hover:text-sky-800 hover:underline mr-2"
+                      (click)="onTaskEdit.emit(task)"
+                    >
+                      {{ task.name }}
+                    </h2>
+                  } @else {
+                    <h2 class="font-semibold mr-2">
+                      {{ task.name }}
+                    </h2>
+                  }
                   <h4
                     class="badge badge-sm {{ task.bgColor }} {{ task.textColor }} whitespace-nowrap"
                   >
@@ -41,45 +59,69 @@
               </h2>
             </td>
             <td>
-              Today
               <i class="fa-regular fa-clock {{ task.textColor }} font-light text-xs"></i>
-              <span class="{{ task.textColor }} font-light text-sm">{{ task.dueDate }}</span>
+              <span class="{{ task.textColor }} font-light text-sm"> {{ task.dueDate }}</span>
+            </td>
+            <td class="text-center">
+              <div class="tooltip" [attr.data-tip]="task.createdByUserEmail">
+                <div class="avatar">
+                  <div class="w-6 rounded-full cursor-help shadow-sm">
+                    <img
+                      src="https://i.pravatar.cc/150?u={{ task.createdByUserEmail }}"
+                      alt="Creator"
+                    />
+                  </div>
+                </div>
+              </div>
             </td>
             <td class="flex items-center">
               @for (image of task.assigneeAvatar.images; track $index) {
-                <div class="avatar">
-                  <div class="w-8 rounded-full">
-                    <img src="{{ image }}" alt="Avatar" />
+                @if ($index < 3) {
+                  <div class="avatar">
+                    <div class="w-6 rounded-full">
+                      <img src="{{ image }}" alt="Avatar" />
+                    </div>
                   </div>
-                </div>
+                }
               }
-              <div class="dropdown dropdown-end ml-1">
-                <div tabindex="0" role="button" class="m-1 text-base-content/70 font-semibold">
+              @if (task.assigneeAvatar.images.length > 3) {
+                <span class="text-xs font-bold text-base-content/60 ml-1">...</span>
+              }
+              <div class="dropdown dropdown-end dropdown-hover">
+                <div
+                  tabindex="0"
+                  role="button"
+                  class="btn btn-sm btn-ghost no-animation bg-transparent! border-0 text-base-content/70 font-semibold m-1"
+                >
                   Team
-                  <i class="fa-solid fa-chevron-down text-base-content/70 text-xs font-thin"></i>
+                  <i class="fa-solid fa-chevron-down text-xs font-thin"></i>
                 </div>
                 <ul
                   tabindex="-1"
-                  class="dropdown-content menu bg-base-100 rounded-box z-50 p-2 shadow-sm"
+                  class="dropdown-content menu bg-base-100 rounded-box z-50 p-1 shadow-sm"
                 >
-                  @for (member of task.assigneeAvatar.members; track $index) {
+                  @for (assignee of task.assigneeAvatar.assignees; track $index) {
                     <li class="">
                       <div class="avatar">
-                        <div class="w-8 rounded-full">
-                          <img src="{{ member.avatarUrl }}" alt="Avatar" />
+                        <div class="w-6 rounded-full">
+                          <img src="{{ assignee.avatarUrl }}" alt="Avatar" />
                         </div>
-                        <p>{{ member.name }}</p>
+                        <p class="whitespace-nowrap text-xs">{{ assignee.name }}</p>
                       </div>
-                      
                     </li>
                   }
                 </ul>
               </div>
             </td>
             <td class="text-center">
-              <button type="button" class="btn btn-ghost btn-sm text-left">
-                <i class="fa-solid fa-trash-can"></i>
-              </button>
+          <button
+            type="button"
+            class="btn btn-ghost btn-sm text-left"
+            [disabled]="!task.canEdit"
+            (click)="deleteModal.open(task)"
+          >
+            <i class="fa-solid fa-trash-can"></i>
+          </button>
             </td>
           </tr>
         }
@@ -87,3 +129,9 @@
     </table>
   </div>
 </div>
+
+<app-form-delete
+  #deleteModal
+  [itemType]="'task'"
+  (deleted)="onTaskDelete.emit($event)"
+></app-form-delete>

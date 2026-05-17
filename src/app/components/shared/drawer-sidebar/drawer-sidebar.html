@@ -12,56 +12,19 @@
   <div class="flex-1 overscroll-contain">
     <div class="">
       <ul class="menu w-full">
-        <li>
-          <button
-          routerLink="/"
-            class="flex items-center justify-start is-drawer-close:justify-center p-3 is-drawer-close:tooltip is-drawer-close:tooltip-right"
-            data-tip="Home"
-          >
-            <i class="fa-regular fa-house text-lg"></i>
-            <span class="is-drawer-close:hidden ml-3">Dashboard</span>
-          </button>
-        </li>
-        <li>
-          <button
-            routerLink="/tasks"
-            class="flex items-center justify-start is-drawer-close:justify-center p-3 is-drawer-close:tooltip is-drawer-close:tooltip-right"
-            data-tip="My Tasks"
-          >
-            <i class="fa-regular fa-circle-check text-lg"></i>
-            <span class="is-drawer-close:hidden ml-3">Tasks</span>
-          </button>
-        </li>
-        <li>
-          <button
-            routerLink="/projects"
-            class="flex items-center justify-start is-drawer-close:justify-center p-3 is-drawer-close:tooltip is-drawer-close:tooltip-right"
-            data-tip="Inbox"
-          >
-            <i class="fa-brands fa-trello text-lg"></i>
-            <span class="is-drawer-close:hidden ml-3">Projects</span>
-          </button>
-        </li>
-        <li>
-          <button
-            routerLink="/calendar"
-            class="flex items-center justify-start is-drawer-close:justify-center p-3 is-drawer-close:tooltip is-drawer-close:tooltip-right"
-            data-tip="Inbox"
-          >
-            <i class="fa-regular fa-calendar text-lg"></i>
-            <span class="is-drawer-close:hidden ml-3">Calender</span>
-          </button>
-        </li>
-        <li>
-          <button
-            routerLink="/inbox"
-            class="flex items-center justify-start is-drawer-close:justify-center p-3 is-drawer-close:tooltip is-drawer-close:tooltip-right"
-            data-tip="Inbox"
-          >
-            <i class="fa-regular fa-message text-lg"></i>
-            <span class="is-drawer-close:hidden ml-3">Inbox</span>
-          </button>
-        </li>
+        @for (item of menuItems; track $index) {
+          <li>
+            <button
+              routerLink="{{ item.route }}"
+              class="flex items-center justify-start is-drawer-close:justify-center p-3 is-drawer-close:tooltip is-drawer-close:tooltip-right"
+              [attr.data-tip]= item.label 
+            >
+              <i class="{{ item.icon }} text-lg"></i>
+              <span class="is-drawer-close:hidden ml-3">{{ item.label }}</span>
+            </button>
+          </li>
+        }
+        
       </ul>
       <div class="border-b border-gray-100 mt-2 mx-2 is-drawer-close:hidden"></div>
       <div class="pt-4">

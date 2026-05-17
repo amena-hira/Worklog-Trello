@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import { AuthService } from '../../../service/auth/auth.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-navbar',
@@ -7,7 +9,7 @@ import { Component } from '@angular/core';
   styleUrl: './navbar.css',
 })
 export class Navbar {
-  constructor() {
+  constructor(public authService: AuthService, public route: Router) {
     if (window.innerWidth >= 1024) {
       setTimeout(() => {
         const element = document.getElementById('my-drawer') as HTMLInputElement;
@@ -16,5 +18,14 @@ export class Navbar {
         }
       });
     }
+  }
+
+  get isLoggedIn(): boolean {
+    return this.authService.isLogin;
+  }
+
+  logout() {
+    this.authService.updateAuthState(); // clears session & resets booleans
+    this.route.navigateByUrl('/login'); // or homepage
   }
 }

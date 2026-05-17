@@ -2,15 +2,15 @@
   <div class="flex justify-between items-center">
     <h2>
       <span class="text-3xl font-semibold">Tasks</span>
-      <span class="text-base-content/60 ml-2">102 tasks</span>
+      <span class="text-base-content/60 ml-2">{{ totalTaskCount }} tasks</span>
     </h2>
-    <button class="btn bg-sky-900 hover:bg-sky-800 text-white px-2 rounded-xl btn-md" onclick="add_task.showModal()">
+    <button class="btn bg-sky-900 hover:bg-sky-800 text-white px-2 rounded-xl btn-md" (click)="openCreateModal()">
       <i class="fa-solid fa-plus"></i>
       Add New Task ..
     </button>
   </div>
   <!-- <app-add-task></app-add-task> -->
-   <app-form-project-task></app-form-project-task>
+   <app-form-project-task [editData]="selectedTaskForEdit"></app-form-project-task>
   <div class="bg-base-300/30 rounded-lg px-2">
     <ul class="rounded-box flex flex-wrap p-2 gap-2">
       <li>
@@ -18,21 +18,21 @@
       </li>
       <div class="divider divider-horizontal hidden md:flex"></div>
       <li>
-        <a>Today <span class="px-2 bg-cyan-50/30 text-sky-800 rounded-full">(8)</span></a>
+        <a>Today <span class="px-2 bg-cyan-50/30 text-sky-800 rounded-full">({{ todaysTaskCount }})</span></a>
         
       </li>
       <div class="divider divider-horizontal hidden md:flex"></div>
       <li>
-        <a>Tomorrow <span class="px-2 bg-yellow-50/50 text-yellow-500 rounded-full">(16)</span></a>
+        <a>Tomorrow <span class="px-2 bg-yellow-50/50 text-yellow-500 rounded-full">({{ tomorrowsTaskCount }})</span></a>
         
       </li>
       <div class="divider divider-horizontal hidden md:flex"></div>
       <li>
-        <a>Next Week <span class="px-2 bg-red-50/50 text-red-600 rounded-full">(25)</span></a>
+        <a>Next Week <span class="px-2 bg-red-50/50 text-red-600 rounded-full">({{ nextWeekTaskCount }})</span></a>
       </li>
       <div class="divider divider-horizontal hidden md:flex"></div>
       <li>
-        <a>Completed <span class="px-2 bg-green-50/30 text-green-700 rounded-full">(87)</span></a>
+        <a>Completed <span class="px-2 bg-green-50/30 text-green-700 rounded-full">({{ completedTaskCount }})</span></a>
       </li>
     </ul>
   </div>
@@ -73,14 +73,10 @@
   </div>
   <!-- Today's Tasks -->
   <div>
-    <app-task></app-task>
+    <app-task title="Today" [priority_Tasks]="todayTasks" (onTaskEdit)="openEditModal($event)" (onTaskDelete)="deleteTask($event)"></app-task>
   </div>
-  <!-- Tomorrow -->
+  <!-- All Task-->
   <div>
-    <app-task></app-task>
-  </div>
-  <!-- Next week -->
-  <div>
-    <app-task></app-task>
+    <app-task title="All Tasks" [priority_Tasks]="otherTasks" (onTaskEdit)="openEditModal($event)" (onTaskDelete)="deleteTask($event)"></app-task>
   </div>
 </div>
