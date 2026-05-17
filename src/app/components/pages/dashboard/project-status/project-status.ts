@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { ProjectService } from '../../../../service/projects/project.service';
 
 @Component({
   selector: 'app-project-status',
@@ -6,36 +7,76 @@ import { Component } from '@angular/core';
   templateUrl: './project-status.html',
   styleUrl: './project-status.css',
 })
-export class ProjectStatus {
+export class ProjectStatus implements OnInit{
   projectStatus = [
     {
-      icon: 'fa-regular fa-circle-check',
       name: 'Project Alpha',
       progress: 60,
       totalDue: 3,
       textColor: 'text-sky-600',
     },
     {
-      icon: 'fa-regular fa-circle-check',
       name: 'Project Delta',
       progress: 80,
       totalDue: 5,
-      textColor: 'text-violet-500',
+      textColor: 'text-rose-500',
     },
     {
-      icon: 'fa-solid fa-triangle-exclamation',
       name: 'Project Beta',
       progress: 45,
       totalDue: 2,
       textColor: 'text-green-600',
     },
     {
-      icon: 'fa-regular fa-circle-xmark',
       name: 'Project Gamma',
       progress: 20,
       totalDue: 8,
-      textColor: 'text-yellow-500',
+      textColor: 'text-emerald-500',
     },
 
   ];
+
+  allProjectStatus: any[] = [];
+
+  constructor(
+    private projectService: ProjectService
+  ) {
+    this.allProjectStatus = this.projectStatus;
+  }
+
+  ngOnInit(): void {
+    this.fetchProjects();
+  }
+
+  fetchProjects(){
+    this.projectService.getRecentProjects().subscribe({
+      next: (recentProjects) => {
+        const currentUserEmail = sessionStorage.getItem('email');
+        
+        const relevantProjects = recentProjects.filter(project => {
+          if (!currentUserEmail) return true; // Fallback if no user is logged in
+          const isCreator = project.createdByUserEmail === currentUserEmail;
+          const isMember = (project.members || []).some(m => m.userEmail === currentUserEmail);
+          return isCreator || isMember;
+        });
+
+        this.allProjectStatus = relevantProjects.map(project => {
+          const progress = project.progress || 0;
+          const totalDue = project.tasksDue || 0;
+          console.log(project.name,project.color);
+
+          return {
+            name: project.name,
+            progress: progress,
+            totalDue: totalDue,
+            color: project.color,
+          };
+        });
+
+        console.log("All Projects: ", this.allProjectStatus);
+      },
+      error: (err) => console.error('Error fetching projects:', err)
+    });
+  }
+
 }

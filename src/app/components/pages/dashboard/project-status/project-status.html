@@ -9,22 +9,22 @@
     </div>
   </div>
   <ul class="list">
-    @for (project of projectStatus; track project.name) {
+    @for (project of allProjectStatus; track project.name) {
       <div class="border-b border-gray-100 my-2"></div>
       <li class="flex justify-between gap-2">
         <div class="flex gap-2 flex-2">
           <div class="mt-0.5">
-            <i class="fa-solid fa-square {{project.textColor}}"></i>
+            <i class="fa-solid fa-square text-{{project.color}}-600 "></i>
           </div>
           <div class="w-full">
             <h2 class="font-semibold text-base">{{ project.name }}</h2>
-            <progress class="progress w-full h-1.5 {{project.textColor}}" value="{{project.progress}}" max="100"></progress>
+            <progress class="progress w-full h-1.5 text-{{project.color}}-600" value="{{project.progress}}" max="100"></progress>
           </div>
 
         </div>
         <div class="flex flex-col items-center flex-1 mt-0.5">
           <p>{{project.progress}}%</p>
-          <h2 class="{{ project.textColor }} text-sm">{{project.totalDue}} tasks due</h2>
+          <h2 class="text-{{project.color}}-600 text-sm">{{project.totalDue}} tasks due</h2>
         </div>
         <div>
           <i class="fa-solid fa-ellipsis"></i>

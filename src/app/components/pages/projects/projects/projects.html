@@ -2,18 +2,18 @@
   <div class="flex justify-between items-center">
     <h2>
       <span class="text-3xl font-semibold">Projects</span>
-      <span class="text-base-content/60 ml-2">102 projects</span>
+      <span class="text-base-content/60 ml-2">{{ totalProjectsCount }} projects</span>
     </h2>
     <button
       class="btn bg-sky-900 hover:bg-sky-800 text-white px-2 rounded-xl btn-md"
-      onclick="add_task.showModal()"
+      (click)="openCreateModal()"
     >
       <i class="fa-solid fa-plus"></i>
       Add Project ..
     </button>
   </div>
   <!-- <app-add-task></app-add-task> -->
-  <app-form-project-task></app-form-project-task>
+  <app-form-project-task [editData]="selectedProjectForEdit"></app-form-project-task>
   <div class="bg-base-300/30 flex justify-between items-center rounded-lg px-2 my-4">
     <ul class="rounded-box flex flex-wrap p-2 gap-2">
       <li>
@@ -21,11 +21,11 @@
       </li>
       <div class="divider divider-horizontal hidden md:flex"></div>
       <li>
-        <a>Active <span class="px-2 bg-cyan-50/30 text-sky-800 rounded-full">(8)</span></a>
+        <a>Active <span class="px-2 bg-cyan-50/30 text-sky-800 rounded-full">({{ activeProjectsCount }})</span></a>
       </li>
       <div class="divider divider-horizontal hidden md:flex"></div>
       <li>
-        <a>Completed <span class="px-2 bg-yellow-50/50 text-yellow-500 rounded-full">(16)</span></a>
+        <a>Completed <span class="px-2 bg-yellow-50/50 text-yellow-500 rounded-full">({{ completedProjectsCount }})</span></a>
       </li>
     </ul>
     <button class="btn btn-sm btn-ghost m-1 bg-base-100/50 rounded-xl px-6">
@@ -34,16 +34,13 @@
       <i class="fa-solid fa-chevron-down text-base-content/70 text-xs font-thin"></i>
     </button>
   </div>
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-    <app-project></app-project>
-    <app-project></app-project>
-    <app-project></app-project>
-    <app-project></app-project>
-    <app-project></app-project>
-    <app-project></app-project>
-  </div>
-  <div class="mt-8 flex flex-col md:flex-row gap-4">
-    <app-overdue-projects-list class="flex-1"></app-overdue-projects-list>
-    <app-task-activity class="hidden md:flex"></app-task-activity>
+  <!-- <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+    @for (project of projects; track $index) {
+      <app-project [project]="project"></app-project>
+    }
+  </div> -->
+  <div class="mt-4 flex flex-col md:flex-row gap-4">
+    <app-overdue-projects-list class="flex-1" (onProjectEdit)="openEditModal($event)" (onProjectDelete)="deleteProject($event)"></app-overdue-projects-list>
+    <!-- <app-task-activity class="hidden md:flex"></app-task-activity> -->
   </div>
 </div>

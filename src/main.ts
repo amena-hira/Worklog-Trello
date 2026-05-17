@@ -3,7 +3,7 @@ import { AppModule } from './app/app-module';
 import { registerLocaleData } from '@angular/common';
 import localeFr from '@angular/common/locales/fr'
 
-// localisation
+// localization
 registerLocaleData(localeFr, 'fr');
 
 platformBrowser().bootstrapModule(AppModule, {
