@@ -1,13 +1,31 @@
 <app-auth-card>
   <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="fieldset">
     <label class="label">Email</label>
-    <input type="email" class="input w-full" placeholder="Email" formControlName="email"/>
+    <input type="email" class="input w-full" placeholder="Email" formControlName="email" />
     <label class="label">Password</label>
-    <input type="password" class="input w-full" placeholder="Password" formControlName="password"/>
+    <input type="password" class="input w-full" placeholder="Password" formControlName="password" />
     <div><a class="link link-hover">Forgot password?</a></div>
-    <button class="btn btn-neutral mt-4">Login</button>
+    <button
+      type="submit"
+      class="btn btn-primary w-full"
+      [disabled]="loginForm.invalid || isSubmitting"
+    >
+      @if (isSubmitting) {
+        <span class="loading loading-spinner loading-sm"></span> Logging in...
+      } @else {
+        Log in
+      }
+    </button>
   </form>
   <p class="pt-4 text-center text-gray-700">
-    Can't log in? • <a routerLink="/register" class="link link-hover text-blue-500">Create an account</a>
+    Can't log in? •
+    <a routerLink="/register" class="link link-hover text-blue-500">Create an account</a>
   </p>
 </app-auth-card>
+
+@if (errorMessage) {
+  <app-toast [errorMessage]="errorMessage"></app-toast>
+}
+@if (successMessage) {
+  <app-toast [successMessage]="successMessage"></app-toast>
+}

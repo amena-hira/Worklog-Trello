@@ -19,6 +19,7 @@ export class Register implements OnInit{
   signupForm! : FormGroup;
   isSubmitting = false;
   errorMessage: string | null = null;
+  successMessage: string | null = null;
 
   constructor(
     private fb: FormBuilder,
@@ -40,20 +41,34 @@ export class Register implements OnInit{
     if(this.signupForm.valid){
       this.isSubmitting = true;
       this.errorMessage = null;
+      this.successMessage = null;
       console.log(this.signupForm.value);
       this.authService.signup(this.signupForm.value).subscribe({
         next: (response) => {
           console.log(response);
           this.authService.updateAuthState(response.token, response.role, response.email);
           this.isSubmitting = false;
-          this.route.navigate(['']);
+          this.showSuccess('Registration successful! Redirecting...');
+          setTimeout(() => {
+            this.route.navigate(['']);
+          }, 1500); // Brief delay so the user can see the success toast
         },
         error: (error) => {
           console.error(error);
-          this.errorMessage = error.error?.message || 'Registration failed. Please try again later.';
+          this.showError(error.error?.message || 'Registration failed. Please try again later.');
           this.isSubmitting = false;
         }
       });
     }
   }
+
+  showError(message: string) {
+      this.errorMessage = message;
+      setTimeout(() => this.errorMessage = null, 5000); // Auto-hide after 5 seconds
+    }
+
+  showSuccess(message: string) {
+      this.successMessage = message;
+      setTimeout(() => this.successMessage = null, 5000); // Auto-hide after 5 seconds
+    }
 }

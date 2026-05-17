@@ -1,5 +1,12 @@
 <div class="toast toast-top toast-end z-50">
+  @if (errorMessage) {
     <div class="alert alert-error text-white shadow-lg">
       <span><i class="fa-solid fa-circle-exclamation mr-2"></i> {{ errorMessage }}</span>
     </div>
-  </div>
+  }
+  @if (successMessage) {
+    <div class="alert alert-success text-white shadow-lg">
+      <span><i class="fa-solid fa-circle-check mr-2"></i> {{ successMessage }}</span>
+    </div>
+  }
+</div>
