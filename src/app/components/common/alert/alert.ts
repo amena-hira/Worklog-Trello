@@ -7,7 +7,7 @@ import { Component, Input } from '@angular/core';
   styleUrl: './alert.css',
 })
 export class Alert {
-  private _errorMessage: string = 'Unable!';
+  private _errorMessage: string = '';
 
   @Input() set errorMessage(value: string | undefined | null) {
     this._errorMessage = value || 'Unable!';
@@ -16,4 +16,6 @@ export class Alert {
   get errorMessage(): string {
     return this._errorMessage;
   }
+
+  @Input() successMessage: string | null | undefined = null;
 }

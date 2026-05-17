@@ -45,6 +45,7 @@ import { AdminDashboard } from './components/pages/admin/admin-dashboard/admin-d
 import { WorklogUsers } from './components/pages/admin/worklog-users/worklog-users';
 import { Toast } from './components/common/toast/toast';
 import { Alert } from './components/common/alert/alert';
+import { Loader } from './components/common/loader/loader';
 
 @NgModule({
   declarations: [
@@ -81,7 +82,8 @@ import { Alert } from './components/common/alert/alert';
     AdminDashboard,
     WorklogUsers,
     Toast,
-    Alert
+    Alert,
+    Loader
   ],
   imports: [
     MatSlideToggleModule,

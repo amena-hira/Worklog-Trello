@@ -16,6 +16,7 @@ export class Projects implements OnInit {
   selectedProjectForEdit: any = null;
   loading = true;
   errorMessage: string | null = null;
+  successMessage: string | null = null;
 
   constructor(private projectService: ProjectService) {}
 
@@ -92,9 +93,11 @@ export class Projects implements OnInit {
 
   deleteProject(project: any) {
     if (!project || !project.id) return;
+    this.successMessage = null;
 
     this.projectService.deleteProject(project.id).subscribe({
       next: () => {
+        this.showSuccess('Delete successful! Loading...');
         this.fetchProjects(); // refresh list automatically
       },
       error: (err) => {
@@ -109,5 +112,9 @@ export class Projects implements OnInit {
     setTimeout(() => this.errorMessage = null, 5000); // Auto-hide after 5 seconds
   }
 
+  showSuccess(message: string) {
+      this.successMessage = message;
+      setTimeout(() => this.successMessage = null, 5000); // Auto-hide after 5 seconds
+    }
 
 }

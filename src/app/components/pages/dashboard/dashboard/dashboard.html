@@ -1,69 +1,77 @@
-<div class="p-4">
-  <div
-    class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-12 gap-4 items-stretch grid-auto-rows:[1fr]"
-  >
-    <!-- main content -->
-    <div class="md:col-span-2 lg:col-span-9 space-y-6">
-      <!-- Welcome Card -->
-      <div class="flex justify-between items-center mb-6 mt-2">
-        <div>
-          <h2 class="tex-md md:text-xl font-bold">Welcome back, {{user_name}} <span>&#128075;</span></h2>
-          <p class="tracking-wide">Here's your productivity overview.</p>
+@if (loading) {
+  <div class="flex justify-center items-center h-[80vh] w-full">
+    <app-loader></app-loader>
+  </div>
+} @else {
+  <div class="p-4">
+    <div
+      class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-12 gap-4 items-stretch grid-auto-rows:[1fr]"
+    >
+      <!-- main content -->
+      <div class="md:col-span-2 lg:col-span-9 space-y-6">
+        <!-- Welcome Card -->
+        <div class="flex justify-between items-center mb-6 mt-2">
+          <div>
+            <h2 class="tex-md md:text-xl font-bold">Welcome back, {{user_name}} <span>&#128075;</span></h2>
+            <p class="tracking-wide">Here's your productivity overview.</p>
+          </div>
+          <div class="hidden md:block rounded-lg shadow-sm bg-base-100 p-2 lg:p-3">
+            <i class="fa-regular fa-calendar lg:pr-6"></i>
+            <span>{{ today | date: 'longDate' }}</span>
+          </div>
         </div>
-        <div class="hidden md:block rounded-lg shadow-sm bg-base-100 p-2 lg:p-3">
-          <i class="fa-regular fa-calendar lg:pr-6"></i>
-          <span>{{ today | date: 'longDate' }}</span>
-        </div>
-      </div>
 
-      <!-- Card for tasks -->
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 justify-items-center gap-4">
-        @for (card of cards; track card.title) {
-          <div class="bg-base-100 shadow-sm py-3 px-4 rounded-xl w-full">
-            <h4 class="text-md text-gray-700">{{ card.title }}</h4>
-            <div class="flex items-center justify-between mt-3">
-              <h2 class="text-xl font-semibold">{{ card.total }}</h2>
-              <div>
-                <span class="text-xl {{ card.color }}">
-                  <i class="{{ card.icon }}"></i>
-                </span>
+        <!-- Card for tasks -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 justify-items-center gap-4">
+          @for (card of cards; track card.title) {
+            <div class="bg-base-100 shadow-sm py-3 px-4 rounded-xl w-full">
+              <h4 class="text-md text-gray-700">{{ card.title }}</h4>
+              <div class="flex items-center justify-between mt-3">
+                <h2 class="text-xl font-semibold">{{ card.total }}</h2>
+                <div>
+                  <span class="text-xl {{ card.color }}">
+                    <i class="{{ card.icon }}"></i>
+                  </span>
+                </div>
               </div>
             </div>
-          </div>
-        }
-      </div>
+          }
+        </div>
 
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 items-stretch grid-auto-rows:[1fr]">
-        <app-prioroty-table class="h-full block"></app-prioroty-table>
-        <app-project-status class="h-full hidden md:block lg:hidden"></app-project-status>
-        <div class="flex flex-col gap-4 md:hidden lg:flex">
-          <app-project-status class="h-full block"></app-project-status>
-          <app-activity-progress class="h-full block"></app-activity-progress>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 items-stretch grid-auto-rows:[1fr]">
+          <app-prioroty-table class="h-full block"></app-prioroty-table>
+          <app-project-status class="h-full hidden md:block lg:hidden"></app-project-status>
+          <div class="flex flex-col gap-4 md:hidden lg:flex">
+            <app-project-status class="h-full block"></app-project-status>
+            <app-activity-progress class="h-full block"></app-activity-progress>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 md:hidden lg:grid">
+          <app-upcoming-deadline></app-upcoming-deadline>
+          <app-calender></app-calender>
         </div>
       </div>
-
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 md:hidden lg:grid">
-        <app-upcoming-deadline></app-upcoming-deadline>
-        <app-calender></app-calender>
+      <!-- Team & Task -->
+      <div class="md:col-span-1 lg:col-span-3 flex flex-col gap-4">
+        <app-team-members class="h-full block"></app-team-members>
+        <app-task-activity class="h-full block"></app-task-activity>
       </div>
     </div>
-    <!-- Team & Task -->
-    <div class="md:col-span-1 lg:col-span-3 flex flex-col gap-4">
-      <app-team-members class="h-full block"></app-team-members>
-      <app-task-activity class="h-full block"></app-task-activity>
+    <!-- Medium Device Only -->
+    <div class="hidden md:grid lg:hidden grid-cols-2 gap-3 pt-3">
+      <app-upcoming-deadline class="h-full"></app-upcoming-deadline>
+      <app-activity-progress class="h-full"></app-activity-progress>
+      <app-calender class="h-full col-span-2"></app-calender>
     </div>
   </div>
-  <!-- Medium Device Only -->
-  <div class="hidden md:grid lg:hidden grid-cols-2 gap-3 pt-3">
-    <app-upcoming-deadline class="h-full"></app-upcoming-deadline>
-    <app-activity-progress class="h-full"></app-activity-progress>
-    <app-calender class="h-full col-span-2"></app-calender>
-  </div>
-</div>
-<footer class="footer sm:footer-horizontal footer-center bg-base-300 text-base-content p-4">
-  <aside>
-    <p>Copyright © {{ currentYear }} - All right reserved by Descodeuses, Paris</p>
-  </aside>
-</footer>
+  <footer class="footer sm:footer-horizontal footer-center bg-base-300 text-base-content p-4">
+    <aside>
+      <p>Copyright © {{ currentYear }} - All right reserved by Descodeuses, Paris</p>
+    </aside>
+  </footer>
+}
 
-
+@if (errorMessage) {
+  <app-toast [errorMessage]="errorMessage"></app-toast>
+}
