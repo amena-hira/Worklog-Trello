@@ -20,6 +20,7 @@ export class Tasks implements OnInit {
   selectedTaskForEdit: any = null;
   loading = true;
   errorMessage: string | null = null;
+  successMessage: string | null = null;
 
   constructor(private taskService: TaskService) {}
 
@@ -137,9 +138,11 @@ export class Tasks implements OnInit {
 
   deleteTask(task: any) {
     if (!task || !task.id) return;
+    this.successMessage = null;
 
     this.taskService.deleteTask(task.id).subscribe({
       next: () => {
+        this.showSuccess('Delete successful! Loading...');
         this.fetchTasks(); // refresh list automatically
       },
       error: (err) => {
@@ -153,4 +156,9 @@ export class Tasks implements OnInit {
     this.errorMessage = message;
     setTimeout(() => this.errorMessage = null, 5000); // Auto-hide after 5 seconds
   }
+
+  showSuccess(message: string) {
+        this.successMessage = message;
+        setTimeout(() => this.successMessage = null, 5000); // Auto-hide after 5 seconds
+      }
 }

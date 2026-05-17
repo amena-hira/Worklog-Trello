@@ -9,74 +9,10 @@ import { TaskService } from '../../../../service/tasks/task.service';
   styleUrl: './prioroty-table.css',
 })
 export class PriorotyTable implements OnInit {
-  priority_Tasks = [
-    {
-      name: 'Design Homepage',
-      project: 'Website',
-      priority: 'High',
-      dueDate: '10:30 AM',
-      bgColor: 'bg-red-100',
-      textColor: 'text-red-700'
-    },
-    {
-      name: 'Implement Login',
-      project: 'CLient',
-      priority: 'Medium',
-      dueDate: '12:00 PM',
-      bgColor: 'bg-sky-100',
-      textColor: 'text-sky-700',
-    },
-    {
-      name: 'Write Unit Tests',
-      project: 'Personal',
-      priority: 'Low',
-      dueDate: '4:30 PM',
-      bgColor: 'bg-emerald-100',
-      textColor: 'text-emerald-700',
-    },
-    {
-      name: 'Deploy to Staging',
-      project: 'Marketing',
-      priority: 'High',
-      dueDate: '2:59 PM',
-      bgColor: 'bg-rose-100',
-      textColor: 'text-rose-700',
-    },
-    {
-      name: 'Implement Login',
-      project: 'CLient',
-      priority: 'Medium',
-      dueDate: '12:00 PM',
-      bgColor: 'bg-sky-100',
-      textColor: 'text-sky-700',
-    },
-    {
-      name: 'Write Unit Tests',
-      project: 'Personal',
-      priority: 'Low',
-      dueDate: '4:30 PM',
-      bgColor: 'bg-emerald-100',
-      textColor: 'text-emerald-700',
-    },
-    {
-      name: 'Implement Login',
-      project: 'CLient',
-      priority: 'Medium',
-      dueDate: '12:00 PM',
-      bgColor: 'bg-sky-100',
-      textColor: 'text-sky-700',
-    },
-    {
-      name: 'Write Unit Tests',
-      project: 'Personal',
-      priority: 'Low',
-      dueDate: '4:30 PM',
-      bgColor: 'bg-emerald-100',
-      textColor: 'text-emerald-700',
-    },
-  ];
+  
 
   today_tasks: Task[] = [];
+  selectedTaskForEdit: any = null;
 
   constructor(private taskService:TaskService) { }
 
@@ -105,5 +41,15 @@ export class PriorotyTable implements OnInit {
       });
       console.log("Todays Task: ",this.today_tasks);
     });
+  }
+
+  openCreateModal() {
+    this.selectedTaskForEdit = null;
+    this.showModal('add_task');
+  }
+
+  private showModal(modalId: string) {
+    const modal = document.getElementById(modalId) as HTMLDialogElement;
+    modal?.showModal();
   }
 }
