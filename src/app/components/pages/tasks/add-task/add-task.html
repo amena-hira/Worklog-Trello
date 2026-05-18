@@ -1,7 +1,7 @@
 <!-- Open the modal using ID.showModal() method -->
 <dialog id="add_task" class="modal">
   <div class="modal-box">
-    <h3 class="text-xl font-semibold">{{ editId ? 'Edit' : 'Add New' }} {{ title }}</h3>
+    <h3 class="text-xl font-semibold">{{ editId ? 'Edit' : 'Add New' }} Task</h3>
     <form method="dialog">
       <button class="btn btn-xs btn-circle btn-ghost absolute right-2 top-2">✕</button>
     </form>
@@ -10,7 +10,7 @@
       <!-- Name -->
       <fieldset class="fieldset">
         <legend class="fieldset-legend text-base text-base-content/60 font-normal">
-          {{ title }} Name <span class="text-red-500">*</span>
+          Task Name <span class="text-red-500">*</span>
         </legend>
         <input
           formControlName="name"

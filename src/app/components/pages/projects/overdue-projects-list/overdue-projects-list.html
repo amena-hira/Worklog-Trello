@@ -1,4 +1,18 @@
 <div class="card bg-base-100 rounded-2xl shadow-sm p-4 h-full">
+  @if(projects.length === 0) {
+    <div class="flex flex-col items-center justify-center text-center py-10">
+      <!-- Empty State Image -->
+      <img src="images/image.png" alt="No Projects" class="w-20 object-contain mb-2 opacity-95" />
+
+      <!-- Text -->
+      <h2 class="text-sky-700 font-semibold text-lg">No Projects found</h2>
+
+      <p class="text-gray-400 text-sm mt-1 max-w-xs">
+        You can add new projects to get started.
+      </p>
+    </div>
+
+  }
   <div class="overflow-x-auto md:overflow-visible">
     <table class="table table-zebra">
       <!-- head -->
@@ -17,7 +31,7 @@
           <tr
             [ngClass]="
               project.isOverdue && !project.completed
-                ? 'text-red-800'
+                ? 'text-slate-500'
                 : ''
             "
           >
