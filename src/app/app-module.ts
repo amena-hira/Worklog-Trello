@@ -47,6 +47,7 @@ import { Alert } from './components/common/alert/alert';
 import { Loader } from './components/common/loader/loader';
 import { TodaysTasks } from './components/pages/dashboard/todays-tasks/todays-tasks';
 import { Quote } from './components/pages/dashboard/quote/quote';
+import { TaskDetails } from './components/pages/tasks/task-details/task-details';
 
 @NgModule({
   declarations: [
@@ -85,7 +86,8 @@ import { Quote } from './components/pages/dashboard/quote/quote';
     Alert,
     Loader,
     TodaysTasks,
-    Quote
+    Quote,
+    TaskDetails
   ],
   imports: [
     MatSlideToggleModule,

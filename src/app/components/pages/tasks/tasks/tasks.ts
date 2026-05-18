@@ -38,6 +38,7 @@ export class Tasks implements OnInit {
         this.distributeTasks(mappedTasks);
         this.calculateCounters(mappedTasks);
         this.loading = false;
+        console.log('Fetched tasks:', mappedTasks);
       },
       error: (err) => {
         console.error('Error fetching tasks:', err);

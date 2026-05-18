@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ElementRef } from '@angular/core';
 import { TaskService } from '../../../../service/tasks/task.service';
 import { Task } from '../../../../model/task';
 
@@ -11,11 +11,25 @@ import { Task } from '../../../../model/task';
 export class TodaysTasks {
   today_tasks: Task[] = [];
   selectedTaskForEdit: any = null;
+  // 1. Add this property to hold the data for the clicked task
+  selectedTask: any = null; 
 
-  constructor(private taskService: TaskService) {}
+  constructor(private taskService: TaskService, private el: ElementRef) {}
 
   ngOnInit(): void {
     this.fetchTodaysTasks();
+  }
+
+  // 2. Add this method to handle the click event
+  openTaskDetails(task: any): void {
+    // Set the selected task so it gets passed to <app-task-details [task]="selectedTask">
+    this.selectedTask = task;
+    
+    // Open the DaisyUI modal scoped to this specific component instance
+    const modal = this.el.nativeElement.querySelector('#task_details') as HTMLDialogElement;
+    if (modal) {
+      modal.showModal();
+    }
   }
 
   fetchTodaysTasks() {

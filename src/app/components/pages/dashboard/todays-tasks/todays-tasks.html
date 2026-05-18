@@ -6,7 +6,7 @@
     <ul class="list">
       @for (task of today_tasks; track task.id) {
         <div class="border-b border-gray-100 my-2"></div>
-        <li class="flex justify-between items-center">
+        <li class="flex justify-between items-center" (click)="openTaskDetails(task)">
           <div class="flex gap-2">
             <div>
               <input type="checkbox" class="checkbox checkbox-xs rounded-sm" />
@@ -68,3 +68,5 @@
   </div>
   <app-add-task [editData]="selectedTaskForEdit"></app-add-task>
 </div>
+<!-- Task Details Modal -->
+<app-task-details [task]="selectedTask"></app-task-details>

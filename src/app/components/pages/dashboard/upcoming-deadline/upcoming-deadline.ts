@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ElementRef } from '@angular/core';
 import { TaskService } from '../../../../service/tasks/task.service';
 
 @Component({
@@ -9,18 +9,33 @@ import { TaskService } from '../../../../service/tasks/task.service';
 })
 export class UpcomingDeadline implements OnInit {
   priority_Tasks: any[] = [];
+   // 1. Add this property to hold the data for the clicked task
+  selectedTask: any = null; 
 
   private readonly taskColors = [
     'bg-blue-700',
     'bg-violet-700',
     'bg-emerald-700',
-    'bg-rose-700',
+    'bg-yellow-700',
   ];
 
-  constructor(private taskService: TaskService) {}
+  constructor(private taskService: TaskService, private el: ElementRef) {}
 
   ngOnInit(): void {
     this.fetchUpcomingDeadlines();
+  }
+
+  // 2. Add this method to handle the click event
+  openTaskDetails(task: any): void {
+    // Set the selected task so it gets passed to <app-task-details [task]="selectedTask">
+    // Extract the full original task if it exists, otherwise fallback to the passed object
+    this.selectedTask = task.originalTask || task;
+    
+    // Open the DaisyUI modal scoped to this specific component instance
+    const modal = this.el.nativeElement.querySelector('#task_details') as HTMLDialogElement;
+    if (modal) {
+      modal.showModal();
+    }
   }
 
   fetchUpcomingDeadlines(): void {
@@ -82,6 +97,7 @@ export class UpcomingDeadline implements OnInit {
     const isTomorrow = diffDays === 1;
 
     return {
+      originalTask: task, // Keep a reference to the unmodified task with all its details
       name: task.name,
       dueDate: isTomorrow ? 'Tomorrow!' : `In ${diffDays} days`,
       bgColor: this.taskColors[index % this.taskColors.length],

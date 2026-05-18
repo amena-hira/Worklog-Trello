@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, ElementRef } from '@angular/core';
 import { TaskService } from '../../../../service/tasks/task.service';
 
 @Component({
@@ -15,7 +15,23 @@ export class Task {
 
   openTask: any = null;
 
-  constructor(private taskService: TaskService) {}
+  // 1. Add this property to hold the data for the clicked task
+  selectedTask: any = null;
+
+  constructor(private taskService: TaskService, private el: ElementRef) {}
+
+  // 2. Add this method to handle the click event
+  openTaskDetails(task: any): void {
+    // Set the selected task so it gets passed to <app-task-details [task]="selectedTask">
+    this.selectedTask = task;
+    console.log("Parent Task: ", task);
+
+    // Open the DaisyUI modal scoped to this specific component instance
+    const modal = this.el.nativeElement.querySelector('#task_details') as HTMLDialogElement;
+    if (modal) {
+      modal.showModal();
+    }
+  }
 
   editTask(task: any) {
     const currentStatus = task.isCompleted ?? !!task.completed;
