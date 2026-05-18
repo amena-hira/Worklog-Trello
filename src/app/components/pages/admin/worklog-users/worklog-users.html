@@ -19,13 +19,6 @@
   <!-- Users Table Card -->
   <div class="card bg-base-100 shadow-sm border border-base-200">
     <div class="card-body p-4">
-      <div class="p-6 pb-4 border-b border-base-200 flex justify-between items-center">
-        <h3 class="text-lg font-bold">All Users</h3>
-        <div class="join">
-          <input class="input input-sm input-bordered join-item" placeholder="Search users..." />
-          <button class="btn btn-sm btn-primary join-item">Search</button>
-        </div>
-      </div>
 
       <div class="overflow-x-auto">
         <table class="table table-zebra">
@@ -70,6 +63,7 @@
                       type="button"
                       class="btn btn-ghost btn-sm text-left"
                       (click)="openDeleteModal(user)"
+                      [disabled]="user.email === currentUserEmail"
                     >
                       <i class="fa-solid fa-trash-can text-red-800"></i>
                     </button>
