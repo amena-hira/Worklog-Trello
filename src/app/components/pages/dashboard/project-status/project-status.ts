@@ -35,7 +35,6 @@ export class ProjectStatus implements OnInit {
         this.allProjectStatus = relevantProjects.map((project) => {
           const progress = project.progress || 0;
           const totalDue = project.tasksDue || 0;
-          console.log(project.name, project.color);
 
           return {
             name: project.name,
@@ -44,8 +43,6 @@ export class ProjectStatus implements OnInit {
             color: project.color,
           };
         });
-
-        console.log('All Projects: ', this.allProjectStatus);
         this.loading = false;
       },
       error: (err) => {

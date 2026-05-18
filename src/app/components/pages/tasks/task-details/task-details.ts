@@ -12,7 +12,6 @@ export class TaskDetails {
   @Input()
   set task(value: any) {
     this._task = value;
-    console.log('Received from parent:', value);
   }
 
   get task(): any {

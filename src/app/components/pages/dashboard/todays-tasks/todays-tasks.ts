@@ -33,9 +33,7 @@ export class TodaysTasks {
   }
 
   fetchTodaysTasks() {
-    console.log("Fetching today's tasks...");
     this.taskService.getAllTasks().subscribe((tasks) => {
-      console.log('All tasks fetched:', tasks);
       const today = new Date();
       const currentUserEmail = sessionStorage.getItem('email');
 
@@ -53,7 +51,6 @@ export class TodaysTasks {
 
         return isToday && (isAssignee || isCreator);
       });
-      console.log('Todays Task: ', this.today_tasks);
     });
   }
 
