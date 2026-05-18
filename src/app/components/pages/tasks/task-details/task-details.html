@@ -1,0 +1,95 @@
+<dialog id="task_details" class="modal sm:modal-middle">
+  <div class="modal-box">
+    <form method="dialog">
+      <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+    </form>
+
+    @if (task) {
+      <div class="space-y-6 pt-2">
+        <!-- Header section -->
+        <div>
+          <div class="flex flex-wrap items-center gap-2 mb-2">
+            <h3 class="text-2xl font-bold mr-2">{{ task.name }}</h3>
+
+            @if (task.isCompleted) {
+              <div class="badge badge-success gap-1 text-white border-0 shadow-sm"><i class="fa-solid fa-check text-xs"></i> Completed</div>
+            } @else {
+              <div class="badge gap-1 bg-sky-100 text-sky-700 border-0 shadow-sm"><i class="fa-solid fa-spinner text-xs"></i> In Progress</div>
+            }
+
+            @if (task.priority === 'HIGH') {
+              <div class="badge badge-error gap-1 text-white border-0 shadow-sm"><i class="fa-solid fa-arrow-up text-xs"></i> High</div>
+            } @else if (task.priority === 'MEDIUM') {
+              <div class="badge badge-warning gap-1 text-white border-0 shadow-sm"><i class="fa-solid fa-minus text-xs"></i> Medium</div>
+            } @else if (task.priority === 'LOW') {
+              <div class="badge badge-info gap-1 text-white border-0 shadow-sm"><i class="fa-solid fa-arrow-down text-xs"></i> Low</div>
+            }
+          </div>
+          <p class="text-sm text-base-content/60"><i class="fa-regular fa-user mr-1"></i> Created by {{ task.createdByUserEmail }}</p>
+        </div>
+
+        <!-- Description -->
+        <div class="bg-base-200/50 rounded-lg p-4 border border-base-200">
+          <h4 class="font-semibold text-base-content/80 mb-2"><i class="fa-solid fa-align-left mr-2"></i>Description</h4>
+          <p class="text-sm whitespace-pre-wrap leading-relaxed">{{ task.description || 'No description provided for this task.' }}</p>
+        </div>
+
+        <!-- Meta details grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <!-- Deadline -->
+          <div class="flex items-center gap-4 bg-base-100 border border-base-200 shadow-sm rounded-lg p-3">
+            <div class="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center text-red-500 shrink-0">
+              <i class="fa-regular fa-calendar-xmark text-lg"></i>
+            </div>
+            <div class="min-w-0">
+              <p class="text-xs text-base-content/60 uppercase tracking-wider font-semibold">Deadline</p>
+              <p class="font-medium truncate">{{ task.dueDate ? task.dueDate : 'No due date' }}</p>
+            </div>
+          </div>
+
+          <!-- Project -->
+          <div class="flex items-center gap-4 bg-base-100 border border-base-200 shadow-sm rounded-lg p-3">
+            <div class="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center text-purple-600 shrink-0">
+              <i class="fa-solid fa-briefcase text-lg"></i>
+            </div>
+            <div class="min-w-0">
+              <p class="text-xs text-base-content/60 uppercase tracking-wider font-semibold">Project</p>
+              <p class="font-medium truncate">{{ task.projectName || 'Project ' + task.projectId }}</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Assignees -->
+        <div>
+          <h4 class="font-semibold text-base-content/80 mb-3"><i class="fa-solid fa-users mr-2"></i>Assignees</h4>
+          @if (task.assignees?.length > 0) {
+            <div class="flex flex-wrap gap-2">
+              @for (assignee of task.assignees; track assignee.id) {
+                <div class="flex items-center gap-2 bg-base-100 border border-base-200 shadow-sm rounded-full pr-4 p-1">
+                  <div class="avatar">
+                    <div class="w-8 h-8 rounded-full overflow-hidden">
+                      <img [src]="assignee.avatarUrl || assignee.avatar || 'https://i.pravatar.cc/150?u=' + (assignee.userId || assignee.id)" [alt]="assignee.userName || assignee.name" class="object-cover" />
+                    </div>
+                  </div>
+                  <span class="text-sm font-medium truncate max-w-[150px]">{{ assignee.userName || assignee.name }}</span>
+                </div>
+              }
+            </div>
+          } @else {
+            <p>assignee: {{task.assignees}}</p>
+            <p class="text-sm text-base-content/50 italic bg-base-200/30 p-3 rounded-lg border border-dashed border-base-200">No members assigned to this task yet.</p>
+          }
+        </div>
+
+      </div>
+    } @else {
+      <div class="flex flex-col items-center justify-center py-12">
+        <span class="loading loading-spinner loading-lg text-primary"></span>
+        <p class="mt-4 text-base-content/60 font-medium">Loading task details...</p>
+      </div>
+    }
+  </div>
+  <form method="dialog" class="modal-backdrop">
+    <button>close</button>
+  </form>
+</dialog>

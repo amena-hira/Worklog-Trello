@@ -7,67 +7,34 @@ import { ProjectService } from '../../../../service/projects/project.service';
   templateUrl: './project-status.html',
   styleUrl: './project-status.css',
 })
-export class ProjectStatus implements OnInit{
-  projectStatus = [
-    {
-      name: 'Project Alpha',
-      progress: 60,
-      totalDue: 3,
-      textColor: 'text-sky-600',
-    },
-    {
-      name: 'Project Delta',
-      progress: 80,
-      totalDue: 5,
-      textColor: 'text-rose-500',
-    },
-    {
-      name: 'Project Beta',
-      progress: 45,
-      totalDue: 2,
-      textColor: 'text-green-600',
-    },
-    {
-      name: 'Project Gamma',
-      progress: 20,
-      totalDue: 8,
-      textColor: 'text-emerald-500',
-    },
-
-  ];
-
+export class ProjectStatus implements OnInit {
   allProjectStatus: any[] = [];
   loading = true;
   errorMessage: string | null = null;
 
-  constructor(
-    private projectService: ProjectService
-  ) {
-    this.allProjectStatus = this.projectStatus;
-  }
+  constructor(private projectService: ProjectService) {}
 
   ngOnInit(): void {
     this.fetchProjects();
   }
 
-  fetchProjects(){
+  fetchProjects() {
     this.loading = true;
     this.errorMessage = null;
     this.projectService.getRecentProjects().subscribe({
       next: (recentProjects) => {
         const currentUserEmail = sessionStorage.getItem('email');
-        
-        const relevantProjects = recentProjects.filter(project => {
+
+        const relevantProjects = recentProjects.filter((project) => {
           if (!currentUserEmail) return true; // Fallback if no user is logged in
           const isCreator = project.createdByUserEmail === currentUserEmail;
-          const isMember = (project.members || []).some(m => m.userEmail === currentUserEmail);
+          const isMember = (project.members || []).some((m) => m.userEmail === currentUserEmail);
           return isCreator || isMember;
         });
 
-        this.allProjectStatus = relevantProjects.map(project => {
+        this.allProjectStatus = relevantProjects.map((project) => {
           const progress = project.progress || 0;
           const totalDue = project.tasksDue || 0;
-          console.log(project.name,project.color);
 
           return {
             name: project.name,
@@ -76,16 +43,13 @@ export class ProjectStatus implements OnInit{
             color: project.color,
           };
         });
-
-        console.log("All Projects: ", this.allProjectStatus);
         this.loading = false;
       },
       error: (err) => {
         console.error('Error fetching projects:', err);
         this.errorMessage = err?.error?.message || 'Failed to fetch project status.';
         this.loading = false;
-      }
+      },
     });
   }
-
 }

@@ -17,6 +17,10 @@ export class WorklogUsers {
 
   @ViewChild(FormDelete) deleteModal!: FormDelete;
 
+  get currentUserEmail(): string | null {
+    return sessionStorage.getItem('email');
+  }
+
   constructor(private usersService: UsersService) {}
 
   ngOnInit(): void {
