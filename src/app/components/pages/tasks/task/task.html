@@ -1,132 +1,169 @@
-<div class="card bg-base-100 rounded-2xl shadow-sm p-4 h-full">
-  <div class="overflow-x-auto w-full">
-    <table class="table table-zebra">
-      <!-- head -->
-      <thead>
-        <tr>
-          <th class="card-title text-black">
-            {{ title }} <span class="text-base-content/60">({{ priority_Tasks.length }})</span>
-          </th>
-          <th>Priority</th>
-          <th>Due Date</th>
-          <th>Created By</th>
-          <th>Assignee</th>
-          <th class="text-center">
-            <i class="fa-solid fa-trash-can"></i>
-          </th>
-        </tr>
-      </thead>
-      <tbody>
-        <!-- row 1 -->
-        @for (task of priority_Tasks; track $index) {
-          <tr>
-            <th>
-              <div class="flex items-center gap-2">
-                <div>
-                  <input
-                    type="checkbox"
-                    class="checkbox checkbox-sm rounded-sm"
-                    [checked]="task.isCompleted || task.completed"
-                  />
-                </div>
-                <div>
-                  <i class="fa-solid fa-square-check {{ task.textColor }} text-xl mt-1"></i>
-                </div>
-                <div class="flex">
-                  @if (task.canEdit) {
-                    <h2
-                      class="font-semibold cursor-pointer hover:text-sky-800 hover:underline mr-2"
-                      (click)="onTaskEdit.emit(task)"
-                    >
-                      {{ task.name }}
-                    </h2>
-                  } @else {
-                    <h2 class="font-semibold mr-2">
-                      {{ task.name }}
-                    </h2>
-                  }
-                  <h4
-                    class="badge badge-sm {{ task.bgColor }} {{ task.textColor }} whitespace-nowrap"
-                  >
-                    {{ task.project }}
-                  </h4>
-                </div>
+<div class="card bg-base-100 rounded-2xl shadow-sm p-4">
+  @if(allTasks.length === 0) {
+    <div class="flex flex-col items-center justify-center text-center py-10">
+      <!-- Empty State Image -->
+      <img src="images/image.png" alt="No Projects" class="w-20 object-contain mb-2 opacity-95" />
+
+      <!-- Text -->
+      <h2 class="text-sky-700 font-semibold text-lg">No tasks found</h2>
+
+      <p class="text-gray-400 text-sm mt-1 max-w-xs">
+        You can add new tasks to get started.
+      </p>
+    </div>
+
+  }
+  <!-- Header (Only visible on medium screens and up) -->
+  <div
+    class="hidden md:grid grid-cols-12 gap-4 px-4 py-2 text-sm font-semibold text-base-content/70 border-b"
+  >
+    <div class="col-span-4">
+      {{ title }}
+      <span class="text-base-content/60">({{ allTasks.length }})</span>
+    </div>
+    <div class="col-span-2">Priority</div>
+    <div class="col-span-2">Deadline</div>
+    <div class="col-span-2">Assignees</div>
+    <div class="col-span-2 text-end">Action</div>
+  </div>
+
+  <!-- Task Rows Container -->
+  <div class="flex flex-col gap-3 mt-3">
+    @for (task of allTasks; track $index) {
+      <div
+        class="grid grid-cols-1 md:grid-cols-12 gap-4 items-center p-4 rounded-xl border border-base-200 hover:shadow-md transition-all"
+      >
+        <!-- Column 1: Task Details & Checkbox -->
+        <div class="md:col-span-4">
+          <div class="flex items-start gap-3">
+            <input
+              type="checkbox"
+              class="checkbox checkbox-sm mt-1 {{ task.textColor }}"
+              [checked]="task.isCompleted || task.completed"
+              (change)="editTask(task)"
+            />
+            <div>
+              @if (task.canEdit) {
+                <h2 class="font-semibold">
+                  {{ task.name }}
+                </h2>
+              } @else {
+                <h2 class="font-semibold">{{ task.name }}</h2>
+              }
+              <div class="mt-1">
+                <span class="badge badge-sm {{ task.bgColor }} {{ task.textColor }}">
+                  {{ task.project }}
+                </span>
               </div>
-            </th>
-            <td>
-              <h2 class="badge badge-sm {{ task.bgColor }} {{ task.textColor }} whitespace-nowrap">
-                {{ task.priority }}
-              </h2>
-            </td>
-            <td>
-              <i class="fa-regular fa-clock {{ task.textColor }} font-light text-xs"></i>
-              <span class="{{ task.textColor }} font-light text-sm"> {{ task.dueDate }}</span>
-            </td>
-            <td class="text-center">
-              <div class="tooltip" [attr.data-tip]="task.createdByUserEmail">
-                <div class="avatar">
-                  <div class="w-6 rounded-full cursor-help shadow-sm">
-                    <img
-                      src="https://i.pravatar.cc/150?u={{ task.createdByUserEmail }}"
-                      alt="Creator"
-                    />
-                  </div>
-                </div>
-              </div>
-            </td>
-            <td class="flex items-center">
+            </div>
+          </div>
+        </div>
+
+        <!-- Column 2: Priority -->
+        <div class="md:col-span-2 flex items-center gap-2 md:block">
+          <span class="text-xs font-semibold text-base-content/50 md:hidden">Priority:</span>
+          <span class="badge badge-sm {{ task.bgColor }} {{ task.textColor }}">
+            {{ task.priority }}
+          </span>
+        </div>
+
+        <!-- Column 3: Due Date -->
+        <div class="md:col-span-2 flex items-center gap-2 md:block">
+          <span class="text-xs font-semibold text-base-content/50 md:hidden">Deadline:</span>
+          <div class="flex items-center gap-2 text-sm">
+            <i class="fa-regular fa-clock {{ task.textColor }}"></i>
+            @if (task.dueDate) {
+              <span class="{{ task.textColor }}">{{ task.dueDate }}</span>
+            }@else{
+              <span class="text-base-content/50">No Deadline</span>
+            }
+          </div>
+        </div>
+
+        <!-- Column 4: Assignees + Team Dropdown -->
+        <div
+          class="md:col-span-2 flex flex-col sm:flex-row md:flex-row items-start md:items-center gap-2"
+        >
+          <span class="text-xs font-semibold text-base-content/50 md:hidden">Assignees:</span>
+
+          <div class="flex items-center gap-2 w-full md:w-auto justify-between md:justify-start">
+            <!-- Avatars Stack -->
+            <div class="flex items-center gap-1">
               @for (image of task.assigneeAvatar.images; track $index) {
                 @if ($index < 3) {
                   <div class="avatar">
-                    <div class="w-6 rounded-full">
-                      <img src="{{ image }}" alt="Avatar" />
+                    <div class="w-7 rounded-full ring ring-base-100 ring-offset-1">
+                      <img [src]="image" alt="Avatar" />
                     </div>
                   </div>
                 }
               }
               @if (task.assigneeAvatar.images.length > 3) {
-                <span class="text-xs font-bold text-base-content/60 ml-1">...</span>
+                <span class="text-xs font-semibold text-base-content/60 mr-1">
+                  +{{ task.assigneeAvatar.images.length - 3 }}
+                </span>
               }
-              <div class="dropdown dropdown-end dropdown-hover">
-                <div
-                  tabindex="0"
-                  role="button"
-                  class="btn btn-sm btn-ghost no-animation bg-transparent! border-0 text-base-content/70 font-semibold m-1"
-                >
-                  Team
-                  <i class="fa-solid fa-chevron-down text-xs font-thin"></i>
-                </div>
-                <ul
-                  tabindex="-1"
-                  class="dropdown-content menu bg-base-100 rounded-box z-50 p-1 shadow-sm"
-                >
-                  @for (assignee of task.assigneeAvatar.assignees; track $index) {
-                    <li class="">
+            </div>
+
+            <!-- Moved Team Dropdown (Appears next to avatars) -->
+            <div class="dropdown dropdown-end md:dropdown-start dropdown-bottom">
+              <label tabindex="0" class="btn btn-xs btn-ghost gap-1 px-2 normal-case">
+                Team
+                <i class="fa-solid fa-chevron-down text-[10px]"></i>
+              </label>
+              <ul
+                tabindex="0"
+                class="dropdown-content z-[9999] menu p-2 shadow bg-base-100 rounded-box w-52 mt-1"
+              >
+                @for (assignee of task.assigneeAvatar.assignees; track $index) {
+                  <li>
+                    <a class="flex items-center gap-2 py-1.5 text-sm">
                       <div class="avatar">
                         <div class="w-6 rounded-full">
-                          <img src="{{ assignee.avatarUrl }}" alt="Avatar" />
+                          <img [src]="assignee.avatarUrl" />
                         </div>
-                        <p class="whitespace-nowrap text-xs">{{ assignee.name }}</p>
                       </div>
-                    </li>
-                  }
-                </ul>
-              </div>
-            </td>
-            <td class="text-center">
-          <button
-            type="button"
-            class="btn btn-ghost btn-sm text-left"
-            [disabled]="!task.canEdit"
-            (click)="deleteModal.open(task)"
+                      <span class="whitespace-normal">{{ assignee.name }}</span>
+                    </a>
+                  </li>
+                }
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Column 5: Actions (Purely for Row Actions like Delete) -->
+        <div class="md:col-span-2">
+          <div
+            class="flex items-center justify-between md:justify-end gap-2 pt-2 md:pt-0 border-t border-base-100 md:border-none"
           >
-            <i class="fa-solid fa-trash-can"></i>
-          </button>
-            </td>
-          </tr>
-        }
-      </tbody>
-    </table>
+            <span class="text-xs font-semibold text-base-content/50 md:hidden">Actions:</span>
+            <div class="flex justify-center">
+              <button
+                type="button"
+                [class]="
+                  'btn btn-sm btn-ghost ' + (task.canEdit ? task.textColor : 'text-base-content/50')
+                "
+                [disabled]="!task.canEdit"
+                (click)="onTaskEdit.emit(task)"
+              >
+                <i class="fa-solid fa-pen"></i>
+              </button>
+              <button
+                type="button"
+                [class]="
+                  'btn btn-sm btn-ghost ' + (task.canEdit ? task.textColor : 'text-base-content/50')
+                "
+                [disabled]="!task.canEdit"
+                (click)="deleteModal.open(task)"
+              >
+                <i class="fa-solid fa-trash-can"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    }
   </div>
 </div>
 

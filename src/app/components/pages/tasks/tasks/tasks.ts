@@ -61,13 +61,15 @@ export class Tasks implements OnInit {
 
       return {
         ...task,
+        isCompleted: task.isCompleted ?? !!task.completed,
+        completed: task.completed,
         canEdit: isAdmin || task.createdByUserEmail === currentUserEmail,
         assigneeAvatar: {
           images: mappedAssignees.map((a: any) => a.avatarUrl),
           assignees: mappedAssignees
         },
-        bgColor: ['bg-red-100', 'bg-sky-100', 'bg-emerald-100', 'bg-rose-100'][index % 4],
-        textColor: ['text-red-700', 'text-sky-700', 'text-emerald-700', 'text-rose-700'][index % 4],
+        bgColor: ['bg-sky-100', 'bg-sky-100', 'bg-emerald-100', 'bg-blue-100'][index % 4],
+        textColor: ['text-sky-700', 'text-sky-700', 'text-emerald-700', 'text-blue-700'][index % 4],
         priority: task.priority || 'Low',
         project: task.projectName || 'General'
       };
@@ -95,10 +97,10 @@ export class Tasks implements OnInit {
 
     const todayDate = new Date();
     todayDate.setHours(0, 0, 0, 0);
-    
+
     const tomorrowDate = new Date(todayDate);
     tomorrowDate.setDate(todayDate.getDate() + 1);
-    
+
     const nextWeekDate = new Date(todayDate);
     nextWeekDate.setDate(todayDate.getDate() + 7);
 
@@ -142,7 +144,7 @@ export class Tasks implements OnInit {
 
     this.taskService.deleteTask(task.id).subscribe({
       next: () => {
-        this.showSuccess('Delete successful! Loading...');
+        this.showSuccess('Delete successful! ');
         this.fetchTasks(); // refresh list automatically
       },
       error: (err) => {
