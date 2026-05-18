@@ -46,8 +46,12 @@ export class EditProfile implements OnInit {
           last_name: data.last_name || '',
           email: data.email || '',
           gender: formattedGender,
-          role: data.role || 'USER'
+          role: data.role || 'ROLE_USER'
         });
+
+        // Disable role field entirely so admin cannot grant ADMIN role to others or change their own
+        this.profileForm.get('role')?.disable();
+
         if (!this.canEditEmail) {
           this.profileForm.get('email')?.disable();
         } else {
@@ -55,6 +59,9 @@ export class EditProfile implements OnInit {
         }
       } else {
         this.profileForm.reset();
+        this.profileForm.patchValue({ role: 'ROLE_USER' });
+        this.profileForm.get('role')?.disable();
+
         if (this.canEditEmail) {
           this.profileForm.get('email')?.enable();
         }
@@ -75,8 +82,35 @@ export class EditProfile implements OnInit {
       last_name: new FormControl(this._userData?.last_name || '', [Validators.required]),
       email: new FormControl({ value: this._userData?.email || '', disabled: !this.canEditEmail }, [Validators.required, Validators.email]),
       gender: new FormControl(initialGender),
-      role: new FormControl(this._userData?.role || 'ROLE_USER')
+      // Role is always disabled to prevent privilege escalation
+      role: new FormControl({ value: this._userData?.role || 'ROLE_USER', disabled: true })
     });
+  }
+
+  getErrorMessage(controlName: string): string | null {
+    const control = this.profileForm.get(controlName);
+
+    if (!control || !(control.touched || control.dirty) || !control.errors) {
+      return null;
+    }
+
+    const fieldNames: Record<string, string> = {
+      first_name: 'First name',
+      last_name: 'Last name',
+      email: 'Email',
+    };
+
+    const fieldName = fieldNames[controlName] || controlName;
+
+    if (control.errors['required']) {
+      return `${fieldName} is required`;
+    }
+
+    if (control.errors['email'] || control.errors['pattern']) {
+      return 'Please enter a valid email address';
+    }
+
+    return null;
   }
 
   closeModal() {
@@ -85,6 +119,11 @@ export class EditProfile implements OnInit {
   }
 
   onSubmit() {
+    if (this.profileForm.invalid) {
+      this.profileForm.markAllAsTouched();
+      return;
+    }
+
     if (this.profileForm.valid) {
       const updatedData = this.profileForm.getRawValue();
       this.errorMessage = null; // Clear previous errors

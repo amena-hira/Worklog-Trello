@@ -32,15 +32,18 @@ export class FormProjectTask implements OnInit, OnChanges {
 
   assignees: Assignee[] = [];
   projects: any[] = [];
+  selectedProjectDueDate: string = '';
 
-  projectColors = [ 'sky', 'violet', 'fuchsia', 'green',  'teal', 'yellow', 'orange', 'rose' ];
+  todayDate = new Date().toISOString().split('T')[0];
+
+  projectColors = ['sky', 'violet', 'fuchsia', 'green', 'teal', 'yellow', 'orange', 'rose'];
 
   constructor(
     private fb: FormBuilder,
-    private router:Router,
+    private router: Router,
     private usersService: UsersService,
     private taskService: TaskService,
-    private projectService: ProjectService
+    private projectService: ProjectService,
   ) {}
 
   ngOnInit(): void {
@@ -76,16 +79,16 @@ export class FormProjectTask implements OnInit, OnChanges {
       this.usersService.getUsers().subscribe({
         next: (users: any[]) => {
           this.assignees = users
-            .filter(user => user.role === 'ROLE_USER')
+            .filter((user) => user.role === 'ROLE_USER')
             .map((user, index) => ({
-              id: user?.id ,
+              id: user?.id,
               name: user.name || `${user.first_name || ''} ${user.last_name || ''}`.trim(),
-              avatar: `https://i.pravatar.cc/150?u=${user.id || index}`
+              avatar: `https://i.pravatar.cc/150?u=${user.id || index}`,
             }));
-            console.log("assignees: ",this.assignees);
+          console.log('assignees: ', this.assignees);
           this.filteredAssignees = this.assignees;
         },
-        error: (err) => console.error('Error fetching users:', err)
+        error: (err) => console.error('Error fetching users:', err),
       });
     }
   }
@@ -95,10 +98,12 @@ export class FormProjectTask implements OnInit, OnChanges {
       next: (projects) => {
         const currentUserEmail = sessionStorage.getItem('email');
 
-        this.projects = projects.filter(project => {
+        this.projects = projects.filter((project) => {
           if (!currentUserEmail) return true;
           const isCreator = project.createdByUserEmail === currentUserEmail;
-          const isMember = (project.members || []).some((m: any) => m.userEmail === currentUserEmail);
+          const isMember = (project.members || []).some(
+            (m: any) => m.userEmail === currentUserEmail,
+          );
           return isCreator || isMember;
         });
 
@@ -107,11 +112,11 @@ export class FormProjectTask implements OnInit, OnChanges {
           this.updateAssigneesForProject(this.form.get('projectId')?.value);
         }
       },
-      error: (err) => console.error('Error fetching projects:', err)
+      error: (err) => console.error('Error fetching projects:', err),
     });
   }
 
-  buildProjectForm(currentUserEmail: string){
+  buildProjectForm(currentUserEmail: string) {
     this.form = this.fb.group({
       name: ['', [Validators.required]],
       description: [''],
@@ -122,7 +127,7 @@ export class FormProjectTask implements OnInit, OnChanges {
     });
   }
 
-  buildTaskForm(currentUserEmail: string){
+  buildTaskForm(currentUserEmail: string) {
     this.form = this.fb.group({
       name: ['', [Validators.required]],
       description: [''],
@@ -135,18 +140,25 @@ export class FormProjectTask implements OnInit, OnChanges {
     });
 
     // Reactively update assignees dropdown whenever the selected project changes
-    this.form.get('projectId')?.valueChanges.subscribe(projectId => {
+    this.form.get('projectId')?.valueChanges.subscribe((projectId) => {
       this.updateAssigneesForProject(projectId);
     });
   }
 
   private updateAssigneesForProject(projectId: any): void {
-    const selectedProject = this.projects.find(p => p.id == projectId);
+    const selectedProject = this.projects.find((p) => p.id == projectId);
+    this.selectedProjectDueDate = selectedProject?.dueDate
+      ? new Date(selectedProject.dueDate).toLocaleDateString('en-US', {
+          month: 'short',
+          day: '2-digit',
+          year: 'numeric',
+        })
+      : '';
     if (selectedProject && selectedProject.members) {
       this.assignees = selectedProject.members.map((m: any, index: number) => ({
         id: m.userId || m.id || index + 1,
         name: m.userName || m.name,
-        avatar: `https://i.pravatar.cc/150?u=${m.userId || m.id || index}`
+        avatar: `https://i.pravatar.cc/150?u=${m.userId || m.id || index}`,
       }));
     } else {
       this.assignees = [];
@@ -154,8 +166,8 @@ export class FormProjectTask implements OnInit, OnChanges {
     this.filteredAssignees = this.assignees;
 
     // Clean up selected members if they don't belong to the newly selected project
-    this.selectedMembers = this.selectedMembers.filter(sm =>
-      this.assignees.some(a => a.id === sm.id)
+    this.selectedMembers = this.selectedMembers.filter((sm) =>
+      this.assignees.some((a) => a.id === sm.id),
     );
     this.syncAssignees();
   }
@@ -187,7 +199,7 @@ export class FormProjectTask implements OnInit, OnChanges {
         this.selectedMembers = data.members.map((m: any) => ({
           id: m.userId || m.id,
           name: m.userName || m.name,
-          avatar: `https://i.pravatar.cc/150?u=${m.userId || m.id}`
+          avatar: `https://i.pravatar.cc/150?u=${m.userId || m.id}`,
         }));
         this.syncAssignees();
       }
@@ -204,7 +216,7 @@ export class FormProjectTask implements OnInit, OnChanges {
         this.selectedMembers = data.assignees.map((a: any) => ({
           id: a.userId || a.id,
           name: a.userName || a.name,
-          avatar: a.avatarUrl || `https://i.pravatar.cc/150?u=${a.userId || a.id}`
+          avatar: a.avatarUrl || `https://i.pravatar.cc/150?u=${a.userId || a.id}`,
         }));
         this.syncAssignees();
       }
@@ -245,9 +257,10 @@ export class FormProjectTask implements OnInit, OnChanges {
           },
           error: (err) => {
             console.error('Error saving project:', err);
-            this.errorMessage = err.error?.message || 'An unexpected error occurred while saving the project.';
+            this.errorMessage =
+              err.error?.message || 'An unexpected error occurred while saving the project.';
             this.isSubmitting = false;
-          }
+          },
         });
       } else {
         const request = this.editId
@@ -263,9 +276,10 @@ export class FormProjectTask implements OnInit, OnChanges {
           },
           error: (err) => {
             console.error('Error saving task:', err);
-            this.errorMessage = err.error?.message || 'An unexpected error occurred while saving the task.';
+            this.errorMessage =
+              err.error?.message || 'An unexpected error occurred while saving the task.';
             this.isSubmitting = false;
-          }
+          },
         });
       }
     } else {

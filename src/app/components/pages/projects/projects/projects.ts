@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ProjectService } from '../../../../service/projects/project.service';
 import { Project } from '../../../../model/project';
+// Import your TaskService (adjust the path to match your project structure)
+import { TaskService } from '../../../../service/tasks/task.service';
 
 @Component({
   selector: 'app-projects',
@@ -18,7 +20,10 @@ export class Projects implements OnInit {
   errorMessage: string | null = null;
   successMessage: string | null = null;
 
-  constructor(private projectService: ProjectService) {}
+  constructor(
+    private projectService: ProjectService,
+    private taskService: TaskService // Inject your TaskService
+  ) {}
 
   ngOnInit(): void {
     this.fetchProjects();
@@ -26,13 +31,13 @@ export class Projects implements OnInit {
 
   openCreateModal() {
     this.selectedProjectForEdit = null;
-    const modal = document.getElementById('add_task') as HTMLDialogElement;
+    const modal = document.getElementById('add_project') as HTMLDialogElement;
     modal?.showModal();
   }
 
   openEditModal(project: any) {
     this.selectedProjectForEdit = project;
-    const modal = document.getElementById('add_task') as HTMLDialogElement;
+    const modal = document.getElementById('add_project') as HTMLDialogElement;
     modal?.showModal();
   }
 
@@ -97,8 +102,16 @@ export class Projects implements OnInit {
 
     this.projectService.deleteProject(project.id).subscribe({
       next: () => {
-        this.showSuccess('Delete successful! Loading...');
+        this.showSuccess(`${project.name} deleted successfully!`);
         this.fetchProjects(); // refresh list automatically
+        
+        // Refresh the tasks list so tasks related to this project are removed
+        // We must subscribe to the Observable to execute the request
+        this.taskService.getAllTasks().subscribe({
+          error: (err) => {
+            console.error('Error refreshing tasks after project deletion:', err);
+          }
+        }); 
       },
       error: (err) => {
         console.error('Error deleting project:', err);
