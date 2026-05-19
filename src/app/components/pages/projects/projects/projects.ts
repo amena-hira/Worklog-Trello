@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ProjectService } from '../../../../service/projects/project.service';
 import { Project } from '../../../../model/project';
+// Import your TaskService (adjust the path to match your project structure)
+import { TaskService } from '../../../../service/tasks/task.service';
 
 @Component({
   selector: 'app-projects',
@@ -16,8 +18,12 @@ export class Projects implements OnInit {
   selectedProjectForEdit: any = null;
   loading = true;
   errorMessage: string | null = null;
+  successMessage: string | null = null;
 
-  constructor(private projectService: ProjectService) {}
+  constructor(
+    private projectService: ProjectService,
+    private taskService: TaskService // Inject your TaskService
+  ) {}
 
   ngOnInit(): void {
     this.fetchProjects();
@@ -25,13 +31,13 @@ export class Projects implements OnInit {
 
   openCreateModal() {
     this.selectedProjectForEdit = null;
-    const modal = document.getElementById('add_task') as HTMLDialogElement;
+    const modal = document.getElementById('add_project') as HTMLDialogElement;
     modal?.showModal();
   }
 
   openEditModal(project: any) {
     this.selectedProjectForEdit = project;
-    const modal = document.getElementById('add_task') as HTMLDialogElement;
+    const modal = document.getElementById('add_project') as HTMLDialogElement;
     modal?.showModal();
   }
 
@@ -40,8 +46,7 @@ export class Projects implements OnInit {
     this.errorMessage = null;
     this.projectService.getAllProjects().subscribe({
       next: (projects) => {
-        
-        const currentUserEmail = sessionStorage.getItem('email');
+        console.log("Fetched projects: ", projects);
         
         // The backend now provides exactly the projects for the logged-in user
         this.totalProjectsCount = projects.length;
@@ -80,6 +85,7 @@ export class Projects implements OnInit {
             assignees: (project.members || []).map((m: any, i: number) => `https://i.pravatar.cc/150?u=${m.userId || i}`)
           };
         });
+        console.log("projects: ",this.projects)
         this.loading = false;
       },
       error: (err) => {
@@ -92,10 +98,20 @@ export class Projects implements OnInit {
 
   deleteProject(project: any) {
     if (!project || !project.id) return;
+    this.successMessage = null;
 
     this.projectService.deleteProject(project.id).subscribe({
       next: () => {
+        this.showSuccess(`${project.name} deleted successfully!`);
         this.fetchProjects(); // refresh list automatically
+        
+        // Refresh the tasks list so tasks related to this project are removed
+        // We must subscribe to the Observable to execute the request
+        this.taskService.getAllTasks().subscribe({
+          error: (err) => {
+            console.error('Error refreshing tasks after project deletion:', err);
+          }
+        }); 
       },
       error: (err) => {
         console.error('Error deleting project:', err);
@@ -109,5 +125,9 @@ export class Projects implements OnInit {
     setTimeout(() => this.errorMessage = null, 5000); // Auto-hide after 5 seconds
   }
 
+  showSuccess(message: string) {
+      this.successMessage = message;
+      setTimeout(() => this.successMessage = null, 5000); // Auto-hide after 5 seconds
+    }
 
 }

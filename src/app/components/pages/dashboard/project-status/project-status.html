@@ -1,35 +1,62 @@
 <div class="card bg-base-100 rounded-2xl shadow-sm p-4 h-full">
-  <div class="flex justify-between">
+  <div class="flex justify-between items-center mb-2">
     <h2 class="card-title">Projects</h2>
-    <div class="flex items-center justify-center">
-      <p class="text-sm mt-0.5">View All</p>
-      <div>
-        <i class="fa-solid fa-angle-right text-xs"></i>
-      </div>
+
+    <div
+      class="flex items-center gap-1 text-sky-700 cursor-pointer hover:text-sky-900"
+      routerLink="/projects"
+    >
+      <p class="text-sm font-medium">View All</p>
+      <i class="fa-solid fa-angle-right text-xs"></i>
     </div>
   </div>
-  <ul class="list">
-    @for (project of allProjectStatus; track project.name) {
-      <div class="border-b border-gray-100 my-2"></div>
-      <li class="flex justify-between gap-2">
-        <div class="flex gap-2 flex-2">
-          <div class="mt-0.5">
-            <i class="fa-solid fa-square text-{{project.color}}-600 "></i>
-          </div>
-          <div class="w-full">
-            <h2 class="font-semibold text-base">{{ project.name }}</h2>
-            <progress class="progress w-full h-1.5 text-{{project.color}}-600" value="{{project.progress}}" max="100"></progress>
+
+  @if (allProjectStatus.length === 0) {
+    <div class="flex flex-col items-center justify-center text-center py-10">
+      <!-- Empty State Image -->
+      <img src="images/image.png" alt="No Projects" class="w-20 object-contain mb-2 opacity-95" />
+
+      <!-- Text -->
+      <h2 class="text-sky-700 font-semibold text-lg">No Projects Yet</h2>
+
+      <p class="text-gray-400 text-sm mt-1 max-w-xs">
+        Start creating projects to organize your tasks and track progress.
+      </p>
+    </div>
+  } @else {
+    <ul class="space-y-3">
+      @for (project of allProjectStatus; track project.name) {
+        <li
+          class="grid grid-cols-[1fr_auto_auto] items-center gap-3 rounded-xl p-2 hover:bg-gray-50 transition"
+        >
+          <div class="min-w-0">
+            <div class="flex items-center gap-2 min-w-0">
+              <i class="fa-solid fa-square text-xs text-{{ project.color }}-600"></i>
+
+              <h2 class="font-semibold text-base truncate" [title]="project.name">
+                {{ project.name }}
+              </h2>
+            </div>
+
+            <progress
+              class="progress w-full h-1.1 text-{{ project.color }}-600"
+              value="{{ project.progress }}"
+              max="100"
+            ></progress>
           </div>
 
-        </div>
-        <div class="flex flex-col items-center flex-1 mt-0.5">
-          <p>{{project.progress}}%</p>
-          <h2 class="text-{{project.color}}-600 text-sm">{{project.totalDue}} tasks due</h2>
-        </div>
-        <div>
-          <i class="fa-solid fa-ellipsis"></i>
-        </div>
-      </li>
-    }
-  </ul>
+          <div class="text-right min-w-17.5">
+            <p class="font-semibold text-sm">{{ project.progress }}%</p>
+            <p class="text-xs text-{{ project.color }}-500 whitespace-nowrap">
+              {{ project.totalDue }} tasks due
+            </p>
+          </div>
+
+          <button class="btn btn-ghost btn-xs rounded-full">
+            <i class="fa-solid fa-ellipsis"></i>
+          </button>
+        </li>
+      }
+    </ul>
+  }
 </div>

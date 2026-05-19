@@ -1,78 +1,139 @@
 <div class="card bg-base-100 rounded-2xl shadow-sm p-4 h-full">
-  <div class="overflow-x-auto md:overflow-visible">
-    <table class="table table-zebra">
-      <!-- head -->
-      <thead>
-        <tr>
-          <th class="text-black">Project Name</th>
-          <th class="text-center">Total Tasks</th>
-          <th>Due Date</th>
-          <th class="text-center">Created By</th>
-          <th class="text-center">Completed</th>
-          <th class="text-center">Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        <!-- row 1 -->
-        @for (project of projects; track $index) {
-          <tr
-            [ngClass]="
-              project.isOverdue && !project.completed
-                ? 'text-red-800 bg-error/20 [&>td]:bg-error/20 [&>th]:bg-error/20'
-                : ''
-            "
-          >
-            <th>
-              <div class="flex items-center gap-2">
-                <div>
-                  <i class="fa-solid fa-briefcase {{ project.textColor }} text-xl mt-1"></i>
-                </div>
-                <h2 class="font-semibold">{{ project.name }}</h2>
+  @if(projects.length === 0) {
+    <div class="flex flex-col items-center justify-center text-center py-10">
+      <!-- Empty State Image -->
+      <img src="images/image.png" alt="No Projects" class="w-20 object-contain mb-2 opacity-95" />
+
+      <!-- Text -->
+      <h2 class="text-sky-700 font-semibold text-lg">No Projects found</h2>
+
+      <p class="text-gray-400 text-sm mt-1 max-w-xs">
+        You can add new projects to get started.
+      </p>
+    </div>
+
+  }
+
+  <!-- Header (Only visible on medium screens and up) -->
+  @if (projects.length > 0) {
+    <div class="hidden md:grid grid-cols-12 gap-4 px-4 py-2 text-sm font-semibold text-base-content/70 border-b border-base-200 mt-2">
+      <div class="col-span-3 text-black">Project Name</div>
+      <div class="col-span-2 text-center text-black">Total Tasks</div>
+      <div class="col-span-2 text-black">Due Date</div>
+      <div class="col-span-1 text-center text-black">Creator</div>
+      <div class="col-span-2 text-black">Team</div>
+      <div class="col-span-2 text-center text-black">Actions</div>
+    </div>
+  }
+
+  <!-- Project Rows Container -->
+  <div class="flex flex-col gap-3 mt-3">
+    @for (project of projects; track $index) {
+      <div
+        class="grid grid-cols-1 md:grid-cols-12 gap-4 items-center p-4 rounded-xl border border-base-200 hover:shadow-md transition-all"
+        [ngClass]="project.isOverdue && !project.completed ? 'text-slate-500' : ''"
+      >
+        <!-- Column 1: Project Details -->
+        <div class="md:col-span-3">
+          <div class="flex items-center gap-2">
+            <div>
+              <i class="fa-solid fa-briefcase {{ project.textColor }} text-xl mt-1"></i>
+            </div>
+            <h2 class="font-semibold">{{ project.name }}</h2>
+          </div>
+        </div>
+
+        <!-- Column 2: Total Tasks -->
+        <div class="md:col-span-2 flex items-center justify-between md:justify-center">
+          <span class="text-xs font-semibold text-base-content/50 md:hidden">Total Tasks:</span>
+          <span class="badge badge-sm badge-ghost">{{ project.totalTasks || 0 }}</span>
+        </div>
+
+        <!-- Column 3: Due Date -->
+        <div class="md:col-span-2 flex items-center justify-between md:justify-start">
+          <span class="text-xs font-semibold text-base-content/50 md:hidden">Due Date:</span>
+          <div class="flex items-center gap-2">
+            <i class="fa-regular fa-calendar {{ project.textColor }} font-light text-xs"></i>
+            <span [ngClass]="project.isOverdue && !project.completed ? 'text-red-800 font-semibold' : ''">{{ project.dueDate }}</span>
+          </div>
+        </div>
+
+        <!-- Column 4: Created By -->
+        <div class="md:col-span-1 flex items-center justify-between md:justify-center">
+          <span class="text-xs font-semibold text-base-content/50 md:hidden">Creator:</span>
+          <div class="tooltip" [attr.data-tip]="project.createdByUserEmail">
+            <div class="avatar">
+              <div class="w-6 rounded-full cursor-help shadow-sm">
+                <img src="https://i.pravatar.cc/150?u={{ project.createdByUserEmail }}" alt="Creator" />
               </div>
-            </th>
-            <td class="text-center">
-              <span class="badge badge-sm badge-ghost">{{ project.totalTasks || 0 }}</span>
-            </td>
-            <td>
-              <i class="fa-regular fa-calendar {{ project.textColor }} font-light text-xs"></i>
-              <span
-                [ngClass]="project.isOverdue && !project.completed ? 'text-red-800 font-semibold' : ''"
-                >{{ project.dueDate }}</span
-              >
-            </td>
-            <td class="text-center">
-              <div class="tooltip" [attr.data-tip]="project.createdByUserEmail">
-                <div class="avatar">
-                  <div class="w-6 rounded-full cursor-help shadow-sm">
-                    <img
-                      src="https://i.pravatar.cc/150?u={{ project.createdByUserEmail }}"
-                      alt="Creator"
-                    />
+            </div>
+          </div>
+        </div>
+
+        <!-- Column 5: Team Dropdown -->
+        <div class="md:col-span-2 flex flex-col sm:flex-row md:flex-row items-start md:items-center gap-2">
+          <span class="text-xs font-semibold text-base-content/50 md:hidden">Team:</span>
+          
+          <div class="flex items-center gap-2 w-full md:w-auto justify-between md:justify-start">
+            <div class="flex items-center gap-1">
+              @for (member of project.members || []; track $index) {
+                @if ($index < 3) {
+                  <div class="avatar">
+                    <div class="w-7 rounded-full ring ring-base-100 ring-offset-1">
+                      <img [src]="member.avatarUrl || 'https://i.pravatar.cc/150?u=' + (member.userId || member.email || $index)" alt="Avatar" />
+                    </div>
                   </div>
-                </div>
-              </div>
-            </td>
-            <td class="text-center">
-              <input
-                type="checkbox"
-                class="checkbox checkbox-sm rounded-sm {{ project.borderColor }}"
-                [checked]="project.completed"
-              />
-            </td>
-            
-            
-            <td class="text-center">
+                }
+              }
+              @if ((project.members || []).length > 3) {
+                <span class="text-xs font-semibold text-base-content/60 mr-1">
+                  +{{ project.members.length - 3 }}
+                </span>
+              }
+            </div>
+
+            <div class="dropdown dropdown-end md:dropdown-start dropdown-bottom">
+              <label tabindex="0" class="btn btn-xs btn-ghost gap-1 px-2 normal-case">
+                Team
+                <i class="fa-solid fa-chevron-down text-[10px]"></i>
+              </label>
+              <ul tabindex="0" class="dropdown-content z-[9999] menu p-2 shadow bg-base-100 rounded-box w-52 mt-1">
+                @for (member of project.members || []; track $index) {
+                  <li>
+                    <a class="flex items-center gap-2 py-1.5 text-sm">
+                      <div class="avatar">
+                        <div class="w-6 rounded-full">
+                          <img [src]="member.avatarUrl || 'https://i.pravatar.cc/150?u=' + (member.userId || member.email || $index)" />
+                        </div>
+                      </div>
+                      <span class="whitespace-normal">{{ member.userName || member.name || member.email || 'Team Member' }}</span>
+                    </a>
+                  </li>
+                }
+                @if (!project.members || project.members.length === 0) {
+                  <li><span class="text-base-content/50 text-xs italic p-2 block text-center">No team members</span></li>
+                }
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Column 6: Actions -->
+        <div class="md:col-span-2">
+          <div class="flex items-center justify-between md:justify-center gap-2 md:gap-0 pt-2 md:pt-0 border-t border-base-100 md:border-none">
+            <span class="text-xs font-semibold text-base-content/50 md:hidden">Actions:</span>
+            <div class="flex justify-center">
               <button type="button" class="btn btn-ghost btn-sm text-left" [disabled]="!project.canEdit" (click)="onProjectEdit.emit(project)">
                 <i class="fa-solid fa-pen"></i>
               </button>
               <button type="button" class="btn btn-ghost btn-sm text-left" [disabled]="!project.canEdit" (click)="deleteModal.open(project)">
                 <i class="fa-solid fa-trash-can"></i>
               </button>
-            </td>
-          </tr>
-        }
-      </tbody>
-    </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    }
   </div>
 </div>
 

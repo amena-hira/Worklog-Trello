@@ -20,6 +20,7 @@ export class Tasks implements OnInit {
   selectedTaskForEdit: any = null;
   loading = true;
   errorMessage: string | null = null;
+  successMessage: string | null = null;
 
   constructor(private taskService: TaskService) {}
 
@@ -32,51 +33,73 @@ export class Tasks implements OnInit {
     this.errorMessage = null;
     this.taskService.getAllTasks().subscribe({
       next: (tasks) => {
-        // The backend now provides exactly the tasks for the logged-in user
-        const mappedTasks = this.mapTasksData(tasks);
+        const currentUserEmail = sessionStorage.getItem('email');
+        const isAdmin = sessionStorage.getItem('authRole') === 'ROLE_ADMIN';
+
+        // Filter tasks: Admins see all tasks, users see only tasks they created or are assigned to
+        const relevantTasks = tasks.filter((task: any) => {
+          if (isAdmin) return true;
+          if (!currentUserEmail) return true;
+          const isCreator = task.createdByUserEmail === currentUserEmail;
+          const isAssignee = (task.assignees || []).some(
+            (a: any) => a.userEmail === currentUserEmail || a.email === currentUserEmail
+          );
+          return isCreator || isAssignee;
+        });
+
+        const mappedTasks = this.mapTasksData(relevantTasks);
         this.distributeTasks(mappedTasks);
         this.calculateCounters(mappedTasks);
         this.loading = false;
+        console.log('Fetched tasks:', mappedTasks);
       },
       error: (err) => {
         console.error('Error fetching tasks:', err);
-        this.errorMessage = err?.error?.message || 'An unexpected error occurred while fetching tasks.';
+        this.showError(err?.error?.message || 'An unexpected error occurred while fetching tasks.');
+        this.errorMessage =
+          err?.error?.message || 'An unexpected error occurred while fetching tasks.';
         this.loading = false;
-      }
+      },
     });
   }
 
   private mapTasksData(tasks: any[]): any[] {
     const currentUserEmail = sessionStorage.getItem('email');
-    const role = sessionStorage.getItem('role');
-    const isAdmin = role === 'admin' || role === 'ADMIN';
+    const role = sessionStorage.getItem('authRole');
+    const isAdmin = role === 'ROLE_ADMIN';
 
     return tasks.map((task, index) => {
       const mappedAssignees = (task.assignees || []).map((a: any, i: number) => ({
         ...a,
-        name: a.userName || a.name,
-        avatarUrl: `https://i.pravatar.cc/150?u=${a.userName || i}`
+        name: a.userName || 'User ' + (i + 1),
+        avatarUrl: `https://i.pravatar.cc/150?u=${a.userName || i}`,
       }));
 
       return {
         ...task,
+        isCompleted: task.isCompleted ?? !!task.completed,
+        completed: task.completed,
         canEdit: isAdmin || task.createdByUserEmail === currentUserEmail,
         assigneeAvatar: {
           images: mappedAssignees.map((a: any) => a.avatarUrl),
-          assignees: mappedAssignees
+          assignees: mappedAssignees,
         },
-        bgColor: ['bg-red-100', 'bg-sky-100', 'bg-emerald-100', 'bg-rose-100'][index % 4],
-        textColor: ['text-red-700', 'text-sky-700', 'text-emerald-700', 'text-rose-700'][index % 4],
+        bgColor: ['bg-sky-100', 'bg-sky-100', 'bg-emerald-100', 'bg-blue-100'][index % 4],
+        textColor: ['text-sky-700', 'text-sky-700', 'text-emerald-700', 'text-blue-700'][index % 4],
         priority: task.priority || 'Low',
-        project: task.projectName || 'General'
+        project: task.projectName || 'General',
       };
     });
   }
 
   private distributeTasks(tasks: any[]) {
     const todayStr = new Date().toDateString();
-    this.todayTasks = tasks.filter(task => task.dueDate && new Date(task.dueDate).toDateString() === todayStr);
-    this.otherTasks = tasks.filter(task => !task.dueDate || new Date(task.dueDate).toDateString() !== todayStr);
+    this.todayTasks = tasks.filter(
+      (task) => task.dueDate && new Date(task.dueDate).toDateString() === todayStr,
+    );
+    this.otherTasks = tasks.filter(
+      (task) => !task.dueDate || new Date(task.dueDate).toDateString() !== todayStr,
+    );
 
     this.otherTasks.sort((a, b) => {
       if (!a.dueDate) return 1;
@@ -94,14 +117,14 @@ export class Tasks implements OnInit {
 
     const todayDate = new Date();
     todayDate.setHours(0, 0, 0, 0);
-    
+
     const tomorrowDate = new Date(todayDate);
     tomorrowDate.setDate(todayDate.getDate() + 1);
-    
+
     const nextWeekDate = new Date(todayDate);
     nextWeekDate.setDate(todayDate.getDate() + 7);
 
-    tasks.forEach(t => {
+    tasks.forEach((t) => {
       if (t.isCompleted || !!t.completed) {
         this.completedTaskCount++;
       } else if (t.dueDate) {
@@ -137,20 +160,29 @@ export class Tasks implements OnInit {
 
   deleteTask(task: any) {
     if (!task || !task.id) return;
+    this.successMessage = null;
 
     this.taskService.deleteTask(task.id).subscribe({
       next: () => {
+        this.showSuccess('Delete successful! ');
         this.fetchTasks(); // refresh list automatically
       },
       error: (err) => {
         console.error('Error deleting task:', err);
-        this.showError(err?.error?.message || 'An unexpected error occurred while deleting the task.');
-      }
+        this.showError(
+          err?.error?.message || 'An unexpected error occurred while deleting the task.',
+        );
+      },
     });
   }
 
   showError(message: string) {
     this.errorMessage = message;
-    setTimeout(() => this.errorMessage = null, 5000); // Auto-hide after 5 seconds
+    setTimeout(() => (this.errorMessage = null), 5000); // Auto-hide after 5 seconds
+  }
+
+  showSuccess(message: string) {
+    this.successMessage = message;
+    setTimeout(() => (this.successMessage = null), 5000); // Auto-hide after 5 seconds
   }
 }

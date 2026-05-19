@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { PriorotyTable } from './prioroty-table';
+import { Loader } from './loader';
 
-describe('PriorotyTable', () => {
-  let component: PriorotyTable;
-  let fixture: ComponentFixture<PriorotyTable>;
+describe('Loader', () => {
+  let component: Loader;
+  let fixture: ComponentFixture<Loader>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [PriorotyTable]
+      declarations: [Loader]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(PriorotyTable);
+    fixture = TestBed.createComponent(Loader);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -1,7 +1,7 @@
 <!-- Open the modal using ID.showModal() method -->
 <dialog id="add_task" class="modal">
   <div class="modal-box">
-    <h3 class="text-xl font-semibold">{{ editId ? 'Edit' : 'Add New' }} {{title}}</h3>
+    <h3 class="text-xl font-semibold">{{ editId ? 'Edit' : 'Add New' }} {{ title }}</h3>
     <form method="dialog">
       <button class="btn btn-xs btn-circle btn-ghost absolute right-2 top-2">✕</button>
     </form>
@@ -9,7 +9,7 @@
       @if (form.get('name')) {
         <fieldset class="fieldset">
           <legend class="fieldset-legend text-base text-base-content/60 font-normal">
-            {{title}} Name
+            {{ title }} Name
           </legend>
           <input
             formControlName="name"
@@ -20,7 +20,7 @@
         </fieldset>
       }
       @if (form.get('name')?.invalid && form.get('name')?.touched) {
-        <p class="text-sm text-red-500">*{{title}} name is required.</p>
+        <p class="text-sm text-red-500">*{{ title }} name is required.</p>
       }
 
       @if (form.get('description')) {
@@ -49,14 +49,23 @@
               formControlName="projectId"
               class="select md:select-ghost md:border-0 md:outline-none w-full"
             >
-              <option value="" disabled selected>Select Project</option>
-              @for (project of projects; track project.id) {
-                <option [value]="project.id">{{ project.name }}</option>
+              @if (projects.length > 0) {
+                <option value="" disabled selected>Select Project</option>
+
+                @for (project of projects; track project.id) {
+                  <option [value]="project.id" class="truncate">{{ project.name }}</option>
+                }
+              } @else {
+                <option value="" disabled selected>Add Project</option>
               }
             </select>
           </div>
           <div>
-            <span>Feb 03,2026</span>
+            @if (selectedProjectDueDate) {
+              <span>{{ selectedProjectDueDate }}</span>
+            } @else {
+              <span>Feb 03,2026</span>
+            }
             <i class="fa-regular fa-calendar"></i>
           </div>
         </div>
@@ -94,31 +103,35 @@
                     (input)="onSearchInput($event)"
                   />
 
-              <div class="max-h-60 overflow-y-auto pr-1">
-                @for (member of filteredAssignees; track member.id) {
-                  <div
-                    class="flex items-center justify-between gap-2 px-2 py-2 rounded-lg cursor-pointer hover:bg-base-200"
-                    (click)="onSelectMember(member)"
-                  >
-                  <span class="flex items-center gap-2 min-w-0">
-                    <span class="w-6 h-6 rounded-full overflow-hidden shrink-0">
-                        <img
-                          [src]="member.avatar"
-                          [alt]="member.name"
-                          class="w-full h-full object-cover"
-                        />
-                      </span>
-                    <span class="whitespace-normal">{{ member.name }}</span>
-                    </span>
+                  <div class="max-h-60 overflow-y-auto pr-1">
+                    @if (filteredAssignees.length > 0) {
+                      @for (member of filteredAssignees; track member.id) {
+                        <div
+                          class="flex items-center justify-between gap-2 px-2 py-2 rounded-lg cursor-pointer hover:bg-base-200"
+                          (click)="onSelectMember(member)"
+                        >
+                          <span class="flex items-center gap-2 min-w-0">
+                            <span class="w-6 h-6 rounded-full overflow-hidden shrink-0">
+                              <img
+                                [src]="member.avatar"
+                                [alt]="member.name"
+                                class="w-full h-full object-cover"
+                              />
+                            </span>
+                            <span class="whitespace-normal">{{ member.name }}</span>
+                          </span>
 
-                    <input
-                      type="checkbox"
-                    class="checkbox checkbox-sm pointer-events-none shrink-0"
-                      [checked]="isSelected(member)"
-                    />
+                          <input
+                            type="checkbox"
+                            class="checkbox checkbox-sm pointer-events-none shrink-0"
+                            [checked]="isSelected(member)"
+                          />
+                        </div>
+                      }
+                    } @else {
+                      <div class="px-2 py-2 text-sm text-base-content/50">No Assignee</div>
+                    }
                   </div>
-                }
-              </div>
                 </div>
               </div>
             </div>
@@ -171,12 +184,13 @@
         >
           <h2>
             <i class="fa-solid fa-calendar"></i>
-            <span>Date</span>
+            <span>Deadline</span>
           </h2>
           <div class="w-full md:w-auto">
             <input
               formControlName="dueDate"
               type="date"
+              [min]="todayDate"
               class="input focus:border-0 focus:outline-0 shadow-sm w-full"
             />
           </div>
@@ -199,17 +213,20 @@
                 type="checkbox"
                 [checked]="form.get('color')?.value === color"
                 (change)="form.get('color')?.setValue(color)"
-                class="checkbox rounded-full border-{{ color }}-600 bg-{{ color }}-600 checked:text-white"
+                class="checkbox rounded-full border-{{ color }}-600 bg-{{
+                  color
+                }}-600 checked:text-white"
               />
-
             }
           </div>
         </div>
       }
 
       <div class="flex justify-end gap-2">
-        <button type="reset" class="btn">Cancel</button>
-        <button type="submit" class="btn bg-sky-950 text-white hover:bg-sky-900">{{ editId ? 'Update' : 'Save' }}</button>
+        <button type="reset" class="btn">Reset</button>
+        <button type="submit" class="btn bg-sky-950 text-white hover:bg-sky-900">
+          {{ editId ? 'Update' : 'Save' }}
+        </button>
       </div>
     </form>
   </div>

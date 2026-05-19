@@ -23,7 +23,5 @@ export class DrawerSidebar implements OnInit {
         
       { label: 'Inbox', icon: 'fa-regular fa-message', route: '/inbox' },
     ];
-
-    console.log(this.menuItems);
   }
 }

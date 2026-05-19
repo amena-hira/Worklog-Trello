@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { UsersService } from '../../../../service/users/users.service';
 import { TaskService } from '../../../../service/tasks/task.service';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-dashboard',
@@ -9,7 +10,13 @@ import { TaskService } from '../../../../service/tasks/task.service';
   styleUrl: './dashboard.css',
 })
 export class Dashboard implements OnInit {
-  today = new Date()
+  user_name?: string;
+  loading = true;
+  errorMessage: string | null = null;
+
+  today = new Date();
+  currentYear = this.today.getFullYear();
+
   cards = [
     {
       title: 'Completed',
@@ -29,59 +36,74 @@ export class Dashboard implements OnInit {
       icon: 'fa-solid fa-triangle-exclamation',
       color: 'text-amber-500',
     },
-    { title: 'Total Tasks', total: 0, icon: 'fa-solid fa-list-check', color: 'text-teal-500' },
+    {
+      title: 'Total Tasks',
+      total: 0,
+      icon: 'fa-solid fa-list-check',
+      color: 'text-teal-500',
+    },
   ];
 
-  currentYear = this.today.getFullYear();
-
-  constructor(public userService:UsersService, public taskService:TaskService) {}
-
-  user_name?: string;
-  loading = true;
-  errorMessage: string | null = null;
+  constructor(
+    public userService: UsersService,
+    public taskService: TaskService,
+  ) {}
 
   ngOnInit(): void {
-    const email = sessionStorage.getItem('email');
-    this.loading = true;
-    this.errorMessage = null;
-    
-    let completeCount = 0;
-    const checkDone = () => {
-      completeCount++;
-      if (completeCount === (email ? 2 : 1)) this.loading = false;
-    };
-
-    if (email) {
-      this.userService.getUserByEmail(email).subscribe({
-        next: (user) => {
-          this.user_name = user.first_name+' '+ user.last_name;
-          checkDone();
-        },
-        error: (err) => {
-          console.error('Error fetching user:', err);
-          this.errorMessage = err?.error?.message || 'Failed to load user information.';
-          checkDone();
-        }
-      });
-    }
-
-    this.fetchUserTaskStatus(checkDone);
+    this.loadDashboard();
   }
 
-  fetchUserTaskStatus(checkDone: () => void){
-      this.taskService.getUserTaskStats().subscribe({
-        next: (stats: any) => {
-          this.cards[0].total = stats.completedTasks;
-          this.cards[1].total = stats.incompleteTasks;
-          this.cards[2].total = stats.overdueTasks;
-          this.cards[3].total = stats.totalTasks;
-          checkDone();
-        },
-        error: (err) => {
-          console.error('Error fetching user tasks:', err);
-          this.errorMessage = err?.error?.message || 'Failed to load task statistics.';
-          checkDone();
-        }
-      });
+  loadDashboard(): void {
+    const email = sessionStorage.getItem('email');
+
+    this.loading = true;
+    this.errorMessage = null;
+
+    if (!email) {
+      this.fetchUserTaskStatus();
+      return;
+    }
+
+    forkJoin({
+      user: this.userService.getUserByEmail(email),
+      stats: this.taskService.getUserTaskStats(),
+    }).subscribe({
+      next: ({ user, stats }) => {
+        this.user_name = `${user.first_name} ${user.last_name}`;
+        this.updateCards(stats);
+        this.loading = false;
+      },
+      error: (err) => {
+        console.error('Error loading dashboard:', err);
+        this.showError(err.error?.message || 'Failed to load dashboard data.');
+        this.loading = false;
+      },
+    });
+  }
+
+  fetchUserTaskStatus(): void {
+    this.taskService.getUserTaskStats().subscribe({
+      next: (stats: any) => {
+        this.updateCards(stats);
+        this.loading = false;
+      },
+      error: (err) => {
+        console.error('Error fetching user tasks:', err);
+        this.showError(err.error?.message || 'Failed to load task statistics.');
+        this.loading = false;
+      },
+    });
+  }
+
+  updateCards(stats: any): void {
+    this.cards[0].total = stats.completedTasks;
+    this.cards[1].total = stats.incompleteTasks;
+    this.cards[2].total = stats.overdueTasks;
+    this.cards[3].total = stats.totalTasks;
+  }
+
+  showError(message: string) {
+    this.errorMessage = message;
+    setTimeout(() => (this.errorMessage = null), 5000); // Auto-hide after 5 seconds
   }
 }

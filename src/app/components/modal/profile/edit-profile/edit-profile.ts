@@ -13,6 +13,7 @@ export class EditProfile implements OnInit {
   profileForm!: FormGroup;
   private _userData: any = null;
   errorMessage: string | null = null;
+  successMessage: string | null = null;
   isSubmitting: boolean = false;
 
   @Output() profileUpdated = new EventEmitter<any>();
@@ -46,8 +47,12 @@ export class EditProfile implements OnInit {
           last_name: data.last_name || '',
           email: data.email || '',
           gender: formattedGender,
-          role: data.role || 'USER'
+          role: data.role || 'ROLE_USER'
         });
+
+        // Disable role field entirely so admin cannot grant ADMIN role to others or change their own
+        this.profileForm.get('role')?.disable();
+
         if (!this.canEditEmail) {
           this.profileForm.get('email')?.disable();
         } else {
@@ -55,6 +60,9 @@ export class EditProfile implements OnInit {
         }
       } else {
         this.profileForm.reset();
+        this.profileForm.patchValue({ role: 'ROLE_USER' });
+        this.profileForm.get('role')?.disable();
+
         if (this.canEditEmail) {
           this.profileForm.get('email')?.enable();
         }
@@ -75,8 +83,35 @@ export class EditProfile implements OnInit {
       last_name: new FormControl(this._userData?.last_name || '', [Validators.required]),
       email: new FormControl({ value: this._userData?.email || '', disabled: !this.canEditEmail }, [Validators.required, Validators.email]),
       gender: new FormControl(initialGender),
-      role: new FormControl(this._userData?.role || 'ROLE_USER')
+      // Role is always disabled to prevent privilege escalation
+      role: new FormControl({ value: this._userData?.role || 'ROLE_USER', disabled: true })
     });
+  }
+
+  getErrorMessage(controlName: string): string | null {
+    const control = this.profileForm.get(controlName);
+
+    if (!control || !(control.touched || control.dirty) || !control.errors) {
+      return null;
+    }
+
+    const fieldNames: Record<string, string> = {
+      first_name: 'First name',
+      last_name: 'Last name',
+      email: 'Email',
+    };
+
+    const fieldName = fieldNames[controlName] || controlName;
+
+    if (control.errors['required']) {
+      return `${fieldName} is required`;
+    }
+
+    if (control.errors['email'] || control.errors['pattern']) {
+      return 'Please enter a valid email address';
+    }
+
+    return null;
   }
 
   closeModal() {
@@ -85,6 +120,11 @@ export class EditProfile implements OnInit {
   }
 
   onSubmit() {
+    if (this.profileForm.invalid) {
+      this.profileForm.markAllAsTouched();
+      return;
+    }
+
     if (this.profileForm.valid) {
       const updatedData = this.profileForm.getRawValue();
       this.errorMessage = null; // Clear previous errors
@@ -97,12 +137,13 @@ export class EditProfile implements OnInit {
         this.usersService.addUser(payload).subscribe({
           next: (res) => {
             this.profileUpdated.emit(res);
+            this.showSuccess(`${payload.first_name} ${payload.last_name} created successful!`);
             this.isSubmitting = false;
             this.closeModal();
           },
           error: (err) => {
             console.error('Error creating user:', err);
-            this.errorMessage = err.error?.message || 'An unexpected error occurred while creating the user.';
+            this.showError(err.error?.message || 'An unexpected error occurred while creating the user.');
             this.isSubmitting = false;
           }
         });
@@ -113,12 +154,13 @@ export class EditProfile implements OnInit {
         this.usersService.updateUser(payload).subscribe({
           next: (res) => {
             this.profileUpdated.emit(res);
+            this.showSuccess(`${payload.first_name} ${payload.last_name} updated successful!`);
             this.isSubmitting = false;
             this.closeModal();
           },
           error: (err) => {
             console.error('Error updating user:', err);
-            this.errorMessage = err.error?.message || 'An unexpected error occurred while updating the user.';
+            this.showError(err.error?.message || 'An unexpected error occurred while updating the user.');
             this.isSubmitting = false;
           }
         });
@@ -127,18 +169,30 @@ export class EditProfile implements OnInit {
         this.usersService.updateMe(updatedData).subscribe({
           next: (res) => {
             this.profileUpdated.emit(res);
+            this.showSuccess('Updated successful!');
             this.isSubmitting = false;
             this.closeModal();
           },
           error: (err) => {
             console.error('Error updating profile:', err);
-            this.errorMessage = err.error?.message || 'An unexpected error occurred while updating your profile.';
+            this.showError(err.error?.message || 'An unexpected error occurred while updating your profile.');
             this.isSubmitting = false;
           }
         });
       }
     }
   }
+
+  showError(message: string) {
+    this.errorMessage = message;
+    setTimeout(() => (this.errorMessage = null), 5000); // Auto-hide after 5 seconds
+  }
+
+  showSuccess(message: string) {
+    this.successMessage = message;
+    setTimeout(() => (this.successMessage = null), 5000); // Auto-hide after 5 seconds
+  }
+
 
   
 }

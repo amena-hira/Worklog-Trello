@@ -17,6 +17,10 @@ export class WorklogUsers {
 
   @ViewChild(FormDelete) deleteModal!: FormDelete;
 
+  get currentUserEmail(): string | null {
+    return sessionStorage.getItem('email');
+  }
+
   constructor(private usersService: UsersService) {}
 
   ngOnInit(): void {
@@ -53,8 +57,7 @@ export class WorklogUsers {
   }
 
   openDeleteModal(user: any) {
-    // Ensure the item has a 'name' property so the form-delete modal can display it
-    const itemToDelete = { ...user, name: user.name || (user.first_name ? user.first_name + ' ' + user.last_name : 'Unknown User') };
+    const itemToDelete = { ...user, name: user.first_name ? user.first_name + ' ' + user.last_name : 'Unknown User' };
     this.deleteModal.open(itemToDelete);
   }
 

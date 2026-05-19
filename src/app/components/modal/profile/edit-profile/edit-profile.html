@@ -17,16 +17,25 @@
         <fieldset class="fieldset">
           <legend class="fieldset-legend text-base text-base-content/60 font-normal">First Name</legend>
           <input formControlName="first_name" type="text" class="input focus:border-0 focus:outline-0 shadow-sm w-full" placeholder="First Name" />
+          @if (getErrorMessage('first_name')) {
+            <p class="text-red-500 text-sm mt-1">{{ getErrorMessage('first_name') }}</p>
+          }
         </fieldset>
         <fieldset class="fieldset">
           <legend class="fieldset-legend text-base text-base-content/60 font-normal">Last Name</legend>
           <input formControlName="last_name" type="text" class="input focus:border-0 focus:outline-0 shadow-sm w-full" placeholder="Last Name" />
+          @if (getErrorMessage('last_name')) {
+            <p class="text-red-500 text-sm mt-1">{{ getErrorMessage('last_name') }}</p>
+          }
         </fieldset>
       </div>
 
       <fieldset class="fieldset">
         <legend class="fieldset-legend text-base text-base-content/60 font-normal">Email</legend>
         <input formControlName="email" type="email" placeholder="Email" class="input focus:border-0 focus:outline-0 shadow-sm w-full" [class.bg-base-200]="!canEditEmail" [class.cursor-not-allowed]="!canEditEmail" [readonly]="!canEditEmail" [attr.title]="!canEditEmail ? 'Email cannot be changed directly' : 'Enter email'" />
+        @if (getErrorMessage('email')) {
+          <p class="text-red-500 text-sm mt-1">{{ getErrorMessage('email') }}</p>
+        }
       </fieldset>
 
       <fieldset class="fieldset">
@@ -41,6 +50,9 @@
             <span class="text-sm">Female</span>
           </label>
         </div>
+        @if (getErrorMessage('gender')) {
+          <p class="text-red-500 text-sm mt-1">{{ getErrorMessage('gender') }}</p>
+        }
       </fieldset>
 
       @if (isAdmin) {
@@ -69,3 +81,10 @@
     <button>close</button>
   </form>
 </dialog>
+
+@if (errorMessage) {
+  <app-toast [errorMessage]="errorMessage"></app-toast>
+}
+@if (successMessage) {
+  <app-toast [successMessage]="successMessage"></app-toast>
+}
