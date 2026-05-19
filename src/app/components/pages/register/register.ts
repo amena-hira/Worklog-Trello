@@ -97,7 +97,8 @@ export class Register implements OnInit {
         }, 1500);
       },
       error: (error) => {
-        this.showError(error.error?.message || 'Registration failed. Please try again later.');
+        console.log(error);
+        this.showError(error.error || 'Registration failed. Please try again later.');
         this.isSubmitting = false;
       },
     });
