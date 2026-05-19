@@ -99,6 +99,7 @@ export class UpcomingDeadline implements OnInit {
     return {
       originalTask: task, // Keep a reference to the unmodified task with all its details
       name: task.name,
+      description: task.description,  
       dueDate: isTomorrow ? 'Tomorrow!' : `In ${diffDays} days`,
       bgColor: this.taskColors[index % this.taskColors.length],
       dueColor: isTomorrow ? 'bg-red-600' : 'bg-teal-600',

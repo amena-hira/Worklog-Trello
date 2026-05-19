@@ -14,8 +14,10 @@ export class ProjectService {
   private projectsCache$: Observable<Project[]> = this.reload$.pipe(
     switchMap(() => {
       const role = sessionStorage.getItem('authRole');
-      const isAdmin = role === 'admin' || role === 'ADMIN' || role === 'ROLE_ADMIN';
+      console.log("User role from sessionStorage: ", role);
+      const isAdmin = role === 'ROLE_ADMIN';
       const endpoint = isAdmin ? this.apiUrl : `${this.apiUrl}/my-projects`;
+      console.log("Fetching projects from endpoint: ", endpoint);
       return this.http.get<Project[]>(endpoint);
     }),
     shareReplay(1)
@@ -28,6 +30,7 @@ export class ProjectService {
   }
 
   getAllProjects(): Observable<Project[]> {
+    console.log("Fetching projects from API...", this.apiUrl);
     return this.projectsCache$;
   }
 

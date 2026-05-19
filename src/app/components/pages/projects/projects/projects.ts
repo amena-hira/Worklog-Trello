@@ -46,8 +46,7 @@ export class Projects implements OnInit {
     this.errorMessage = null;
     this.projectService.getAllProjects().subscribe({
       next: (projects) => {
-        
-        const currentUserEmail = sessionStorage.getItem('email');
+        console.log("Fetched projects: ", projects);
         
         // The backend now provides exactly the projects for the logged-in user
         this.totalProjectsCount = projects.length;
@@ -86,6 +85,7 @@ export class Projects implements OnInit {
             assignees: (project.members || []).map((m: any, i: number) => `https://i.pravatar.cc/150?u=${m.userId || i}`)
           };
         });
+        console.log("projects: ",this.projects)
         this.loading = false;
       },
       error: (err) => {
