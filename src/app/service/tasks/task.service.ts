@@ -18,7 +18,7 @@ export class TaskService {
   private tasksCache$: Observable<Task[]> = this.reload$.pipe(
     switchMap(() => {
       const role = sessionStorage.getItem('authRole');
-      const isAdmin = role === 'admin' || role === 'ADMIN' || role === 'ROLE_ADMIN';
+      const isAdmin = role === 'ROLE_ADMIN';
       const endpoint = isAdmin ? this.apiURL : `${this.apiURL}/my-tasks`;
       return this.http.get<Task[]>(endpoint);
     }),
