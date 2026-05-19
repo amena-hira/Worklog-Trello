@@ -14,7 +14,7 @@ export class ProjectService {
   private projectsCache$: Observable<Project[]> = this.reload$.pipe(
     switchMap(() => {
       const role = sessionStorage.getItem('authRole');
-      const isAdmin = role === 'admin' || role === 'ADMIN' || role === 'ROLE_ADMIN';
+      const isAdmin = role === 'ROLE_ADMIN';
       const endpoint = isAdmin ? this.apiUrl : `${this.apiUrl}/my-projects`;
       return this.http.get<Project[]>(endpoint);
     }),

@@ -46,6 +46,7 @@ export class Projects implements OnInit {
     this.errorMessage = null;
     this.projectService.getAllProjects().subscribe({
       next: (projects) => {
+        console.log("Fetched projects: ", projects);
         
         // The backend now provides exactly the projects for the logged-in user
         this.totalProjectsCount = projects.length;
