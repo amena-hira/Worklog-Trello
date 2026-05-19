@@ -52,6 +52,7 @@ export class AdminDashboard implements OnInit {
       },
       error: (err) => {
         console.error('Error fetching users:', err);
+        this.showError(err.error?.message || 'Failed to fetch user stats.');
         this.errorMessage = err?.error?.message || 'Failed to fetch user stats.';
         checkDone();
       },
@@ -67,6 +68,7 @@ export class AdminDashboard implements OnInit {
       },
       error: (err) => {
         console.error('Error fetching projects:', err);
+        this.showError(err.error?.message || 'Failed to fetch project stats.');
         this.errorMessage = err?.error?.message || 'Failed to fetch project stats.';
         checkDone();
       },
@@ -90,6 +92,7 @@ export class AdminDashboard implements OnInit {
       },
       error: (err) => {
         console.error('Error fetching tasks:', err);
+        this.showError(err.error?.message || 'An unexpected error occurred while fetching tasks.');
         this.errorMessage = err?.error?.message || 'Failed to fetch task stats.';
         checkDone();
       },
@@ -100,8 +103,8 @@ export class AdminDashboard implements OnInit {
     return tasks.map((task, index) => {
       const mappedAssignees = (task.assignees || []).map((a: any, i: number) => ({
         ...a,
-        name: a.userName || a.name,
-        avatarUrl: `https://i.pravatar.cc/150?u=${a.userName || i}`,
+        name: a?.userName || '',
+        avatarUrl: `https://i.pravatar.cc/150?u=${a?.userName || i}`,
       }));
 
       return {
@@ -111,11 +114,16 @@ export class AdminDashboard implements OnInit {
           images: mappedAssignees.map((a: any) => a.avatarUrl),
           assignees: mappedAssignees,
         },
-        bgColor: ['bg-red-100', 'bg-sky-100', 'bg-emerald-100', 'bg-rose-100'][index % 4],
-        textColor: ['text-red-700', 'text-sky-700', 'text-emerald-700', 'text-rose-700'][index % 4],
-        priority: task.priority || 'Low',
-        project: task.projectName || 'General',
+        bgColor: ['bg-amber-100', 'bg-sky-100', 'bg-emerald-100', 'bg-teal-100'][index % 4],
+        textColor: ['text-amber-700', 'text-sky-700', 'text-emerald-700', 'text-teal-700'][index % 4],
+        priority: task.priority || 'No Priority',
+        project: task.projectName || 'No Project',
       };
     });
+  }
+
+  showError(message: string) {
+    this.errorMessage = message;
+    setTimeout(() => this.errorMessage = null, 5000); // Auto-hide after 5 seconds
   }
 }

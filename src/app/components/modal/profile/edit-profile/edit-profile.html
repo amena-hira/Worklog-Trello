@@ -81,3 +81,10 @@
     <button>close</button>
   </form>
 </dialog>
+
+@if (errorMessage) {
+  <app-toast [errorMessage]="errorMessage"></app-toast>
+}
+@if (successMessage) {
+  <app-toast [successMessage]="successMessage"></app-toast>
+}
