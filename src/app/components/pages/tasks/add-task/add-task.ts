@@ -60,7 +60,8 @@ export class AddTask implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['editData'] && !changes['editData'].isFirstChange()) { // React to changes in editData input
+    if (changes['editData'] && !changes['editData'].isFirstChange()) {
+      // React to changes in editData input
       if (this.editData) {
         this.populateForm(this.editData); // Populate form if new task data is passed
       } else {
@@ -70,7 +71,8 @@ export class AddTask implements OnInit, OnChanges {
   }
 
   buildTaskForm(currentUserEmail: string) {
-    this.form = this.fb.group({ // Initialize the reactive form group with validation
+    this.form = this.fb.group({
+      // Initialize the reactive form group with validation
       name: ['', Validators.required],
       description: [''],
       priority: [''],
@@ -81,7 +83,8 @@ export class AddTask implements OnInit, OnChanges {
       assignees: [[]],
     });
 
-    this.form.get('projectId')?.valueChanges.subscribe((projectId) => { // Listen for project selection changes
+    this.form.get('projectId')?.valueChanges.subscribe((projectId) => {
+      // Listen for project selection changes
       this.updateProjectDetails(projectId); // Update assignees and due date based on selected project
     });
   }
@@ -90,7 +93,8 @@ export class AddTask implements OnInit, OnChanges {
     this.editId = data.id; // Store ID for updating an existing task
     const formattedDate = data.dueDate ? new Date(data.dueDate).toISOString().split('T')[0] : ''; // Format dueDate for HTML input
 
-    this.form.patchValue({ // Patch standard form fields
+    this.form.patchValue({
+      // Patch standard form fields
       name: data.name,
       description: data.description,
       priority: data.priority,
@@ -100,7 +104,8 @@ export class AddTask implements OnInit, OnChanges {
     });
 
     if (data.assignees) {
-      this.selectedMembers = data.assignees.map((a: any) => ({ // Reconstruct selected members from API data
+      this.selectedMembers = data.assignees.map((a: any) => ({
+        // Reconstruct selected members from API data
         id: a?.userId || a.id,
         name: a.userName || a.name,
         avatar: a.avatarUrl || `https://i.pravatar.cc/150?u=${a.userId || a.id}`,
@@ -113,7 +118,8 @@ export class AddTask implements OnInit, OnChanges {
     this.editId = null; // Clear edit mode
     this.selectedMembers = []; // Reset selected assignees
     this.searchTerm = ''; // Clear search input
-    this.form.reset({ // Clear form fields to prevent residual data leak
+    this.form.reset({
+      // Clear form fields to prevent residual data leak
       name: '',
       description: '',
       priority: '',
@@ -126,15 +132,19 @@ export class AddTask implements OnInit, OnChanges {
   }
 
   fetchProjects(): void {
-    this.projectService.getAllProjects().subscribe({ // Retrieve all projects from the backend
+    this.projectService.getAllProjects().subscribe({
+      // Retrieve all projects from the backend
       next: (projects) => {
         const currentUserEmail = sessionStorage.getItem('email');
+        const isAdmin = sessionStorage.getItem('authRole') === 'ROLE_ADMIN';
 
-        this.projects = projects.filter((project) => { // Filter projects client-side based on user access
+        this.projects = projects.filter((project) => {
+          // Filter projects client-side based on user access
+          if (isAdmin) return true;
           if (!currentUserEmail) return true;
           const isCreator = project.createdByUserEmail === currentUserEmail;
           const isMember = (project.members || []).some(
-            (m: any) => m.userEmail === currentUserEmail,
+            (m: any) => m.userEmail === currentUserEmail || m.email === currentUserEmail,
           );
           return isCreator || isMember;
         });
@@ -146,14 +156,16 @@ export class AddTask implements OnInit, OnChanges {
       },
       error: (err) => {
         console.error('Error fetching projects:', err); // Log error if fetching fails
-        this.showError(err?.error?.message || 'An unexpected error occurred while fetching projects.');
+        this.showError(
+          err?.error?.message || 'An unexpected error occurred while fetching projects.',
+        );
       },
     });
   }
 
   private updateProjectDetails(projectId: any): void {
     const selectedProject = this.projects.find((p) => p.id == projectId); // Locate selected project
-    
+
     if (selectedProject) {
       this.selectedProjectDueDate = selectedProject.dueDate // Format and expose project deadline
         ? new Date(selectedProject.dueDate).toLocaleDateString('en-US', {
@@ -163,9 +175,10 @@ export class AddTask implements OnInit, OnChanges {
           })
         : '';
 
-      this.assignees = (selectedProject.members || []).map((m: any, index: number) => ({ // Map project members to selectable assignees
+      this.assignees = (selectedProject.members || []).map((m: any, index: number) => ({
+        // Map project members to selectable assignees
         id: m.userId || m.id || index + 1,
-        name: m.userName || m.name,
+        name: m.userName,
         avatar: m.avatarUrl || `https://i.pravatar.cc/150?u=${m.userId || m.id || index}`,
       }));
     } else {
@@ -174,8 +187,10 @@ export class AddTask implements OnInit, OnChanges {
     }
 
     this.filteredAssignees = this.assignees; // Reset search filter
-    this.selectedMembers = this.selectedMembers.filter((sm) => // Unselect members who don't belong to the new project
-      this.assignees.some((a) => a.id === sm.id),
+    this.selectedMembers = this.selectedMembers.filter(
+      (
+        sm, // Unselect members who don't belong to the new project
+      ) => this.assignees.some((a) => a.id === sm.id),
     );
     this.syncAssignees(); // Synchronize form control
   }
@@ -187,7 +202,8 @@ export class AddTask implements OnInit, OnChanges {
   }
 
   onSubmit(): void {
-    if (this.form.invalid) { // Validate form before submission
+    if (this.form.invalid) {
+      // Validate form before submission
       this.form.markAllAsTouched(); // Show visual errors for invalid fields
       return;
     }
@@ -195,7 +211,7 @@ export class AddTask implements OnInit, OnChanges {
     this.isSubmitting = true; // Set submission loading state
     this.errorMessage = null; // Clear previous errors
     const payload = { ...this.form.value, id: this.editId }; // Merge form values with edit ID
-    
+
     const request = this.editId
       ? this.taskService.updateTask(payload) // Update existing task
       : this.taskService.createTask(this.form.value); // Create new task
