@@ -21,7 +21,9 @@
     <div class="bg-base-300/30 rounded-lg px-2">
       <ul class="rounded-box flex flex-wrap p-2 gap-2">
         <li>
-          <a>All</a>
+          <a>All<span class="px-2 bg-cyan-50/30 text-sky-800 rounded-full"
+              >({{ todayTasks.length + otherTasks.length || 0 }})</span
+            ></a>
         </li>
         <div class="divider divider-horizontal hidden md:flex"></div>
         <li>
@@ -72,8 +74,7 @@
           tabindex="-1"
           class="dropdown-content menu bg-base-100 rounded-box z-1 p-2 shadow-sm w-full"
         >
-          <li><a>Item 1</a></li>
-          <li><a>Item 2</a></li>
+            <li><a disabled>Coming soon</a></li>
         </ul>
       </div>
       <div class="dropdown dropdown-start rounded-full">
@@ -86,8 +87,7 @@
           tabindex="-1"
           class="dropdown-content menu bg-base-100 rounded-box z-1 p-2 shadow-sm w-full"
         >
-          <li><a>Item 1</a></li>
-          <li><a>Item 2</a></li>
+          <li><a disabled>Coming soon</a></li>
         </ul>
       </div>
       <div class="dropdown dropdown-start rounded-full">
@@ -100,8 +100,7 @@
           tabindex="-1"
           class="dropdown-content menu bg-base-100 rounded-box z-1 p-2 shadow-sm w-full"
         >
-          <li><a>Item 1</a></li>
-          <li><a>Item 2</a></li>
+          <li><a disabled>Coming soon</a></li>
         </ul>
       </div>
     </div>

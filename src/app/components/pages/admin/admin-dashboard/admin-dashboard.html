@@ -86,46 +86,60 @@
                 </tr>
               </thead>
               <tbody>
-              @for (task of recentTasks; track $index) {
-                <tr>
-                  <td>
-                    <div class="font-medium">{{ task.title || task.name }}</div>
-                  </td>
-                  <td>
-                    <div class="badge badge-sm badge-ghost">{{ task.project }}</div>
-                  </td>
-                  <td>
-                    <div class="badge badge-sm border-none font-medium" [ngClass]="task.bgColor + ' ' + task.textColor">
-                      {{ task.priority }}
-                    </div>
-                  </td>
-                  <td>
-                    <div class="avatar-group -space-x-3 rtl:space-x-reverse">
-                      @for (avatar of task.assigneeAvatar?.images; track $index) {
-                        <div class="avatar border-none" style="width: 2rem; height: 2rem;">
-                          <div class="w-8 rounded-full">
-                            <img [src]="avatar" alt="Assignee Avatar" />
-                          </div>
-                        </div>
-                      }
-                      @if (!task.assigneeAvatar?.images?.length) {
-                        <div class="avatar placeholder border-none" style="width: 2rem; height: 2rem;">
-                          <div class="bg-neutral text-neutral-content rounded-full w-8">
-                            <span class="text-xs">?</span>
-                          </div>
-                        </div>
-                      }
+                @for (task of recentTasks; track $index) {
+                  <tr>
+                    <td>
+                      <div class="font-medium">{{ task.title || task.name }}</div>
+                    </td>
+                    <td>
+                      <div class="badge badge-sm badge-ghost">{{ task.project }}</div>
+                    </td>
+                    <td>
+                      <div
+                        class="badge badge-sm border-none font-medium"
+                        [ngClass]="task.bgColor + ' ' + task.textColor"
+                      >
+                        {{ task.priority }}
                       </div>
-                  </td>
-                </tr>
-              }
+                    </td>
+                    <td>
+                      <div class="avatar-group -space-x-3 rtl:space-x-reverse">
+                        @for (avatar of task.assigneeAvatar?.images; track $index) {
+                          <div class="avatar border-none" style="width: 2rem; height: 2rem">
+                            <div class="w-8 rounded-full">
+                              <img [src]="avatar" alt="Assignee Avatar" />
+                            </div>
+                          </div>
+                        }
+                        @if (!task.assigneeAvatar?.images?.length) {
+                          <div
+                            class="avatar placeholder border-none"
+                            style="width: 2rem; height: 2rem"
+                          >
+                            <div class="bg-neutral text-neutral-content rounded-full w-8">
+                              <span class="text-xs">?</span>
+                            </div>
+                          </div>
+                        }
+                      </div>
+                    </td>
+                  </tr>
+                }
               </tbody>
             </table>
-          @if (recentTasks.length === 0) {
-            <div class="p-6 text-center text-sm text-base-content/60">
-              No recent tasks found.
-            </div>
-          }
+            @if (recentTasks.length === 0) {
+              <div class="flex flex-col items-center justify-center text-center py-10">
+                <!-- Empty State Image -->
+                <img
+                  src="images/image.png"
+                  alt="No Tasks"
+                  class="w-20 object-contain mb-2 opacity-95"
+                />
+
+                <!-- Text -->
+                <h2 class="text-sky-700 font-semibold text-lg">No Tasks found.</h2>
+              </div>
+            }
           </div>
         </div>
       </div>
@@ -139,9 +153,15 @@
             <div>
               <div class="flex justify-between items-center mb-2">
                 <span class="font-medium text-base-content/80">Completed Projects</span>
-                <span class="text-sm font-semibold">{{ completedProjects }} / {{ totalProjects }}</span>
+                <span class="text-sm font-semibold"
+                  >{{ completedProjects }} / {{ totalProjects }}</span
+                >
               </div>
-              <progress class="progress progress-primary w-full h-2" [value]="completedProjects" [max]="totalProjects || 1"></progress>
+              <progress
+                class="progress progress-primary w-full h-2"
+                [value]="completedProjects"
+                [max]="totalProjects || 1"
+              ></progress>
             </div>
             <!-- Completed Tasks -->
             <div>
@@ -149,7 +169,11 @@
                 <span class="font-medium text-base-content/80">Completed Tasks</span>
                 <span class="text-sm font-semibold">{{ completedTasks }} / {{ totalTasks }}</span>
               </div>
-              <progress class="progress progress-success w-full h-2" [value]="completedTasks" [max]="totalTasks || 1"></progress>
+              <progress
+                class="progress progress-success w-full h-2"
+                [value]="completedTasks"
+                [max]="totalTasks || 1"
+              ></progress>
             </div>
           </div>
         </div>

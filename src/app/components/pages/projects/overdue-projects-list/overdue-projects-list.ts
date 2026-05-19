@@ -28,8 +28,8 @@ export class OverdueProjectsList implements OnInit {
         today.setHours(0, 0, 0, 0);
 
         const currentUserEmail = sessionStorage.getItem('email');
-        const role = sessionStorage.getItem('role');
-        const isAdmin = role === 'admin' || role === 'ADMIN';
+        const role = sessionStorage.getItem('authRole');
+        const isAdmin = role === 'ROLE_ADMIN';
 
         // Sort them by due date in descending order
         const sortedProjects = [...projects].sort((a: any, b: any) => {

@@ -13,6 +13,7 @@ export class EditProfile implements OnInit {
   profileForm!: FormGroup;
   private _userData: any = null;
   errorMessage: string | null = null;
+  successMessage: string | null = null;
   isSubmitting: boolean = false;
 
   @Output() profileUpdated = new EventEmitter<any>();
@@ -136,12 +137,13 @@ export class EditProfile implements OnInit {
         this.usersService.addUser(payload).subscribe({
           next: (res) => {
             this.profileUpdated.emit(res);
+            this.showSuccess(`${payload.first_name} ${payload.last_name} created successful!`);
             this.isSubmitting = false;
             this.closeModal();
           },
           error: (err) => {
             console.error('Error creating user:', err);
-            this.errorMessage = err.error?.message || 'An unexpected error occurred while creating the user.';
+            this.showError(err.error?.message || 'An unexpected error occurred while creating the user.');
             this.isSubmitting = false;
           }
         });
@@ -152,12 +154,13 @@ export class EditProfile implements OnInit {
         this.usersService.updateUser(payload).subscribe({
           next: (res) => {
             this.profileUpdated.emit(res);
+            this.showSuccess(`${payload.first_name} ${payload.last_name} updated successful!`);
             this.isSubmitting = false;
             this.closeModal();
           },
           error: (err) => {
             console.error('Error updating user:', err);
-            this.errorMessage = err.error?.message || 'An unexpected error occurred while updating the user.';
+            this.showError(err.error?.message || 'An unexpected error occurred while updating the user.');
             this.isSubmitting = false;
           }
         });
@@ -166,18 +169,30 @@ export class EditProfile implements OnInit {
         this.usersService.updateMe(updatedData).subscribe({
           next: (res) => {
             this.profileUpdated.emit(res);
+            this.showSuccess('Updated successful!');
             this.isSubmitting = false;
             this.closeModal();
           },
           error: (err) => {
             console.error('Error updating profile:', err);
-            this.errorMessage = err.error?.message || 'An unexpected error occurred while updating your profile.';
+            this.showError(err.error?.message || 'An unexpected error occurred while updating your profile.');
             this.isSubmitting = false;
           }
         });
       }
     }
   }
+
+  showError(message: string) {
+    this.errorMessage = message;
+    setTimeout(() => (this.errorMessage = null), 5000); // Auto-hide after 5 seconds
+  }
+
+  showSuccess(message: string) {
+    this.successMessage = message;
+    setTimeout(() => (this.successMessage = null), 5000); // Auto-hide after 5 seconds
+  }
+
 
   
 }
